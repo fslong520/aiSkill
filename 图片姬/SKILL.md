@@ -356,33 +356,33 @@ description: 专业的插图prompt生成和优化技能，支持多种艺术风�
 ## 🎨 风格化配色方案库
 
 ### 📘 科技蓝调系列 (适合：专业商务、科技未来)
-- 主色：深海蓝 #2980b9
-- 辅色：科技青 #3498db  
-- 背景：珍珠白 #ecf0f1
+- 主色：深海蓝
+- 辅色：科技青  
+- 背景：珍珠白
 - 风格特点：冷静理性，企业级专业感
 
 ### 🌿 春日清新系列 (适合：教育科普、温暖人文)
-- 主色：嫩叶绿 #6b9b7a
-- 辅色：薄荷绿 #8bc34a
-- 背景：淡绿色 #f5f8f5
+- 主色：嫩叶绿
+- 辅色：薄荷绿
+- 背景：淡绿色
 - 风格特点：自然舒适，学习友好
 
 ### 🔥 温暖大地系列 (适合：创意艺术、温暖人文)
-- 主色：陶土红 #e74c3c
-- 辅色：琥珀黄 #f39c12
-- 背景：米白色 #fefefe
+- 主色：陶土红
+- 辅色：琥珀黄
+- 背景：米白色
 - 风格特点：热情活力，创意激发
 
 ### 🌃 赛博霓虹系列 (适合：赛博朋克、科技未来)
-- 主色：电光紫 #9932cc
-- 辅色：霓虹蓝 #00bfff
-- 背景：深空黑 #0a0a0a
+- 主色：电光紫
+- 辅色：霓虹蓝
+- 背景：深空黑
 - 风格特点：未来感强，视觉冲击
 
 ### ☔ 水彩柔和系列 (适合：教育科普、温暖人文)
-- 主色：薰衣草紫 #dda0dd
-- 辅色：天水蓝 #87ceeb
-- 背景：象牙白 #fffff0
+- 主色：薰衣草紫
+- 辅色：天水蓝
+- 背景：象牙白
 - 风格特点：温柔治愈，艺术质感
 
 ## 🎯 风格化构图系统
@@ -464,11 +464,11 @@ description: 专业的插图prompt生成和优化技能，支持多种艺术风�
 
 ### 🎨 风格不明确
 **问题**："画一个概念图"
-**优化**："Conceptual illustration in **赛博朋克** style showing digital transformation. Split composition with **动态张力** layout: left side features traditional business processes in muted grays, right side displays AI-powered automation with vibrant neons. **科技未来** atmosphere with **霓虹蓝** (#00bfff) and **电光紫** (#9932cc) color scheme. 16:9 format, high quality digital art. **Series consistency**: Maintain same cyberpunk aesthetic as previous images in this series. **Language sync**: Chinese text labels for Chinese-speaking audience. **Text specification**: Clear Sans-serif font, medium size, high contrast white text. Include relevant labels like "传统流程" and "AI自动化" in strategic positions. No random characters or decorative symbols.
+**优化**："Conceptual illustration in **赛博朋克** style showing digital transformation. Split composition with **动态张力** layout: left side features traditional business processes in muted grays, right side displays AI-powered automation with vibrant neons. **科技未来** atmosphere with **霓虹蓝** and **电光紫** color scheme. 16:9 format, high quality digital art. **Series consistency**: Maintain same cyberpunk aesthetic as previous images in this series. **Language sync**: Chinese text labels for Chinese-speaking audience. **Text specification**: Clear Sans-serif font, medium size, high contrast white text. Include relevant labels like "传统流程" and "AI自动化" in strategic positions. No random characters or decorative symbols.
 
 ### 🎯 参数冲突
 **问题**："用水彩画画科技图"
-**解决方案**："Watercolor interpretation of technological concepts. Soft organic flow representing data streams, gentle color blending for algorithm visualization, natural texture mimicking digital patterns. **温暖人文** atmosphere with **水彩柔和** palette: lavender (#dda0dd), sky blue (#87ceeb), ivory (#fffff0). **散点分布** composition creating artistic tech representation. 16:9 ratio, painterly digital art. **Consistency maintenance**: Align with established watercolor style from previous images. **Term flexibility**: Use "算法思维" and "数据流" as emphasized technical terms. **Language consistency**: Maintain Chinese terminology throughout. **Text handling**: Use clean, readable fonts like Georgia or Times New Roman. Text should complement watercolor aesthetic while maintaining clarity and professional appearance. Avoid decorative fonts or random symbols.
+**解决方案**："Watercolor interpretation of technological concepts. Soft organic flow representing data streams, gentle color blending for algorithm visualization, natural texture mimicking digital patterns. **温暖人文** atmosphere with **水彩柔和** palette: lavender, sky blue, ivory. **散点分布** composition creating artistic tech representation. 16:9 ratio, painterly digital art. **Consistency maintenance**: Align with established watercolor style from previous images. **Term flexibility**: Use "算法思维" and "数据流" as emphasized technical terms. **Language consistency**: Maintain Chinese terminology throughout. **Text handling**: Use clean, readable fonts like Georgia or Times New Roman. Text should complement watercolor aesthetic while maintaining clarity and professional appearance. Avoid decorative fonts or random symbols.
 
 ### 📐 构图与风格不匹配
 **问题**："用极简风格画复杂场景"
@@ -476,7 +476,7 @@ description: 专业的插图prompt生成和优化技能，支持多种艺术风�
 
 ### 🌈 配色与氛围不符
 **问题**："温暖风格用冷色调"
-**解决方案**："Warm human-centered illustration using inviting **温暖大地** palette: terracotta (#e74c3c), amber (#f39c12), cream (#fefefe). **温暖人文** atmosphere created through soft lighting, organic shapes, and comforting color temperature. **对称平衡** composition promoting harmony and approachability. 4:3 ratio, welcoming digital art. **Style continuity**: Maintain warm earth tone palette consistent with series theme. **Terminology adaptation**: Include user-emphasized educational terms as specified. **Language synchronization**: Chinese explanatory text for Chinese audience. **Text integration**: Use warm, friendly fonts like Comic Sans MS or Verdana. Text content should include encouraging phrases and clear explanations. Color should be dark brown (#5d4037) for excellent contrast against warm background. Position text in balanced locations that enhance the harmonious composition without disrupting the peaceful atmosphere.
+**解决方案**："Warm human-centered illustration using inviting **温暖大地** palette: terracotta, amber, cream. **温暖人文** atmosphere created through soft lighting, organic shapes, and comforting color temperature. **对称平衡** composition promoting harmony and approachability. 4:3 ratio, welcoming digital art. **Style continuity**: Maintain warm earth tone palette consistent with series theme. **Terminology adaptation**: Include user-emphasized educational terms as specified. **Language synchronization**: Chinese explanatory text for Chinese audience. **Text integration**: Use warm, friendly fonts like Comic Sans MS or Verdana. Text content should include encouraging phrases and clear explanations. Color should be dark brown for excellent contrast against warm background. Position text in balanced locations that enhance the harmonious composition without disrupting the peaceful atmosphere.
 
 ## 🚀 高级参数组合技巧
 
