@@ -1,0 +1,18 @@
+# 核心依赖（必需）
+baostock>=0.8.90
+pandas>=1.5.0
+numpy>=1.21.0
+
+# 可视化支持（推荐）
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# 数据库支持（可选）
+peewee>=3.15.0
+
+# HTTP请求支持（可选，用于扩展功能）
+requests>=2.28.0
+
+# 爬虫支持（大盘分析功能）
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
