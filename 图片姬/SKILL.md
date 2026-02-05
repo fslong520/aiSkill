@@ -48,15 +48,21 @@ description: 专业的插图prompt生成和优化技能，支持多种艺术风�
 
 **核心原则**：严格区分"要绘制的文字内容"和"文字显示样式"
 
+**语言默认规则**：
+- **默认使用中文**：除非用户明确指定其他语言，所有说明性文字均使用中文
+- **专业术语保持**：字体名称(Arial、Helvetica等)、颜色代码(#ffffff等)保持原样
+- **用户指定优先**：用户明确要求英文或其他语言时按要求执行
+
 **文字内容**（实际显示的文本）：
-- "算法思维"、"AI Processing"、"数据分析"等
+- 中文示例："算法思维"、"数据分析"、"神经网络"等
+- 英文示例："AI Processing"、"Neural Network"、"Data Analysis"等（用户指定时）
 - 这些是图像中真正需要绘制的文字
 
 **样式属性**（格式设置）：
-- 字体：Arial、Helvetica、Roboto等
-- 字号：18pt、24pt、16pt等  
-- 颜色：#ffffff、#000000、#ff0000等
-- 位置：top center、bottom right等
+- 字体：Arial、Helvetica、Roboto等（保持英文）
+- 字号：18pt、24pt、16pt等（保持英文）
+- 颜色：#ffffff、#000000、#ff0000等（保持英文）
+- 位置：顶部中央、左下角、右侧等（中文描述）
 
 **分隔标识**：使用明确的结构化格式避免混淆
 
@@ -119,39 +125,39 @@ description: 专业的插图prompt生成和优化技能，支持多种艺术风�
 
 ## Prompt生成模板
 
-### 🎨 参数化生成模板（强化版）
+### 🎨 参数化生成模板（强化版-中文默认）
 ```
-[图像类型] showing [核心概念]. [指定构图]: [布局元素描述]. [连接/中心元素], [象征意义]. Color palette: [主色HEX], [辅色HEX], [背景色HEX]. [用户选择的艺术风格/系统推荐风格] with [美学特征]. [用户偏好的构图方式/智能匹配构图]. [比例规格], [质量要求]. Theme atmosphere: [选择的主题氛围/自动适配氛围]. 
+[图像类型] 展示 [核心概念]. [指定构图]: [布局元素描述]. [连接/中心元素], [象征意义]. 配色方案: [主色HEX], [辅色HEX], [背景色HEX]. [用户选择的艺术风格/系统推荐风格] 具有 [美学特征]. [用户偏好的构图方式/智能匹配构图]. [比例规格], [质量要求]. 主题氛围: [选择的主题氛围/自动适配氛围]. 
 
 **【文字内容区域】**
-显示文字：[明确的文字内容列表，如"算法思维"、"AI Processing"、"数据分析"]
+显示文字：[明确的文字内容列表，如"算法思维"、"数据分析"、"神经网络"]
 
 **【样式设置区域】**
-- 字体要求：[清晰易读的字体名称]
-- 字号规格：[适中字号数值]
-- 颜色配置：[与背景对比良好的颜色HEX]
-- 位置布局：[合理的文字位置描述]
+- 字体要求：[清晰易读的字体名称，如Arial、Helvetica等]
+- 字号规格：[适中字号数值，如18pt、24pt等]
+- 颜色配置：[与背景对比良好的颜色HEX代码]
+- 位置布局：[合理的文字位置描述，如顶部中央、左侧等]
 
-Ensure all text content is meaningful and relevant to theme. Style attributes are for formatting guidance only.
+确保所有文字内容都与主题相关且有意义。样式属性仅用于格式指导。
 ```
 
-### 🔄 风格转换模板（强化版）
+### 🔄 风格转换模板（强化版-中文默认）
 ```
-Transform the following concept into [指定艺术风格/推荐风格] style: [原始概念描述]. Apply [选择的主题氛围/匹配氛围] atmosphere with [偏好的构图方式/推荐构图]. Maintain [核心元素] while adapting to [艺术风格] characteristics: [风格特有的视觉元素], [该风格的配色倾向], [风格化的表现手法]. 
+将以下概念转换为 [指定艺术风格/推荐风格] 风格: [原始概念描述]. 应用 [选择的主题氛围/匹配氛围] 氛围，采用 [偏好的构图方式/推荐构图]. 保持 [核心元素] 的同时适应 [艺术风格] 特征: [风格特有的视觉元素], [该风格的配色倾向], [风格化的表现手法]. 
 
 **【文字内容规范】**
-需要绘制的文字内容：[具体的技术术语或说明文字]
+需要绘制的文字内容：[具体的技术术语或说明文字，如"算法优化"、"数据处理"等]
 
 **【显示样式规范】**  
-- 字体选择：清晰易读的标准字体
+- 字体选择：清晰易读的标准字体（如Arial、Helvetica等）
 - 内容要求：相关的技术术语或解释性标签
 - 禁止内容：随机字符、无意义符号
 - 设计原则：增强而非分散对主要视觉元素的注意力
 ```
 
-### 🤖 智能推荐模板（强化版）
+### 🤖 智能推荐模板（强化版-中文默认）
 ```
-Based on content analysis: [内容描述]. Recommended style: [智能推荐的艺术风格] for optimal visual impact. Reasoning: [推荐理由]. Suggested color palette: [推荐配色方案]. Composition approach: [推荐构图方式]. Theme atmosphere: [匹配的主题氛围]. **Series consistency check**: [检查与前序图像的统一性]. **Language synchronization**: [确保与用户交流语言一致]. 
+基于内容分析: [内容描述]. 推荐风格: [智能推荐的艺术风格] 以获得最佳视觉效果. 推荐理由: [推荐理由]. 建议配色方案: [推荐配色方案]. 构图方式: [推荐构图方式]. 主题氛围: [匹配的主题氛围]. **系列一致性检查**: [检查与前序图像的统一性]. **语言同步**: [确保与用户交流语言一致]. 
 
 **【智能文字生成】**
 自动生成相关且有意义的文字内容：
@@ -194,19 +200,22 @@ Based on content analysis: [内容描述]. Recommended style: [智能推荐的�
 ### 🎯 文字内容规范（要绘制的实际文本）
 - **内容相关性**：文字必须与主题高度相关，禁止随机字符
 - **专业准确性**：技术类图像包含专业术语，教育类图像包含说明标注
-- **语言一致性**：与用户交流语言完全同步（中文/英文）
+- **默认中文**：除非用户明确指定，所有文字内容使用中文
+- **用户指定优先**：用户要求英文或其他语言时按要求执行
 - **术语标注灵活**：根据用户强调程度决定术语使用策略
 
 ### 🎨 样式属性规范（格式设置要求）
-- **字体清晰度**：使用易读字体（如Arial, Helvetica, Roboto等）
-- **字号适中性**：既不遮挡主体，又清晰可见
-- **色彩对比度**：确保文字与背景形成良好对比
-- **位置合理性**：避开关键视觉元素，放置在合适区域
+- **字体清晰度**：使用易读字体（如Arial, Helvetica, Roboto等）- 字体名称保持英文
+- **字号适中性**：既不遮挡主体，又清晰可见 - 字号单位保持英文(pt)
+- **色彩对比度**：确保文字与背景形成良好对比 - 颜色代码保持英文(#ffffff)
+- **位置合理性**：避开关键视觉元素，放置在合适区域 - 位置描述使用中文
 
 ### 🚫 重要区分原则
 - 文字内容 ≠ 样式属性
 - 显示文本 ≠ 格式要求
 - 内容实体 ≠ 配置参数
+- 中文默认 ≠ 英文指定
+- 说明文字中文 ≠ 专业术语英文
 
 ## 优化现有Prompt的方法
 
@@ -229,14 +238,14 @@ Based on content analysis: [内容描述]. Recommended style: [智能推荐的�
 
 ## 🎨 风格化示例
 
-### 示例1：赛博朋克风格技术概念图（强化版）
+### 示例1：赛博朋克风格技术概念图（强化版-中文默认）
 ```
-Cyberpunk conceptual illustration showing human-AI symbiosis in neon-lit digital realm. Split composition: left side features human neural cortex with bioluminescent synapses pulsing in electric blue and magenta, right side displays holographic AI interface with cascading code streams in vibrant cyan. Center: chromatic light bridge crackling with digital energy, symbolizing neural-network convergence. Color palette: electric blue (#00ffff), hot pink (#ff69b4), deep purple (#4b0082) with black (#000000) background. Cyberpunk aesthetic with glitch effects, neon glow, and chrome reflections. Dynamic diagonal composition emphasizing technological transcendence. 16:9 cinematic ratio, ultra-high definition digital art with futuristic atmosphere.
+赛博朋克风格的概念插图，展示人类与AI在霓虹灯光数字领域中的共生关系。分割式构图：左侧展示人类大脑皮层，生物发光突触在电光蓝和洋红色中脉动，右侧显示全息AI界面，级联代码流呈鲜艳青色。中心：闪烁着数字能量的彩色光桥，象征神经网络汇聚。配色方案：电光蓝(#00ffff)、热粉(#ff69b4)、深紫(#4b0082)，黑色(#000000)背景。赛博朋克美学，带有故障效果、霓虹辉光和铬反射。动态对角线构图强调技术超越。16:9电影比例，超高清数字艺术，未来主义氛围。
 
 **【图像文字内容】**
-- "Algorithmic Thinking"
-- "Neural Network"  
-- "AI Processing"
+- "算法思维"
+- "神经网络"  
+- "AI处理"
 
 **【文字显示样式】**
 - 主标题：Arial Bold字体，24pt字号，白色#ffffff，位于顶部中央
@@ -246,14 +255,14 @@ Cyberpunk conceptual illustration showing human-AI symbiosis in neon-lit digital
 所有文字都经过战略性布局以避免遮挡关键视觉元素，与深色背景形成高对比度。
 ```
 
-### 示例2：水彩画风教育科普图（强化版）
+### 示例2：水彩画风教育科普图（强化版-中文默认）
 ```
-Watercolor-style educational illustration explaining algorithmic thinking through nature metaphors. Soft-focus composition: gentle hills representing problem domains with flowing streams as data pathways, blooming flowers symbolizing elegant solutions, and wise owl character guiding learning journey. Color palette: warm sage green (#9dc183), sunset coral (#ff7f50), sky blue (#87ceeb) on cream paper background (#fdf5e6). Watercolor technique with organic brushstrokes, subtle texture, and natural light diffusion. Balanced symmetrical layout creating calming learning environment. 4:3 academic ratio, hand-painted quality with educational warmth.
+水彩画风格的教育科普插图，通过自然隐喻解释算法思维。柔焦构图： gentle hills representing problem domains with flowing streams as data pathways, blooming flowers symbolizing elegant solutions, and wise owl character guiding learning journey. 配色方案：暖鼠尾草绿(#9dc183)、日落珊瑚(#ff7f50)、天蓝(#87ceeb)，奶油纸背景(#fdf5e6)。水彩技法，有机笔触，细腻纹理，自然光线扩散。平衡对称布局，营造平静的学习环境。4:3学术比例，手绘质感，教育温暖感。
 
 **【图像文字内容】**
-- "Problem Solving Process"
-- "Analyze → Design → Implement"
-- "Optimal Solution"
+- "问题解决过程"
+- "分析 → 设计 → 实现"
+- "最优解"
 
 **【文字显示样式】**
 - 顶部标题：Times New Roman字体，20pt字号，深绿色#2e7d32，横幅式布局
@@ -263,14 +272,14 @@ Watercolor-style educational illustration explaining algorithmic thinking throug
 教育性注释放置在自然位置，使用温暖的大地色调以确保在水彩背景下具有出色的可读性。
 ```
 
-### 示例3：像素艺术创意图（强化版）
+### 示例3：像素艺术创意图（强化版-中文默认）
 ```
-Pixel art retro-style illustration depicting programming evolution through gaming lens. 8-bit composition: character sprite advancing through level stages - BASIC forest (green pixel trees), C++ castle (gray stone blocks), Python valley (blue snake companion), JavaScript city (yellow lightning bolts). Color palette: authentic NES colors - teal (#008080), maroon (#800000), olive (#808000), purple (#800080). Pixel-perfect grid alignment with dithering effects and limited 16-color palette. Side-scrolling game perspective with nostalgic charm. 16:9 arcade ratio, retro gaming aesthetic with modern clarity.
+像素艺术复古风格插图，通过游戏视角展示编程语言演进。8位构图：角色精灵穿越关卡阶段 - BASIC森林（绿色像素树）、C++城堡（灰色石块）、Python山谷（蓝色蛇伙伴）、JavaScript城市（黄色闪电）。配色方案：正宗NES色彩 - 水鸭色(#008080)、栗色(#800000)、橄榄色(#808000)、紫色(#800080)。像素完美网格对齐，抖动效果，16色限制调色板。横向卷轴游戏视角，怀旧魅力。16:9街机比例，复古游戏美学，现代清晰度。
 
 **【图像文字内容】**
-- "Programming Languages Evolution"
+- "编程语言演进"
 - "BASIC" "C++" "Python" "JavaScript"
-- "Level Complete!"
+- "关卡完成！"
 
 **【文字显示样式】**
 - 顶部滚动条：像素字体，12pt字号，白色#ffffff，顶部横幅位置
@@ -456,6 +465,11 @@ Pixel art retro-style illustration depicting programming evolution through gamin
 **自定义参数使用**：
 > "用**温暖大地**配色，**动态张力**构图，**创意艺术**氛围生成prompt"
 
+**语言指定使用**：
+> "请用英文生成一个赛博朋克风格的prompt"
+> "生成中文prompt，但文字内容使用英文术语"
+> "请按照我的母语中文来生成所有说明文字"
+
 ### 🤖 咨询模式（直接问答，不生成文件）
 **智能推荐咨询**：
 > "图片姬，请根据我的技术博客内容推荐最适合的画风"
@@ -463,6 +477,13 @@ Pixel art retro-style illustration depicting programming evolution through gamin
 > "我不确定用什么风格，帮我分析这段关于算法思维的内容并推荐画风"
 
 > "请为这个概念建议最佳的视觉表达方案"
+
+**语言相关咨询**：
+> "默认情况下会使用什么语言生成prompt？"
+
+> "如何指定使用英文或其他语言？"
+
+> "中英文混合的prompt如何处理？"
 
 **技术问题咨询**：
 > "如何区分prompt中的文字内容和样式属性？"
@@ -478,6 +499,10 @@ Pixel art retro-style illustration depicting programming evolution through gamin
 **边咨询边调整**：
 > "我想要赛博朋克风格，但文字部分需要更简洁一些，怎么调整？"
 
+**语言协商使用**：
+> "我想用中文描述，但某些专业术语保持英文，可以吗？"
+> "请先推荐画风，然后按我的语言偏好生成prompt"
+
 ---
 ## 🔧 技能强化说明
 
@@ -490,12 +515,18 @@ Pixel art retro-style illustration depicting programming evolution through gamin
    - 采用清晰的区域划分，提高AI理解准确性
    - 为不同类型的需求提供专门的模板
 
-3. **灵活的交互模式**
+3. **智能语言处理**
+   - 默认使用中文生成所有说明性文字
+   - 专业术语（字体名、颜色代码等）保持原样
+   - 支持用户明确指定其他语言
+   - 灵活处理中英文混合需求
+
+4. **灵活的交互模式**
    - 支持纯咨询问答模式（不生成文件）
    - 支持prompt生成模式（创建文件）
    - 支持混合使用模式
 
-4. **增强的用户体验**
+5. **增强的用户体验**
    - 当用户仅需要咨询时，直接回答问题
    - 当需要生成内容时，按标准流程创建文件
    - 提供明确的使用指引和示例
@@ -505,6 +536,9 @@ Pixel art retro-style illustration depicting programming evolution through gamin
 - 样式属性：格式设置要求（如字体、字号、颜色等）
 - 分隔符：使用【】标识不同区域，避免混淆
 - 交互模式：根据用户需求选择合适的响应方式
+- 语言默认：除非用户明确指定，所有说明文字使用中文
+- 专业术语：字体名称、颜色代码等保持英文原样
+- 用户优先：用户明确的语言要求优先于默认设置
 
 ---
 *图片姬 - 让每个概念都有完美的视觉表达*
