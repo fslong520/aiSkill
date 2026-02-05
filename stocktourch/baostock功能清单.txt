@@ -1,0 +1,122 @@
+baostock功能清单
+================
+
+版本: 0.8.90
+生成时间: 2026-01-26
+
+一、登录/登出功能
+-----------------
+• login(user_id='anonymous', password='123456', options=0)
+  - 登录baostock服务器，获取数据访问权限
+• logout(user_id='anonymous')
+  - 登出baostock服务器，释放连接
+
+二、股票历史数据功能
+-------------------
+• query_history_k_data_plus(code, fields, start_date=None, end_date=None, frequency='d', adjustflag='3')
+  - 查询历史K线数据（复权、频度转换等）
+  - code: 股票代码，格式：sh.600000 或 sz.000001
+  - fields: 查询字段，如："date,code,open,high,low,close,volume,amount"
+  - frequency: 频度，'d'(日)'w'(周)'m'(月)
+  - adjustflag: 复权标志，'3'(后复权)'2'(前复权)'1'(不复权)
+
+三、股票基础信息功能
+-------------------
+• query_stock_basic(code='', code_name='')
+  - 查询A股证券基本资料
+  - code: 股票代码，可选参数
+  - code_name: 股票名称，可选参数
+• query_stock_industry(code='', date='')
+  - 查询股票所属行业分类
+
+四、指数成分股功能
+-----------------
+• query_hs300_stocks(date='')
+  - 查询沪深300成分股
+• query_sz50_stocks(date='')
+  - 查询上证50成分股
+• query_zz500_stocks(date='')
+  - 查询中证500成分股
+
+五、交易日历功能
+---------------
+• query_trade_dates(start_date=None, end_date=None)
+  - 查询指定范围内的交易日信息
+• query_all_stock(day=None)
+  - 查询指定日期的所有证券信息
+
+六、财务数据功能
+---------------
+• query_balance_data(code, year=None, quarter=None)
+  - 查询资产负债表数据
+• query_cash_flow_data(code, year=None, quarter=None)
+  - 查询现金流量表数据
+• query_profit_data(code, year=None, quarter=None)
+  - 查询利润表数据
+• query_operation_data(code, year=None, quarter=None)
+  - 查询运营能力数据
+• query_growth_data(code, year=None, quarter=None)
+  - 查询成长能力数据
+• query_dupont_data(code, year=None, quarter=None)
+  - 查询杜邦分析数据
+
+七、分红数据功能
+---------------
+• query_dividend_data(code, year=None, yearType='report')
+  - 查询分红数据
+
+八、业绩预报功能
+---------------
+• query_performance_express_report(code, start_date=None, end_date=None)
+  - 查询业绩快报
+
+九、盈利预测功能
+---------------
+• query_forecast_report(code, start_date=None, end_date=None)
+  - 查询盈利预测
+
+十、复权因子功能
+---------------
+• query_adjust_factor(code, start_date=None, end_date=None)
+  - 查询复权因子
+
+十一、宏观数据功能
+-----------------
+• query_deposit_rate_data(start_date='', end_date='')
+  - 查询存款利率
+• query_loan_rate_data(start_date='', end_date='')
+  - 查询贷款利率
+• query_required_reserve_ratio_data(start_date='', end_date='', yearType='0')
+  - 查询存款准备金率
+• query_money_supply_data_month(start_date='', end_date='')
+  - 查询货币供应量(月度)
+• query_money_supply_data_year(start_date='', end_date='')
+  - 查询货币供应量(年度)
+
+十二、主要应用场景
+-----------------
+1. 股票历史价格分析
+   - 使用 query_history_k_data_plus 获取K线数据
+   
+2. 股票基础信息查询
+   - 使用 query_stock_basic 获取股票基本信息
+   
+3. 行业分类分析
+   - 使用 query_stock_industry 获取行业信息
+   
+4. 指数成分股分析
+   - 使用 query_hs300_stocks/sz50_stocks/zz500_stocks
+   
+5. 财务分析
+   - 使用 balance/cash_flow/profit 数据函数
+   
+6. 市场宏观分析
+   - 使用宏观数据函数
+
+十三、注意事项
+-------------
+• 所有股票代码需使用标准格式：sh.600000 或 sz.000001
+• 需要先调用 login() 再进行数据查询
+• 使用完成后需调用 logout() 释放连接
+• 部分功能需要指定日期格式：YYYY-MM-DD
+• 每日查询次数有限制，建议合理使用

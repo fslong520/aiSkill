@@ -1,0 +1,78 @@
+2026-01-25 22:33:56 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews']
+2026-01-25 22:33:58 | INFO     | NewsAggregator | info:72 | 共获取 5 条新闻
+2026-01-25 22:33:58 | INFO     | NewsAggregator | info:72 | 报告已保存: reports\news_report_20260125_223358.json
+2026-01-25 22:33:59 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github']
+2026-01-26 17:36:53 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', 'weibo']
+2026-01-26 17:36:53 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-01-26 17:36:54 | INFO     | NewsAggregator | info:72 | 共获取 29 条新闻
+2026-01-26 17:36:54 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260126_173654.md
+2026-02-01 21:23:33 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', 'weibo']
+2026-02-01 21:23:33 | INFO     | NewsAggregator | info:72 | 关键词扩展: '财经,八卦,周末' -> '八卦,周末,财经'
+2026-02-01 21:23:34 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-02-01 21:23:34 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:24:02 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'reddit']
+2026-02-01 21:24:02 | INFO     | NewsAggregator | info:72 | 关键词 'finance' 扩展到领域 'finance'，添加 11 个术语
+2026-02-01 21:24:02 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'finance,stock,weekend' -> 'Banking,Bitcoin,Blockchain,Crypto,DeFi,Ethereum,FinTech,Finance,Payment,Stock,Trading,finance,stock,weekend'
+2026-02-01 21:24:33 | ERROR    | NewsAggregator | error:80 | Reddit 获取失败: 
+2026-02-01 21:24:33 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:24:38 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github', 'weibo', '36kr', 'v2ex', 'tencent', 'wallstreetcn', 'producthunt', 'reddit', 'techcrunch']
+2026-02-01 21:24:38 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'weekend' -> 'weekend'
+2026-02-01 21:24:39 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 20 条
+2026-02-01 21:24:39 | ERROR    | NewsAggregator | error:80 | V2EX 获取失败: Cannot connect to host www.v2ex.com:443 ssl:default [Connection reset by peer]
+2026-02-01 21:25:08 | ERROR    | NewsAggregator | error:80 | GitHub Trending 请求错误: 
+2026-02-01 21:25:08 | ERROR    | NewsAggregator | error:80 | GitHub Trending 获取失败: 
+2026-02-01 21:25:08 | ERROR    | NewsAggregator | error:80 | Reddit 获取失败: 
+2026-02-01 21:25:08 | ERROR    | NewsAggregator | error:80 | Hacker News 请求错误: 
+2026-02-01 21:25:08 | ERROR    | NewsAggregator | error:80 | HN 第 1 页获取失败: 
+2026-02-01 21:25:08 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:25:14 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent', 'weibo']
+2026-02-01 21:25:14 | INFO     | NewsAggregator | info:72 | 关键词 'finance' 扩展到领域 'finance'，添加 11 个术语
+2026-02-01 21:25:14 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'finance,economy' -> 'Banking,Bitcoin,Blockchain,Crypto,DeFi,Ethereum,FinTech,Finance,Payment,Stock,Trading,economy,finance'
+2026-02-01 21:25:14 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-02-01 21:25:14 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:28:26 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 5 条
+2026-02-01 21:28:39 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['weibo']
+2026-02-01 21:28:39 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'weekend' -> 'weekend'
+2026-02-01 21:28:40 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 5 条
+2026-02-01 21:28:40 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:29:11 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['weibo', 'wallstreetcn', 'tencent']
+2026-02-01 21:29:11 | INFO     | NewsAggregator | info:72 | 关键词 'finance' 扩展到领域 'finance'，添加 11 个术语
+2026-02-01 21:29:11 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'finance,weekend' -> 'Banking,Bitcoin,Blockchain,Crypto,DeFi,Ethereum,FinTech,Finance,Payment,Stock,Trading,finance,weekend'
+2026-02-01 21:29:12 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-02-01 21:29:12 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:29:16 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['weibo']
+2026-02-01 21:29:16 | INFO     | NewsAggregator | info:72 | 关键词 'finance' 扩展到领域 'finance'，添加 11 个术语
+2026-02-01 21:29:16 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'finance' -> 'Banking,Bitcoin,Blockchain,Crypto,DeFi,Ethereum,FinTech,Finance,Payment,Stock,Trading,finance'
+2026-02-01 21:29:16 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: weibo
+2026-02-01 21:29:17 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 5 条
+2026-02-01 21:29:17 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:29:26 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['weibo']
+2026-02-01 21:29:26 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: weibo
+2026-02-01 21:29:26 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-02-01 21:29:26 | INFO     | NewsAggregator | info:72 | 共获取 10 条新闻
+2026-02-01 21:29:26 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260201_212926.md
+2026-02-01 21:29:32 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent']
+2026-02-01 21:29:32 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-01 21:29:32 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-01 21:29:32 | INFO     | NewsAggregator | info:72 | 共获取 20 条新闻
+2026-02-01 21:29:32 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260201_212932.md
+2026-02-01 21:29:39 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['weibo']
+2026-02-01 21:29:39 | INFO     | NewsAggregator | info:72 | 关键词扩展: '周末,财经,股市,投资' -> '周末,投资,股市,财经'
+2026-02-01 21:29:39 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-02-01 21:29:39 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:29:45 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-01 21:29:45 | INFO     | NewsAggregator | info:72 | 关键词扩展: '投资,股市,基金,股票' -> '基金,投资,股市,股票'
+2026-02-01 21:29:46 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-01 21:29:51 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-01 21:29:51 | INFO     | NewsAggregator | info:72 | 共获取 15 条新闻
+2026-02-01 21:29:51 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260201_212951.md
+2026-02-04 22:06:04 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', 'weibo']
+2026-02-04 22:06:04 | INFO     | NewsAggregator | info:72 | 关键词扩展: '财经,娱乐' -> '娱乐,财经'
+2026-02-04 22:06:04 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 15 条
+2026-02-04 22:06:04 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:06:09 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github', 'weibo', '36kr', 'v2ex', 'tencent', 'wallstreetcn', 'producthunt', 'reddit', 'techcrunch']
+2026-02-04 22:06:10 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 20 条
+2026-02-04 22:06:15 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent', 'weibo']
+2026-02-04 22:06:16 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 15 条
+2026-02-04 22:06:16 | INFO     | NewsAggregator | info:72 | 共获取 25 条新闻
+2026-02-04 22:06:16 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220616.md

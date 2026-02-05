@@ -1,0 +1,37 @@
+[
+  {
+    "source": "Hacker News",
+    "title": "This paper has been cited more than 6k times. It's fatally flawed.",
+    "url": "https://statmodeling.stat.columbia.edu/2026/01/22/aking/",
+    "heat": "259 points",
+    "time": "5 hours ago"
+  },
+  {
+    "source": "Hacker News",
+    "title": "Deutsche Telekom is violating Net Neutrality",
+    "url": "https://netzbremse.de/en/",
+    "heat": "371 points",
+    "time": "6 hours ago"
+  },
+  {
+    "source": "Hacker News",
+    "title": "Show HN: Bonsplit – Tabs and splits for native macOS apps",
+    "url": "https://bonsplit.alasdairmonk.com",
+    "heat": "54 points",
+    "time": "2 hours ago"
+  },
+  {
+    "source": "Hacker News",
+    "title": "Google confirms 'high-friction' sideloading flow is coming to Android",
+    "url": "https://www.androidauthority.com/google-sideloading-android-high-friction-process-3633468/",
+    "heat": "317 points",
+    "time": "11 hours ago"
+  },
+  {
+    "source": "Hacker News",
+    "title": "ANN v3: 200ms p99 query latency over 100B vectors",
+    "url": "https://turbopuffer.com/blog/ann-v3",
+    "heat": "20 points",
+    "time": "1 hour ago"
+  }
+]

@@ -1,0 +1,67 @@
+2026-02-04 22:06:27 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent', 'weibo']
+2026-02-04 22:06:27 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 15 条
+2026-02-04 22:06:27 | INFO     | NewsAggregator | info:72 | 共获取 25 条新闻
+2026-02-04 22:06:27 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220627.md
+2026-02-04 22:08:30 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent']
+2026-02-04 22:08:30 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'A股,股市,股票,涨停,跌停,创业板,上证,深证' -> 'a股,上证,创业板,涨停,深证,股市,股票,跌停'
+2026-02-04 22:08:30 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:08:36 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', '36kr']
+2026-02-04 22:08:36 | INFO     | NewsAggregator | info:72 | 关键词扩展: '金融,证券,投资,市场' -> '市场,投资,证券,金融'
+2026-02-04 22:08:37 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:08:42 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent']
+2026-02-04 22:08:43 | INFO     | NewsAggregator | info:72 | 共获取 39 条新闻
+2026-02-04 22:08:43 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220843.md
+2026-02-04 22:08:51 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-04 22:08:51 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:08:51 | INFO     | NewsAggregator | info:72 | 共获取 19 条新闻
+2026-02-04 22:08:51 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220851.md
+2026-02-04 22:08:55 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent']
+2026-02-04 22:08:55 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:08:55 | INFO     | NewsAggregator | info:72 | 共获取 10 条新闻
+2026-02-04 22:08:55 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220855.md
+2026-02-04 22:09:02 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['36kr']
+2026-02-04 22:09:02 | INFO     | NewsAggregator | info:72 | 关键词扩展: '投资,A股,股市' -> 'a股,投资,股市'
+2026-02-04 22:09:02 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: 36kr
+2026-02-04 22:09:02 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:09:07 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['36kr']
+2026-02-04 22:09:07 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: 36kr
+2026-02-04 22:09:07 | INFO     | NewsAggregator | info:72 | 缓存已设置: 36kr (TTL: 300s)
+2026-02-04 22:09:07 | INFO     | NewsAggregator | info:72 | 共获取 20 条新闻
+2026-02-04 22:09:07 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_220907.md
+2026-02-04 22:13:55 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-04 22:13:55 | INFO     | NewsAggregator | info:72 | 关键词扩展: 'A股,股市,上证,深证,创业板' -> 'a股,上证,创业板,深证,股市'
+2026-02-04 22:13:55 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:13:55 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:14:01 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', '36kr']
+2026-02-04 22:14:01 | INFO     | NewsAggregator | info:72 | 关键词扩展: '金融,证券,投资' -> '投资,证券,金融'
+2026-02-04 22:14:01 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:14:01 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:14:01 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: 36kr
+2026-02-04 22:14:01 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:14:10 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-04 22:14:10 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:14:11 | INFO     | NewsAggregator | info:72 | 共获取 19 条新闻
+2026-02-04 22:14:11 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_221411.md
+2026-02-04 22:14:14 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent']
+2026-02-04 22:14:14 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:14:15 | INFO     | NewsAggregator | info:72 | 共获取 10 条新闻
+2026-02-04 22:14:15 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_221415.md
+2026-02-04 22:15:23 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent']
+2026-02-04 22:15:23 | INFO     | NewsAggregator | info:72 | 关键词扩展: '上证指数,深证成指,创业板指,A股收盘,大盘走势' -> 'a股收盘,上证指数,创业板指,大盘走势,深证成指'
+2026-02-04 22:15:23 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:15:23 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:15:24 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:15:31 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn', 'tencent', '36kr']
+2026-02-04 22:15:31 | INFO     | NewsAggregator | info:72 | 关键词扩展: '股市,收盘,指数,成交量,资金流向' -> '成交量,指数,收盘,股市,资金流向'
+2026-02-04 22:15:31 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:15:31 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:15:31 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: 36kr
+2026-02-04 22:15:32 | INFO     | NewsAggregator | info:72 | 共获取 0 条新闻
+2026-02-04 22:15:36 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['wallstreetcn']
+2026-02-04 22:15:36 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: wallstreetcn
+2026-02-04 22:15:37 | INFO     | NewsAggregator | info:72 | 共获取 24 条新闻
+2026-02-04 22:15:37 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_221537.md
+2026-02-04 22:15:41 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['tencent']
+2026-02-04 22:15:41 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
+2026-02-04 22:15:41 | INFO     | NewsAggregator | info:72 | 共获取 10 条新闻
+2026-02-04 22:15:41 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_221541.md
