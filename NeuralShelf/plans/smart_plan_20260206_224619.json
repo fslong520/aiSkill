@@ -1,0 +1,41 @@
+{
+  "target_directory": "/tmp/smart_test",
+  "total_files": 4,
+  "move_operations": [
+    {
+      "source": "/tmp/smart_test/sample_photo.png",
+      "target": "/tmp/smart_test/Images/2026/02/06/sample_photo.png",
+      "size": 0,
+      "category": "Images",
+      "confidence": 0.4666666666666667
+    },
+    {
+      "source": "/tmp/smart_test/another_document.txt",
+      "target": "/tmp/smart_test/Documents/2026/02/another_document.txt",
+      "size": 20,
+      "category": "Documents",
+      "confidence": 0.4666666666666667
+    },
+    {
+      "source": "/tmp/smart_test/test_doc1.txt",
+      "target": "/tmp/smart_test/Documents/2026/02/test_doc1.txt",
+      "size": 20,
+      "category": "Documents",
+      "confidence": 0.4666666666666667
+    }
+  ],
+  "skip_operations": [],
+  "duplicate_handling": [
+    {
+      "duplicate": "/tmp/smart_test/test_image.jpg",
+      "keeper": "/tmp/smart_test/sample_photo.png",
+      "strategy": "keep_newest"
+    }
+  ],
+  "backup_required": 3,
+  "estimated_time": "0.3 seconds",
+  "risk_level": "low",
+  "classification_strategy": {},
+  "generated_at": "2026-02-06T22:46:19.294284",
+  "session_id": "SESSION_20260206_224619"
+}
