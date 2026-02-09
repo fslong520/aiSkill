@@ -9,7 +9,7 @@ import os
 import shutil
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Set
 from dataclasses import dataclass, asdict
 
 from config import get_config
@@ -109,6 +109,136 @@ class FileOrganizer:
             raise PermissionError(error_msg)
         
         self.logger.info(f"目标目录验证通过: {self.target_directory}")
+    
+    def _deduplicate_files(self, file_paths: List[Path]) -> Tuple[List[Path], Dict[str, str]]:
+        """
+        去重文件速平
+        
+        Args:
+            file_paths: 原始文件路径列表
+            
+        Returns:
+            (不重文件路径列表, MD5哈希到路径的映射)
+        """
+        self.logger.info(f"开始去重: 扫描 {len(file_paths)} 个文件")
+        
+        hash_map: Dict[str, str] = {}  # MD5哈希 -> 文件路径
+        duplicate_map: Dict[str, str] = {}  # 重复文件 -> 原例
+        unique_files: List[Path] = []
+        
+        for file_path in file_paths:
+            try:
+                # 计算MD5哈希
+                file_hash = self._calculate_file_hash(file_path)
+                if not file_hash:
+                    unique_files.append(file_path)
+                    continue
+                
+                # 检查是否已存在
+                if file_hash in hash_map:
+                    # 这是一个重复文件
+                    duplicate_map[str(file_path)] = hash_map[file_hash]
+                    self.logger.debug(f"检测到重复: {file_path.name} ← {Path(hash_map[file_hash]).name}")
+                else:
+                    # 新的不重文件
+                    hash_map[file_hash] = str(file_path)
+                    unique_files.append(file_path)
+                    
+            except Exception as e:
+                self.logger.warning(f"去重检查失败 {file_path}: {str(e)}")
+                unique_files.append(file_path)  # 失败会保留文件
+        
+        self.logger.info(f"去重结果: 原始 {len(file_paths)} -> 不重 {len(unique_files)} 个文件、检测到 {len(duplicate_map)} 个重复")
+        return unique_files, duplicate_map
+    
+    def _calculate_file_hash(self, file_path: Path) -> str:
+        """
+        计算文件MD5哈希
+        
+        Args:
+            file_path: 文件路径
+            
+        Returns:
+            MD5哈希字符串
+        """
+        import hashlib
+        try:
+            md5 = hashlib.md5()
+            with open(file_path, 'rb') as f:
+                for chunk in iter(lambda: f.read(8192), b''):
+                    md5.update(chunk)
+            return md5.hexdigest()
+        except Exception as e:
+            self.logger.warning(f"计算哈希失败 {file_path}: {str(e)}")
+            return ""
+    
+    def _group_by_content_relevance(self, analyzed_files: List[Dict]) -> Dict[str, List[Dict]]:
+        """
+        根据内容相关性分组文件
+        
+        Args:
+            analyzed_files: 分析完的文件列表
+            
+        Returns:
+            主题 -> 文件列表的字典
+        """
+        self.logger.info(f"开始按内容相关性分组: {len(analyzed_files)} 个文件")
+        
+        groups: Dict[str, List[Dict]] = {}
+        project_files: List[Dict] = []  # 项目文件专项
+        
+        for file_analysis in analyzed_files:
+            # 优先保护项目文件
+            if file_analysis.get('project_info', {}).get('should_protect'):
+                project_files.append(file_analysis)
+                continue
+            
+            # 根据语义主题分组
+            semantic_theme = file_analysis.get('semantic_theme', 'uncategorized')
+            if semantic_theme not in groups:
+                groups[semantic_theme] = []
+            groups[semantic_theme].append(file_analysis)
+        
+        # 项目文件单独分组
+        if project_files:
+            groups['ProjectFiles'] = project_files
+        
+        self.logger.info(f"分组完成: {len(groups)} 个主题组")
+        for theme, files in groups.items():
+            self.logger.info(f"  {theme}: {len(files)} 个文件")
+        
+        return groups
+    
+    def _calculate_success_metrics(self, original_count: int, unique_count: int, organized_count: int, 
+                                 backup_count: int, protected_count: int = 0) -> Dict[str, any]:
+        """
+        计算成功判定指标
+        
+        Args:
+            original_count: 原始文件数
+            unique_count: 去重后文件数
+            organized_count: 整理后文件数
+            backup_count: 备份文件数
+            protected_count: 受保护的项目文件数
+            
+        Returns:
+            成功指标字典
+        """
+        # 判断成功条件
+        success = (organized_count == unique_count) and (backup_count >= 0)
+        
+        metrics = {
+            'original_count': original_count,
+            'unique_count': unique_count,
+            'organized_count': organized_count,
+            'backup_count': backup_count,
+            'protected_count': protected_count,
+            'duplicates_removed': original_count - unique_count,
+            'success': success,
+            'message': f"整理{'' if success else '不'}'成功: 原始{original_count} → 不重{unique_count} → 整理{organized_count}"
+        }
+        
+        return metrics
     
     def enhanced_analyze_directory(self) -> Dict[str, any]:
         """
@@ -516,7 +646,7 @@ class FileOrganizer:
     
     def _move_file(self, source_path: Path, target_path: Path, 
                    dry_run: bool, action: str = "move"):
-        """移动文件"""
+        """移动文件（适应新的移动-复制备份策略）"""
         try:
             # 确保目标目录存在
             target_path.parent.mkdir(parents=True, exist_ok=True)
@@ -530,34 +660,48 @@ class FileOrganizer:
                 success = True
                 error_msg = None
             else:
-                # 实际移动文件
+                # 实际操作：从备份位置复制文件到目标位置
                 if self.session_id and action == "move":
-                    # 为重要移动操作创建备份记录
-                    backup_record = self.backup_manager.create_backup(
-                        source_path, 
-                        {
-                            'target_path': str(target_path),
-                            'action': action,
-                            'session_id': self.session_id
-                        }
-                    )
+                    # 查找该文件的备份记录
+                    backup_record = self._find_backup_record(str(source_path))
                     if backup_record:
                         backup_path = backup_record.backup_path
                         file_hash = backup_record.file_hash
-                
-                backup_enabled = self.config.get('backup_enabled', True)
-                success = safe_move_file(source_path, target_path, backup_enabled)
-                error_msg = None
-                
+                        
+                        # 从备份位置复制文件到新位置
+                        if Path(backup_path).exists():
+                            shutil.copy2(str(backup_path), str(target_path))
+                            success = True
+                            self.logger.debug(f"从备份复制文件: {backup_path} → {target_path}")
+                        else:
+                            success = False
+                            error_msg = f"备份文件不存在: {backup_path}"
+                            self.logger.error(error_msg)
+                    else:
+                        # 如果找不到备份记录，尝试直接复制原始文件
+                        if source_path.exists():
+                            shutil.copy2(str(source_path), str(target_path))
+                            success = True
+                            self.logger.debug(f"直接复制文件: {source_path} → {target_path}")
+                        else:
+                            success = False
+                            error_msg = f"原始文件和备份都不存在: {source_path}"
+                            self.logger.error(error_msg)
+                else:
+                    # 非整理操作或其他情况
+                    backup_enabled = self.config.get('backup_enabled', True)
+                    success = safe_move_file(source_path, target_path, backup_enabled)
+                    error_msg = None
+                    
                 if success:
                     self.logger.file_processed(action, str(source_path), str(target_path), 
-                                             source_path.stat().st_size)
+                                             Path(backup_path or source_path).stat().st_size)
             
             self._record_operation(
                 source_path=str(source_path),
                 target_path=str(target_path),
                 action=action,
-                file_size=source_path.stat().st_size,
+                file_size=Path(backup_path or source_path).stat().st_size,
                 success=success,
                 session_id=self.session_id,
                 backup_path=backup_path,
@@ -686,12 +830,12 @@ class FileOrganizer:
         return plan
     
     def _execute_smart_plan(self, plan: Dict[str, any], dry_run: bool):
-        """执行智能整理方案"""
+        """执行智能整理方案（适应移动-复制备份策略）"""
         self.logger.info(f"🛡️ 开始执行整理方案，共 {len(plan['move_operations'])} 个移动操作")
         
-        # 为所有需要移动的文件创建备份
+        # 阶段1：为所有需要移动的文件创建备份（移动原始文件到备份位置）
         if not dry_run:
-            self.logger.info(f"🔒 开始为 {len(plan['move_operations'])} 个文件创建备份")
+            self.logger.info(f"🔒 阶段1：移动原始文件到备份位置，共 {len(plan['move_operations'])} 个文件")
             backup_count = 0
             for operation in plan['move_operations']:
                 source_path = Path(operation['source'])
@@ -708,21 +852,26 @@ class FileOrganizer:
                     if backup_record:
                         backup_count += 1
                         if backup_count <= 10:  # 只显示前10个备份信息
-                            self.logger.debug(f"创建备份: {source_path.name} → {Path(backup_record.backup_path).name}")
-            self.logger.info(f"✅ 已为 {backup_count} 个文件创建备份")
+                            self.logger.debug(f"移动到备份: {source_path.name} → {Path(backup_record.backup_path).name}")
+            self.logger.info(f"✅ 阶段1完成：已移动 {backup_count} 个文件到备份位置")
         
-        self.logger.info(f"🔒 已为 {plan['backup_required']} 个文件创建备份")
+        self.logger.info(f"🔒 阶段1完成：已为 {plan['backup_required']} 个文件创建移动备份")
         
-        # 执行移动操作
+        # 阶段2：从备份位置复制文件到新的目标位置
+        self.logger.info(f"🔄 阶段2：从备份复制文件到目标位置")
+        copied_count = 0
         for operation in plan['move_operations']:
             source_path = Path(operation['source'])
             target_path = Path(operation['target'])
             
             if dry_run:
-                self.logger.info(f"[试运行] 🔄 移动: {source_path} → {target_path}")
+                self.logger.info(f"[试运行] 🔄 复制: {source_path} → {target_path}")
                 self.statistics.moved_files += 1
             else:
                 self._move_file(source_path, target_path, dry_run=False, action="move")
+                copied_count += 1
+        
+        self.logger.info(f"✅ 阶段2完成：已复制 {copied_count} 个文件到目标位置")
         
         # 处理重复文件
         for dup_info in plan['duplicate_handling']:
@@ -850,6 +999,20 @@ class FileOrganizer:
             }
             for s in sessions
         ]
+    
+    def _find_backup_record(self, source_path: str) -> Optional[BackupRecord]:
+        """查找指定源文件的备份记录"""
+        if not self.session_id:
+            return None
+            
+        session = self.backup_manager.get_session(self.session_id)
+        if not session:
+            return None
+            
+        for record in session.backup_records:
+            if record.source_path == source_path:
+                return record
+        return None
     
     def get_session_info(self, session_id: str) -> Optional[Dict[str, any]]:
         """获取会话详细信息"""

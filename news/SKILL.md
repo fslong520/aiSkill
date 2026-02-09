@@ -1,7 +1,23 @@
 ---
-name: news
-version: "2.0.0"
-description: "Enhanced news aggregator with async fetching, smart caching, and subscription support. Fetches real-time content from 10+ sources including Hacker News, GitHub Trending, Product Hunt, 36Kr, Tencent News, and more. Use for daily tech briefings, AI/LLM tracking, global hot topics, or deep content analysis."
+name: news-aggregator
+
+description: |
+  增强型新闻聚合器，支持异步获取、智能缓存和订阅功能。从10多个来源实时获取内容，
+  包括 Hacker News、GitHub Trending、Product Hunt、36Kr、腾讯新闻等。
+  通过关键词智能扩展和深度内容分析，提供精准的新闻筛选和分类。
+  支持多种输出格式（JSON/Markdown/HTML），具备健康监控和定时任务功能。
+  适用于每日科技简报、AI/LLM追踪、全球热点话题监控、深度内容分析等场景。
+  内置智能缓存机制和订阅管理系统，提升获取效率和用户体验。
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
+
+metadata:
+  trigger: 新闻聚合、热点追踪、科技资讯、内容分析、定时推送
+  source: 基于异步网络爬虫技术，整合多源新闻API和智能分析算法
 ---
 
 # News Aggregator

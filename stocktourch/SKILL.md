@@ -1,7 +1,24 @@
 ---
-name: stockTourch
-version: "1.0.0"
-description: "Enhanced stock research skill with real-time market data, technical analysis, financial analysis, industry classification, and market overview report. Fetches A-share data from baostock, calculates various technical indicators, provides quantified scoring model, crawls mainstream financial media for market analysis, and offers investment recommendations. Use for stock analysis, market trend tracking, financial evaluation, market overview analysis, or investment decision support."
+name: stock-research
+
+description: |
+  增强型股票研究技能，提供实时行情、技术分析、财务分析、行业分类和大盘分析功能。
+  从baostock获取A股实时数据，计算MA、RSI、MACD、KDJ等技术指标，
+  提供多维度量化评分模型和投资建议。支持基本面分析、财务数据评估、
+  行业分类查询和指数成分股分析。通过爬取主流财经媒体获取市场分析和投资建议，
+  提供综合性的投资决策支持。适用于个股分析、市场趋势跟踪、财务评估、
+  大盘走势分析和投资策略制定等场景。支持多种输出格式和缓存机制，
+  确保数据的实时性和分析的准确性。
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
+
+metadata:
+  trigger: 股票分析、技术指标、财务评估、行业分类、投资建议、大盘分析
+  source: 基于baostock数据接口和财经网络爬虫技术，整合量化分析模型
 ---
 
 # Stock Research
