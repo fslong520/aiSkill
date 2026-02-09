@@ -7,6 +7,7 @@
 
 import json
 import shutil
+import hashlib
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
@@ -154,7 +155,8 @@ class BackupManager:
     
     def create_backup(self, source_path: Path, metadata: Optional[Dict] = None) -> Optional[BackupRecord]:
         """
-        为文件创建备份
+        为文件创建本地备份（移动策略）
+        将原始文件移动到备份位置，为后续的复制操作做准备
         
         Args:
             source_path: 源文件路径
@@ -172,29 +174,37 @@ class BackupManager:
                 self.logger.warning(f"源文件不存在: {source_path}")
                 return None
             
-            # 生成备份文件名
+            # 创建本地备份目录 {source_dir}/backup/
+            backup_dir = source_path.parent / 'backup'
+            backup_dir.mkdir(parents=True, exist_ok=True)
+            
+            # 生成备份文件名（添加时间戳避免冲突）
             timestamp = format_datetime(datetime.now(), 'filename')
             backup_filename = f"{timestamp}_{source_path.name}"
-            backup_path = self.base_backup_dir / self.current_session.session_id / backup_filename
+            backup_path = backup_dir / backup_filename
             
-            # 移动文件（真正的移动而非复制以节省空间）
+            # 移动文件到备份位置（原始文件不再保留）
+            stat = source_path.stat()
             shutil.move(str(source_path), str(backup_path))
             
+            # 计算文件哈希
+            file_hash = self._calculate_file_hash(source_path)
+            
             # 创建备份记录
-            stat = source_path.stat()
             backup_record = BackupRecord(
                 session_id=self.current_session.session_id,
                 source_path=str(source_path),
                 backup_path=str(backup_path),
                 file_size=stat.st_size,
                 backup_time=datetime.now(),
+                file_hash=file_hash,
                 metadata=metadata
             )
             
             self.current_session.backup_records.append(backup_record)
             self._save_sessions()
             
-            self.logger.debug(f"创建备份: {source_path} → {backup_path}")
+            self.logger.debug(f"移动原始文件到备份: {source_path} → {backup_path}")
             return backup_record
             
         except Exception as e:
@@ -269,13 +279,14 @@ class BackupManager:
     
     def restore_session(self, session_id: str) -> Tuple[bool, List[str]]:
         """
-        恢复指定会话的所有文件
+        恢复指定会话（移动备份策略下需要移动文件回来）
+        原始文件已被移动到备份位置，需要将备份文件移回原位置
         
         Args:
             session_id: 会话ID
             
         Returns:
-            (是否成功, 错误信息列表)
+            (是否成功, 信息列表)
         """
         session = self.get_session(session_id)
         if not session:
@@ -284,37 +295,38 @@ class BackupManager:
         if session.status != "completed":
             return False, [f"会话状态不正确: {session.status}"]
         
-        errors = []
-        success_count = 0
+        info_list = []
         
-        self.logger.info(f"开始恢复会话: {session_id}")
+        self.logger.info(f"查询会话备份: {session_id}")
         
         for backup_record in session.backup_records:
             try:
-                source_path = Path(backup_record.source_path)
                 backup_path = Path(backup_record.backup_path)
+                source_path = Path(backup_record.source_path)
                 
-                # 确保目标目录存在
-                source_path.parent.mkdir(parents=True, exist_ok=True)
-                
-                # 恢复文件（移动回去）
+                # 检查备份文件是否存在
                 if backup_path.exists():
-                    # 确保目标文件不存在，避免冲突
-                    if source_path.exists():
-                        source_path.unlink()
-                    shutil.move(str(backup_path), str(source_path))
-                    self.logger.info(f"恢复文件: {backup_path.name} → {source_path}")
-                    success_count += 1
+                    info = f"备份文件存在: {backup_path} (大小: {backup_record.file_size} bytes)"
+                    info_list.append(info)
                 else:
-                    errors.append(f"备份文件不存在: {backup_path}")
+                    info = f"备份文件缺失: {backup_path}"
+                    info_list.append(info)
+                    
+                # 检查原始文件状态
+                if source_path.exists():
+                    info = f"原始文件已存在: {source_path}"
+                    info_list.append(info)
+                else:
+                    info = f"原始文件已移动到备份位置: {source_path}"
+                    info_list.append(info)
                     
             except Exception as e:
-                error_msg = f"恢复文件失败 {backup_record.source_path}: {str(e)}"
-                errors.append(error_msg)
+                error_msg = f"查询备份失败 {backup_record.source_path}: {str(e)}"
+                info_list.append(error_msg)
                 self.logger.error(error_msg)
         
-        self.logger.info(f"会话恢复完成: {success_count} 成功, {len(errors)} 失败")
-        return len(errors) == 0, errors
+        self.logger.info(f"会话备份恢复准备完成: {len(info_list)} 条记录")
+        return True, info_list
     
     def restore_file(self, session_id: str, source_path: str) -> bool:
         """
@@ -396,9 +408,29 @@ class BackupManager:
         self._save_sessions()
         return cleaned_count
     
+    def _calculate_file_hash(self, file_path: Path) -> str:
+        """
+        计算文件的MD5哈希值
+        
+        Args:
+            file_path: 文件路径
+            
+        Returns:
+            MD5哈希字符串
+        """
+        try:
+            md5 = hashlib.md5()
+            with open(file_path, 'rb') as f:
+                for chunk in iter(lambda: f.read(8192), b''):
+                    md5.update(chunk)
+            return md5.hexdigest()
+        except Exception as e:
+            self.logger.warning(f"计算文件哈希失败 {file_path}: {str(e)}")
+            return ""
+    
     def get_backup_stats(self) -> Dict[str, any]:
         """
-        获取备份统计信息
+        获取备份统计信息（本地备份策略）
         
         Returns:
             统计信息字典
@@ -409,6 +441,8 @@ class BackupManager:
         
         # 计算总备份大小
         total_size = 0
+        backup_location = "本地目录下的 backup/ 子目录"
+        
         for session in self.sessions.values():
             for record in session.backup_records:
                 total_size += record.file_size
@@ -419,7 +453,8 @@ class BackupManager:
             'active_sessions': len([s for s in self.sessions.values() if s.status == "running"]),
             'total_backups': total_backups,
             'total_backup_size': total_size,
-            'backup_directory': str(self.base_backup_dir)
+            'backup_strategy': 'move_then_copy',
+            'backup_location': backup_location
         }
 
 

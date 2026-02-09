@@ -7,6 +7,7 @@
 
 import re
 import json
+import hashlib
 from pathlib import Path
 from typing import Dict, List, Set, Optional, Tuple
 from datetime import datetime
@@ -23,6 +24,22 @@ class FileAnalyzer:
         self.logger = get_logger()
         self.config = get_config()
         self.content_keywords = self._load_content_keywords()
+        # 项目工程标记
+        self.project_markers = {
+            '.git': 'git',
+            '.idea': 'idea',
+            '.vscode': 'vscode',
+            'node_modules': 'nodejs',
+            '.gradle': 'gradle',
+            '.mvn': 'maven',
+            'venv': 'python',
+            '__pycache__': 'python',
+            'package.json': 'nodejs',
+            'pom.xml': 'maven',
+            'build.gradle': 'gradle',
+            'Makefile': 'make',
+            'CMakeLists.txt': 'cmake'
+        }
     
     def _load_content_keywords(self) -> Dict[str, List[str]]:
         """加载内容关键词库"""
@@ -67,6 +84,9 @@ class FileAnalyzer:
             # 获取基本信息
             file_info = get_file_info(file_path)
             
+            # 计算MD5哈希值
+            file_hash = self._calculate_file_hash(file_path)
+            
             # 分析文件类型
             file_type = self._analyze_file_type(file_path, file_info)
             
@@ -79,19 +99,29 @@ class FileAnalyzer:
             # 分析命名特征
             naming_features = self._analyze_naming_features(file_path)
             
+            # 检测项目工程文件
+            project_info = self._detect_project_structure(file_path)
+            
+            # 分析内容关联性
+            content_relevance = self._analyze_content_relevance(content_features, naming_features)
+            
             # 综合分析结果
             analysis_result = {
                 'file_info': file_info,
+                'file_hash': file_hash,
                 'file_type': file_type,
                 'content_features': content_features,
                 'time_features': time_features,
                 'naming_features': naming_features,
+                'project_info': project_info,
+                'content_relevance': content_relevance,
                 'confidence_score': self._calculate_confidence_score(
-                    file_type, content_features, naming_features
+                    file_type, content_features, naming_features, project_info
                 ),
                 'suggested_category': self._suggest_category(
-                    file_type, content_features, naming_features
+                    file_type, content_features, naming_features, project_info
                 ),
+                'semantic_theme': content_relevance.get('semantic_theme', 'uncategorized'),
                 'tags': self._extract_tags(file_path, file_info, content_features)
             }
             
@@ -119,6 +149,136 @@ class FileAnalyzer:
             'is_binary': is_binary_file(file_path),
             'size_category': self._categorize_file_size(file_info['size'])
         }
+    
+    def _calculate_file_hash(self, file_path: Path) -> str:
+        """
+        计算文件的MD5哈希值用于去重
+        
+        Args:
+            file_path: 文件路径
+            
+        Returns:
+            MD5哈希字符串
+        """
+        try:
+            md5 = hashlib.md5()
+            with open(file_path, 'rb') as f:
+                for chunk in iter(lambda: f.read(8192), b''):
+                    md5.update(chunk)
+            return md5.hexdigest()
+        except Exception as e:
+            self.logger.debug(f"计算文件哈希失败 {file_path}: {str(e)}")
+            return ""
+    
+    def _detect_project_structure(self, file_path: Path) -> Dict[str, any]:
+        """
+        检测文件是否属于项目工程结构
+        
+        Args:
+            file_path: 文件路径
+            
+        Returns:
+            项目信息字典
+        """
+        project_info = {
+            'is_project_file': False,
+            'project_type': None,
+            'project_markers': [],
+            'should_protect': False
+        }
+        
+        try:
+            # 检查文件名是否匹配项目标记
+            if file_path.name in self.project_markers:
+                project_info['is_project_file'] = True
+                project_info['project_type'] = self.project_markers[file_path.name]
+                project_info['project_markers'].append(file_path.name)
+                project_info['should_protect'] = True
+                return project_info
+            
+            # 检查文件所在目录是否有项目标记
+            for part in file_path.parts:
+                if part in self.project_markers:
+                    project_info['is_project_file'] = True
+                    project_info['project_type'] = self.project_markers[part]
+                    project_info['project_markers'].append(part)
+                    project_info['should_protect'] = True
+            
+            # 检查父目录中的项目标记
+            current_dir = file_path.parent
+            for _ in range(3):  # 向上查找3层
+                if current_dir.exists():
+                    for marker, marker_type in self.project_markers.items():
+                        if (current_dir / marker).exists():
+                            project_info['is_project_file'] = True
+                            project_info['project_type'] = marker_type
+                            project_info['project_markers'].append(marker)
+                            project_info['should_protect'] = True
+                    current_dir = current_dir.parent
+                else:
+                    break
+                    
+        except Exception as e:
+            self.logger.debug(f"检测项目结构失败 {file_path}: {str(e)}")
+        
+        return project_info
+    
+    def _analyze_content_relevance(self, content_features: Dict, naming_features: Dict) -> Dict[str, any]:
+        """
+        分析文件的内容关联性和语义主题
+        
+        Args:
+            content_features: 内容特征
+            naming_features: 命名特征
+            
+        Returns:
+            关联性分析字典
+        """
+        relevance = {
+            'semantic_theme': 'uncategorized',
+            'keywords': [],
+            'related_categories': [],
+            'relevance_score': 0.0
+        }
+        
+        try:
+            # 从检测到的关键词确定语义主题
+            keywords = content_features.get('detected_keywords', [])
+            if keywords:
+                relevance['keywords'] = keywords
+                
+                # 根据关键词确定主题
+                theme_mapping = {
+                    'document': '文档',
+                    'image': '图像',
+                    'video': '视频',
+                    'audio': '音频',
+                    'archive': '归档',
+                    'code': '代码'
+                }
+                
+                for keyword in keywords:
+                    for category_key, theme_name in theme_mapping.items():
+                        if keyword.lower() in self.content_keywords.get(category_key, []):
+                            relevance['semantic_theme'] = theme_name
+                            relevance['related_categories'].append(category_key)
+            
+            # 从命名特征补充信息
+            if naming_features.get('has_project'):
+                relevance['related_categories'].append('project')
+            if naming_features.get('has_date'):
+                relevance['related_categories'].append('time_based')
+            if naming_features.get('has_version'):
+                relevance['related_categories'].append('versioned')
+            
+            # 计算关联性得分
+            relevance['relevance_score'] = min(len(relevance['keywords']) * 0.3 + 
+                                              len(relevance['related_categories']) * 0.2, 1.0)
+            
+        except Exception as e:
+            self.logger.debug(f"分析内容关联性失败: {str(e)}")
+        
+        return relevance
     
     def _categorize_file_size(self, size: int) -> str:
         """根据文件大小分类"""
@@ -374,17 +534,17 @@ class FileAnalyzer:
         return 'unknown'
     
     def _calculate_confidence_score(self, file_type: Dict, content_features: Dict, 
-                                  naming_features: Dict) -> float:
+                                  naming_features: Dict, project_info: Dict = None) -> float:
         """计算分类置信度得分"""
         score = 0.0
         
         # 文件类型置信度（最高权重）
         if file_type['category'] != 'others':
-            score += 0.4
+            score += 0.35
         
         # 内容特征置信度
         if content_features['detected_keywords']:
-            score += 0.3
+            score += 0.25
         
         # 命名特征置信度
         naming_indicators = [
@@ -394,22 +554,30 @@ class FileAnalyzer:
         ]
         score += 0.2 * sum(naming_indicators) / len(naming_indicators) if naming_indicators else 0
         
-        # 时间特征影响
-        if naming_features['has_date']:
-            score += 0.1
+        # 项目保护提升得分
+        if project_info and project_info.get('should_protect'):
+            score += 0.15
+        else:
+            # 时间特征影响
+            if naming_features['has_date']:
+                score += 0.05
             
         return min(score, 1.0)  # 确保不超过1.0
     
     def _suggest_category(self, file_type: Dict, content_features: Dict, 
-                         naming_features: Dict) -> str:
+                         naming_features: Dict, project_info: Dict = None) -> str:
         """建议文件分类"""
+        # 如果是项目文件，返回项目标记
+        if project_info and project_info.get('is_project_file'):
+            project_type = project_info.get('project_type', 'unknown')
+            return f'ProjectFiles_{project_type}'
+        
         # 优先使用配置定义的分类
         if file_type['category'] != 'others':
             return file_type['target_folder']
         
         # 基于内容关键词建议
         if content_features['detected_keywords']:
-            # 简单的关键词到分类映射
             keyword_mapping = {
                 'document': 'Documents',
                 'image': 'Images', 
@@ -423,6 +591,14 @@ class FileAnalyzer:
                 for category_key, folder_name in keyword_mapping.items():
                     if keyword.lower() in self.content_keywords.get(category_key, []):
                         return folder_name
+        
+        # 基于命名特征分类
+        if naming_features['has_date']:
+            return 'Time_Organized'
+        if naming_features['has_version']:
+            return 'Versioned_Files'
+        if naming_features['has_project']:
+            return 'Project_Files'
         
         # 基于文件大小分类
         size_categories = {
@@ -477,12 +653,16 @@ class FileAnalyzer:
                 'path': str(file_path),
                 'error': error_message
             },
+            'file_hash': '',
             'file_type': {'category': 'error', 'target_folder': 'Errors'},
             'content_features': {},
             'time_features': {},
             'naming_features': {},
+            'project_info': {'is_project_file': False, 'should_protect': False},
+            'content_relevance': {'semantic_theme': 'error'},
             'confidence_score': 0.0,
             'suggested_category': 'Errors',
+            'semantic_theme': 'error',
             'tags': ['error']
         }
     

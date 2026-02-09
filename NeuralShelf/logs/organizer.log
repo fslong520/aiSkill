@@ -1,0 +1,10 @@
+2026-02-09 15:49:29 - file_organizer - [32mINFO[0m - info:126 - 开始备份会话: SESSION_20260209_154929
+2026-02-09 15:49:29 - file_organizer - [33mWARNING[0m - warning:130 - 计算文件哈希失败 /tmp/tmp3doh5fg5/document1.txt: [Errno 2] No such file or directory: '/tmp/tmp3doh5fg5/document1.txt'
+2026-02-09 15:49:29 - file_organizer - DEBUG - debug:122 - 移动原始文件到备份: /tmp/tmp3doh5fg5/document1.txt → /tmp/tmp3doh5fg5/backup/20260209_154929_document1.txt
+2026-02-09 15:49:29 - file_organizer - [33mWARNING[0m - warning:130 - 计算文件哈希失败 /tmp/tmp3doh5fg5/document2.txt: [Errno 2] No such file or directory: '/tmp/tmp3doh5fg5/document2.txt'
+2026-02-09 15:49:29 - file_organizer - DEBUG - debug:122 - 移动原始文件到备份: /tmp/tmp3doh5fg5/document2.txt → /tmp/tmp3doh5fg5/backup/20260209_154929_document2.txt
+2026-02-09 15:49:29 - file_organizer - [33mWARNING[0m - warning:130 - 计算文件哈希失败 /tmp/tmp3doh5fg5/image1.jpg: [Errno 2] No such file or directory: '/tmp/tmp3doh5fg5/image1.jpg'
+2026-02-09 15:49:29 - file_organizer - DEBUG - debug:122 - 移动原始文件到备份: /tmp/tmp3doh5fg5/image1.jpg → /tmp/tmp3doh5fg5/backup/20260209_154929_image1.jpg
+2026-02-09 15:49:29 - file_organizer - [33mWARNING[0m - warning:130 - 计算文件哈希失败 /tmp/tmp3doh5fg5/image2.jpg: [Errno 2] No such file or directory: '/tmp/tmp3doh5fg5/image2.jpg'
+2026-02-09 15:49:29 - file_organizer - DEBUG - debug:122 - 移动原始文件到备份: /tmp/tmp3doh5fg5/image2.jpg → /tmp/tmp3doh5fg5/backup/20260209_154929_image2.jpg
+2026-02-09 15:49:29 - file_organizer - [32mINFO[0m - info:126 - 目标目录验证通过: /tmp/tmp3doh5fg5

@@ -1,6 +1,23 @@
 ---
-name: Humanizer
-description: 专门识别和去除AI生成文本的痕迹，使文字听起来更自然、更有人味，只要生成内容的时候都自动触发，保证回答的内容跟人类说话一样。
+name: humanizer
+
+description: |
+  去除文本中的 AI 生成痕迹。适用于编辑或审阅文本，使其听起来更自然、更像人类书写。
+  基于维基百科的"AI 写作特征"综合指南。检测并修复以下模式：夸大的象征意义、
+  宣传性语言、以 -ing 结尾的肤浅分析、模糊的归因、破折号过度使用、三段式法则、
+  AI 词汇、否定式排比、过多的连接性短语。新增内容包括：其他迹象（结构组织、时间线混乱、
+  矛盾陈述）、人类写作迹象（具体细节、不完美结构、文化引用）、历史指标（已过时指标）、
+  模型特定特征（ChatGPT/Claude/DeepSeek/Gemini）和交叉验证建议。
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
+
+metadata:
+  trigger: 编辑或审阅文本，去除 AI 写作痕迹
+  source: 翻译自 blader/humanizer，参考 hardikpandya/stop-slop，整合 Wikipedia LLM Detection Guide 第5-7节
 ---
 
 # Humanizer-zh: 去除 AI 写作痕迹

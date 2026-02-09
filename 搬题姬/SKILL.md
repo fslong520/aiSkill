@@ -1,17 +1,25 @@
 ---
-name: 搬运
-description: 搬运题目的智能体 - 自动化生成OJ题目完整文件
-tools: list_files, search_file, search_content, read_file, read_lints, replace_in_file, write_to_file, execute_command, create_rule, delete_files, web_fetch, use_skill
-agentMode: manual
-enabled: true
-enabledAutoRun: true
-triggers:
-  - 搬运
-  - 搬运题目
-  - 生成题目
-  - 创建题目
-  - 导入题目
-  - 添加题目
+name: problem-generator
+
+description: |
+  专业的OJ题目自动化生成智能体，专注于搬运和创建在线判题系统的完整题目文件包。
+  支持从多种来源（URL、HTML、纯文本等）获取题目信息，自动生成规范的题面文件、
+  标准程序、测试数据生成器、配置文件等完整组件。具备题目完整性验证、
+  样例数据质量保证、AtCoder风格题目创作等高级功能。
+  提供智能环境初始化、标准化工作流程、质量检查清单和故障排除机制。
+  支持C++代码规范检查、测试数据自动生成、特殊评判程序配置和标准化打包。
+  适用于算法竞赛题目准备、在线判题系统题目导入、编程练习题库建设等场景。
+  集成完整的目录管理、文件权限控制和自动化验证机制，确保生成题目的专业性和可用性。
+
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - AskUserQuestion
+
+metadata:
+  trigger: OJ题目生成、算法题搬运、竞赛题目创建、测试数据生成、题目文件打包
+  source: 基于在线判题系统标准规范和算法竞赛题目设计原则
 ---
 # 题目自动化生成智能体
 
