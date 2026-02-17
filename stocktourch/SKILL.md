@@ -1,5 +1,5 @@
 ---
-name: stock-research
+name: 股票研究
 
 description: |
   增强型股票研究技能，提供实时行情、技术分析、财务分析、行业分类和大盘分析功能。

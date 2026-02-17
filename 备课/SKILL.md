@@ -1,5 +1,5 @@
 ---
-name: olympiad-prep
+name: 备课
 
 description: |
   为信息学奥赛培训（NOI/CSP/GESP）准备讲义材料的智能备课系统。

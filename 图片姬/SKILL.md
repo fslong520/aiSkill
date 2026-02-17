@@ -1,5 +1,5 @@
 ---
-name: image-prompt-generator
+name: 图片姬
 
 description: |
   专业的插图prompt生成和优化技能，支持多种艺术风格参数定制和智能画风推荐。

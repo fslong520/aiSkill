@@ -1,5 +1,5 @@
 ---
-name: self-exploration
+name: 自我探索
 
 description: |
   生动有趣的自我探索梳理技能，通过对话式问答引导用户深度探索自我。

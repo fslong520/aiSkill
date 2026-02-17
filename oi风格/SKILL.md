@@ -1,5 +1,5 @@
 ---
-name: oi-code-converter
+name: OI风格
 
 description: |
   自动检测文档中的C++代码并将其转换为信息学奥林匹克竞赛风格的代码格式。

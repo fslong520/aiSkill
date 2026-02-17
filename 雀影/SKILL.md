@@ -1,5 +1,5 @@
 ---
-name: queying
+name: 雀影
 description: |
   雀影 - 你的AI视频创意伙伴，通过交互式引导帮你完善视频创意！
   

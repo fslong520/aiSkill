@@ -1,5 +1,5 @@
 ---
-name: neural-shelf
+name: 神经货架
 
 description: |
   基于神经网络的智能文件整理系统，具备四阶段AI整理流程、神经感知分析、智能决策分类、
