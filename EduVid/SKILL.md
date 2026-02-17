@@ -1,5 +1,5 @@
 ---
-name: eduvideogen
+name: 教育视频生成
 description: EduVid - AI驱动的教学视频生成器，基于Manim实现自然语言到教学动画的一键转换。支持数学、物理、化学、编程等学科的动态可视化内容生成。
 ---
 

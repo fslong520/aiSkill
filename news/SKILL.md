@@ -1,5 +1,5 @@
 ---
-name: news-aggregator
+name: 新闻聚合
 
 description: |
   增强型新闻聚合器，支持异步获取、智能缓存和订阅功能。从10多个来源实时获取内容，
