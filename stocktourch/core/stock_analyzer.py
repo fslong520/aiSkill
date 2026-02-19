@@ -813,7 +813,7 @@ class StockAnalyzer:
         report.append(f"【股票信息】")
         report.append(f"股票代码: {stock_info['code']:<15} 股票名称: {stock_info['name']}")
         report.append(f"当前价格: {stock_info['price']:<15} 涨跌幅: {stock_info['change']}%")
-        report.append(f"涨跌金额: {stock_info['change_amount']:<15} 成交量: {stock_info['volume']:,.0f}")
+        report.append(f"涨跌金额：{stock_info['change_amount']:<15} 成交量：{stock_info['volume'] / 10000:,.2f}万股")
         report.append(f"成交金额: {stock_info['amount']:,.0f}   昨日收盘: {stock_info['close_yesterday']}")
         report.append("")
         

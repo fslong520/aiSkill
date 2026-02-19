@@ -192,44 +192,7 @@ def execute_skill(args, analyzer=None, output_format='text'):
                 if result:
                     # 生成基本技术分析报告
                     formatted_output = formatter.format_comprehensive_report(result, output_format)
-                    print(formatted_output)
-                    
-                    # 调用AI的内置网络搜索功能来获取相关信息
-                    print("\n正在搜索相关网络信息...")
-                    print("网络信息将包括公司公告、行业动态、分析师观点等...")
-                    
-                    # 提示用户AI将执行网络搜索
-                    print("\nAI将自动执行以下步骤：")
-                    print("1. 获取技术数据（基本信息、技术指标、基本面数据、行业分类等）")
-                    print("2. 搜索相关网络信息（公司公告、行业动态、分析师观点等）")
-                    print("3. 生成综合投资分析报告")
-                    
-                    # 执行AI网络搜索 - 这里使用AI内置搜索功能获取与股票相关的网络信息
-                    try:
-                        # 构建搜索查询
-                        stock_name = result['stock_info']['name'] if result['stock_info'] else symbol
-                        search_queries = [
-                            f"{stock_name} {symbol} 公司公告 最新消息",
-                            f"{stock_name} {symbol} 行业动态 发展趋势",
-                            f"{stock_name} {symbol} 分析师评级 投资建议",
-                            f"{stock_name} {symbol} 新闻报道 市场表现",
-                            f"{stock_name} {symbol} 机构调研 持仓变化"
-                        ]
-                        
-                        print(f"\n开始搜索关于 {stock_name}({symbol}) 的相关信息...")
-                        
-                        # 注意：这里的搜索功能将在AI层面上执行，由AI系统内置的搜索功能完成
-                        # 我们在此处提供指导，AI系统将根据这些指令执行搜索
-                        for i, query in enumerate(search_queries, 1):
-                            print(f"正在准备搜索查询 {i}: {query}")
-                        
-                        print("\nAI已收到搜索指令，将立即执行网络搜索以获取相关股票信息")
-                        print("搜索完成后，AI将结合技术数据和网络信息生成综合分析报告")
-                        
-                    except Exception as e:
-                        print(f"准备网络搜索时出现提示信息: {e}")
-                        print("请注意，实际的网络搜索将由AI系统内置功能完成")
-                    
+                    print(formatted_output)                    
                 else:
                     print(f"无法对股票 {symbol} 进行综合分析")
             else:
