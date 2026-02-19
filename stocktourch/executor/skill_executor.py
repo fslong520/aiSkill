@@ -5,10 +5,10 @@
 import sys
 import os
 import argparse
-from stock_analyzer import StockAnalyzer
-from output_formatter import get_default_formatter
-from financial_analyzer import get_default_financial_analyzer
-from ai_market_analyzer import AIMarketAnalyzer
+from core.stock_analyzer import StockAnalyzer
+from utils.output_formatter import get_default_formatter
+from core.financial_analyzer import get_default_financial_analyzer
+from core.ai_market_analyzer import AIMarketAnalyzer
 
 def execute_skill(args, analyzer=None, output_format='text'):
     """

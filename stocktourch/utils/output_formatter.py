@@ -7,7 +7,7 @@
 
 import json
 import pandas as pd
-from utils import format_number, format_large_number
+from . import format_number, format_large_number
 
 
 class OutputFormatter:

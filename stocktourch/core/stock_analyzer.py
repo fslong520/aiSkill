@@ -15,10 +15,10 @@ import time
 from pathlib import Path
 
 # 导入自定义模块
-from cache_manager import get_default_cache_manager
+from utils.cache_manager import get_default_cache_manager
 from utils import *
-from config import get_default_config
-from financial_analyzer import get_default_financial_analyzer
+from utils.config import get_default_config
+from core.financial_analyzer import get_default_financial_analyzer
 
 warnings.filterwarnings('ignore')
 
@@ -35,7 +35,7 @@ class StockAnalyzer:
         self.cache_manager = get_default_cache_manager()
         # 如果需要特定配置，可以创建新的CacheManager实例
         if cache_enabled != self.cache_manager.cache_enabled or cache_ttl_hours != self.cache_manager.cache_ttl_hours:
-            from cache_manager import CacheManager
+            from utils.cache_manager import CacheManager
             self.cache_manager = CacheManager(cache_enabled, cache_ttl_hours)
         
         # 获取配置
