@@ -129,21 +129,27 @@ class StockAnalyzer:
             if len(data_list) > 0:
                 # 获取最新数据
                 latest_data = data_list[-1]
+                # 计算昨日收盘价：当前价格 / (1 + 涨跌幅)
+                close_price = float(latest_data[5]) if latest_data[5] != '' else 0
+                pct_change = float(latest_data[11]) if latest_data[11] != '' else 0
+                close_yesterday = close_price / (1 + pct_change / 100) if pct_change != 0 else close_price
+                
                 result = {
                     'code': latest_data[1],  # code
                     'name': self.get_stock_name(code),  # 获取股票名称
-                    'price': float(latest_data[5]) if latest_data[5] != '' else 0,  # close
-                    'change': float(latest_data[11]) if latest_data[11] != '' else 0,  # pctChg
-                    'change_amount': float(latest_data[5]) - float(latest_data[2]) if latest_data[5] != '' and latest_data[2] != '' else 0,  # close - open
+                    'price': close_price,  # close
+                    'change': pct_change,  # pctChg
+                    'change_amount': close_price - close_yesterday,  # 当前价 - 昨收价
                     'volume': int(float(latest_data[6])) if latest_data[6] != '' else 0,  # volume
-                    'amount': float(latest_data[7]) if latest_data[7] != '' else 0,  # amount
+                    'amount': float(latest_data[7]) / 100000000 if latest_data[7] != '' else 0,  # amount (转换为亿元)
                     'high': float(latest_data[3]) if latest_data[3] != '' else 0,  # high
                     'low': float(latest_data[4]) if latest_data[4] != '' else 0,  # low
                     'open': float(latest_data[2]) if latest_data[2] != '' else 0,  # open
-                    'close_yesterday': float(latest_data[5]) - float(latest_data[11])/100*float(latest_data[5])/(1+float(latest_data[11])/100) if latest_data[5] != '' and latest_data[11] != '' else 0,
+                    'close_yesterday': close_yesterday,
                     'turnover_rate': float(latest_data[9]) if latest_data[9] != '' else 0,  # turn
                     'pe': float(latest_data[12]) if latest_data[12] != '' else 0,  # peTTM
                     'pb': float(latest_data[13]) if latest_data[13] != '' else 0,  # pbMRQ
+                    'ps': float(latest_data[14]) if latest_data[14] != '' else 0,  # psTTM
                 }
                 
                 # 缓存数据
@@ -811,10 +817,11 @@ class StockAnalyzer:
         
         # 基本信息
         report.append(f"【股票信息】")
-        report.append(f"股票代码: {stock_info['code']:<15} 股票名称: {stock_info['name']}")
-        report.append(f"当前价格: {stock_info['price']:<15} 涨跌幅: {stock_info['change']}%")
+        report.append(f"股票代码：{stock_info['code']:<15} 股票名称：{stock_info['name']}")
+        report.append(f"当前价格：{stock_info['price']:<15} 涨跌幅：{stock_info['change']}%")
         report.append(f"涨跌金额：{stock_info['change_amount']:<15} 成交量：{stock_info['volume'] / 10000:,.2f}万股")
-        report.append(f"成交金额: {stock_info['amount']:,.0f}   昨日收盘: {stock_info['close_yesterday']}")
+        report.append(f"成交金额：{stock_info['amount']:,.2f}亿元   昨日收盘：{stock_info['close_yesterday']:.2f}元")
+        report.append(f"市盈率 (PE): {stock_info.get('pe', 0):<14} 市净率 (PB): {stock_info.get('pb', 0):.2f}  市销率 (PS): {stock_info.get('ps', 0):.2f}")
         report.append("")
         
         # 技术分析
