@@ -1,141 +1,192 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-财报内容提取器
-从PDF财报中提取文本内容，供AI分析
-"""
-
 import os
 import re
+from PyPDF2 import PdfReader
+import tempfile
 
 
-def extract_text_from_pdf(pdf_path: str, max_pages: int = 50) -> str:
+def convert_pdf_to_txt(pdf_path: str):
     """
-    从PDF文件中提取文本内容
+    将 PDF 文件转换为 TXT 文本文件
     
     Args:
-        pdf_path: PDF文件路径
-        max_pages: 最大提取页数（财报通常很长，限制提取页数以避免超限）
+        pdf_path: PDF 文件路径
     
     Returns:
-        提取的文本内容
+        TXT 文件路径
     """
-    text_content = []
+    # 创建临时 TXT 文件
+    temp_fd, temp_path = tempfile.mkstemp(suffix='.txt')
     
-    # 尝试使用pdfplumber
     try:
-        import pdfplumber
-        with pdfplumber.open(pdf_path) as pdf:
-            total_pages = len(pdf.pages)
-            pages_to_extract = min(total_pages, max_pages)
+        # 读取 PDF 内容
+        with open(pdf_path, 'rb') as pdf_file:
+            pdf_reader = PdfReader(pdf_file)
+            text_content = ""
             
-            for i, page in enumerate(pdf.pages[:pages_to_extract]):
-                page_text = page.extract_text()
-                if page_text:
-                    text_content.append(f"--- 第{i+1}页 ---")
-                    text_content.append(page_text)
-            
-            if total_pages > max_pages:
-                text_content.append(f"\n... (共{total_pages}页，仅提取前{max_pages}页)")
-                
-        return "\n\n".join(text_content)
-    except ImportError:
-        pass
-    
-    # 备用方案：尝试PyPDF2
-    try:
-        from PyPDF2 import PdfReader
-        reader = PdfReader(pdf_path)
-        total_pages = len(reader.pages)
-        pages_to_extract = min(total_pages, max_pages)
+            for page_num in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                text_content += page.extract_text() + "\n"
         
-        for i in range(pages_to_extract):
-            page = reader.pages[i]
-            page_text = page.extract_text()
-            if page_text:
-                text_content.append(f"--- 第{i+1}页 ---")
-                text_content.append(page_text)
+        # 写入临时 TXT 文件
+        with os.fdopen(temp_fd, 'w', encoding='utf-8') as temp_file:
+            temp_file.write(text_content)
         
-        if total_pages > max_pages:
-            text_content.append(f"\n... (共{total_pages}页，仅提取前{max_pages}页)")
-            
-        return "\n\n".join(text_content)
+        return temp_path
+        
     except Exception as e:
-        return f"PDF提取失败: {str(e)}"
+        # 如果出错，关闭文件描述符
+        os.close(temp_fd)
+        raise e
 
 
-def extract_financial_highlights(text: str) -> dict:
+def extract_financial_highlights(text_content: str) -> dict:
     """
     从财报文本中提取关键财务指标
     
     Args:
-        text: 财报文本内容
+        text_content: 财报文本内容
     
     Returns:
         包含关键指标的字典
     """
     highlights = {}
     
-    # 提取营业收入
-    patterns = {
-        "营业收入": r"营业收入[^\d]*([\d,]+(?:\.\d+)?)\s*(?:亿元|万元|万|亿)",
-        "净利润": r"净利润[^\d]*([\d,]+(?:\.\d+)?)\s*(?:亿元|万元|万|亿)",
-        "总资产": r"总资产[^\d]*([\d,]+(?:\.\d+)?)\s*(?:亿元|万元|万|亿)",
-        "净资产": r"净资产[^\d]*([\d,]+(?:\.\d+)?)\s*(?:亿元|万元|万|亿)",
-        "每股收益": r"每股收益[^\d]*([\d,]+(?:\.\d+)?)\s*元",
-        "毛利率": r"毛利率[^\d]*([\d,]+(?:\.\d+)?)\s*%",
-        "净利率": r"净利率[^\d]*([\d,]+(?:\.\d+)?)\s*%",
-        "ROE": r"净资产收益率[^\d]*([\d,]+(?:\.\d+)?)\s*%",
-    }
+    # 尝试提取常见财务指标（使用正则表达式）
+    # 营业收入
+    revenue_match = re.search(r'营业总收入 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if revenue_match:
+        value = revenue_match.group(1).replace(',', '')
+        unit = revenue_match.group(2) if revenue_match.group(2) else '亿元'
+        highlights['营业收入'] = f"{value}{unit}"
     
-    for key, pattern in patterns.items():
-        match = re.search(pattern, text)
-        if match:
-            highlights[key] = match.group(1)
+    # 归母净利润
+    profit_match = re.search(r'归属于上市公司股东的净利润 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if profit_match:
+        value = profit_match.group(1).replace(',', '')
+        unit = profit_match.group(2) if profit_match.group(2) else '亿元'
+        highlights['归母净利润'] = f"{value}{unit}"
+    
+    # 扣非净利润
+    deducted_profit_match = re.search(r'扣除非经常性损益后的净利润 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if deducted_profit_match:
+        value = deducted_profit_match.group(1).replace(',', '')
+        unit = deducted_profit_match.group(2) if deducted_profit_match.group(2) else '亿元'
+        highlights['扣非净利润'] = f"{value}{unit}"
+    
+    # 每股收益
+    eps_match = re.search(r'基本每股收益 [\s:：]*(\d+[.,]\d+)\s*元', text_content[:5000])
+    if eps_match:
+        value = eps_match.group(1).replace(',', '')
+        highlights['基本每股收益'] = f"{value}元"
+    
+    # 净资产收益率
+    roe_match = re.search(r'加权平均净资产收益率 [\s:：]*([+-]?\d+[.,]\d+)\s*%', text_content[:5000])
+    if roe_match:
+        value = roe_match.group(1).replace(',', '')
+        highlights['ROE'] = f"{value}%"
+    
+    # 总资产
+    assets_match = re.search(r'总资产 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if assets_match:
+        value = assets_match.group(1).replace(',', '')
+        unit = assets_match.group(2) if assets_match.group(2) else '亿元'
+        highlights['总资产'] = f"{value}{unit}"
+    
+    # 总负债
+    liabilities_match = re.search(r'总负债 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if liabilities_match:
+        value = liabilities_match.group(1).replace(',', '')
+        unit = liabilities_match.group(2) if liabilities_match.group(2) else '亿元'
+        highlights['总负债'] = f"{value}{unit}"
+    
+    # 经营活动现金流净额
+    cash_flow_match = re.search(r'经营活动产生的现金流量净额 [\s:：]*(\d+[.,]\d+)\s*(亿元 | 万元)?', text_content[:5000])
+    if cash_flow_match:
+        value = cash_flow_match.group(1).replace(',', '')
+        unit = cash_flow_match.group(2) if cash_flow_match.group(2) else '亿元'
+        highlights['经营现金流净额'] = f"{value}{unit}"
     
     return highlights
 
 
-def get_report_summary(pdf_path: str, stock_name: str = "") -> dict:
+def get_report_summary(pdf_path: str, stock_name: str) -> dict:
     """
     获取财报摘要信息
     
     Args:
-        pdf_path: PDF文件路径
+        pdf_path: PDF 财报文件路径
         stock_name: 股票名称
     
     Returns:
-        包含摘要信息的字典
+        包含财报摘要的字典
     """
-    # 提取文本
-    text = extract_text_from_pdf(pdf_path)
-    
-    # 提取关键指标
-    highlights = extract_financial_highlights(text)
-    
-    # 尝试提取年报年份
-    year_match = re.search(r"(\d{4})\s*年\s*(?:年度)?\s*报告", text)
-    year = year_match.group(1) if year_match else "未知"
-    
-    return {
-        "file": os.path.basename(pdf_path),
-        "stock_name": stock_name,
-        "year": year,
-        "highlights": highlights,
-        "text_preview": text[:5000] if text else "",  # 预览前5000字符
-        "full_text": text,
-    }
+    try:
+        # 转换 PDF 为 TXT
+        txt_path = convert_pdf_to_txt(pdf_path)
+        
+        # 读取 TXT 内容
+        with open(txt_path, 'r', encoding='utf-8') as f:
+            text_content = f.read()
+        
+        # 提取文件名中的年份信息
+        filename = os.path.basename(pdf_path)
+        year_match = re.search(r'(\d{4}) 年', filename)
+        if year_match:
+            year = year_match.group(1)
+        else:
+            # 尝试从内容中查找年份
+            year_match = re.search(r'(\d{4}) 年度报告', text_content[:2000])
+            year = year_match.group(1) if year_match else '未知'
+        
+        # 提取关键指标
+        highlights = extract_financial_highlights(text_content)
+        
+        # 生成摘要
+        summary = {
+            'year': year,
+            'stock_name': stock_name,
+            'highlights': highlights,
+            'text_preview': text_content[:3000],  # 前 3000 字符作为预览
+            'total_length': len(text_content),
+            'txt_file': txt_path
+        }
+        
+        return summary
+        
+    except Exception as e:
+        print(f"处理财报失败：{e}")
+        return {
+            'year': '未知',
+            'stock_name': stock_name,
+            'highlights': {},
+            'text_preview': '',
+            'error': str(e)
+        }
 
 
 if __name__ == "__main__":
     import sys
     if len(sys.argv) < 2:
-        print("用法: python report_reader.py <pdf文件路径>")
+        print("用法：python report_reader.py <pdf 文件路径>")
+        print("示例：python report_reader.py /path/to/600096_云天化_云天化 2025 年第三季度报告_1224753834.pdf")
         sys.exit(1)
     
     pdf_path = sys.argv[1]
-    result = get_report_summary(pdf_path)
-    print(f"文件: {result['file']}")
-    print(f"年份: {result['year']}")
-    print(f"关键指标: {result['highlights']}")
-    print(f"\n内容预览 (前2000字):\n{result['text_preview'][:2000]}")
+    
+    # 检查文件是否存在
+    if not os.path.exists(pdf_path):
+        print(f"❌ 文件不存在：{pdf_path}")
+        sys.exit(1)
+    
+    try:
+        txt_path = convert_pdf_to_txt(pdf_path)
+        print(f"✅ PDF 文件已转换为 TXT 文件：{txt_path}")
+        
+        # 读取并显示部分内容
+        with open(txt_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            print(f"\n📄 文件大小：{len(content)} 字符")
+            print(f"\n📋 内容预览（前 500 字符）:\n{content[:500]}...")
+    except Exception as e:
+        print(f"❌ 转换失败：{e}")
+        sys.exit(1)
