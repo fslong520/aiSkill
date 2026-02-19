@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import datetime
 from typing import Dict, List, Optional, Tuple
-from cache_manager import get_default_cache_manager
+from utils.cache_manager import get_default_cache_manager
 from utils import format_large_number, calculate_change_percent
 
 
@@ -19,7 +19,7 @@ class MarketAnalyzer:
         self.cache_manager = get_default_cache_manager()
         # 如果需要特定配置，可以创建新的CacheManager实例
         if cache_enabled != self.cache_manager.cache_enabled or cache_ttl_hours != self.cache_manager.cache_ttl_hours:
-            from cache_manager import CacheManager
+            from utils.cache_manager import CacheManager
             self.cache_manager = CacheManager(cache_enabled, cache_ttl_hours)
         
         # 登录baostock

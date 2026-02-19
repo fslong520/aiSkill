@@ -6,7 +6,7 @@ import datetime
 import json
 from typing import Dict, List, Optional
 import re
-from web_crawler import get_default_market_crawler
+from web.web_crawler import get_default_market_crawler
 
 def get_market_data_from_ai_search(date: str = None) -> Dict:
     """
@@ -176,7 +176,7 @@ def get_fallback_market_data() -> Dict:
     """
     try:
         # 尝试使用本地市场分析器获取数据
-        from market_analyzer import MarketAnalyzer
+        from core.market_analyzer import MarketAnalyzer
         analyzer = MarketAnalyzer(cache_enabled=True, cache_ttl_hours=24)
         date = datetime.date.today().strftime('%Y-%m-%d')
         report = analyzer.generate_market_report(date)
@@ -244,7 +244,7 @@ class AIMarketAnalyzer:
             print(f"网络数据获取失败: {e}，回退使用本地数据源")
             # 如果AI搜索失败，回退使用本地脚本获取数据
             try:
-                from market_analyzer import MarketAnalyzer
+                from core.market_analyzer import MarketAnalyzer
                 market_analyzer = MarketAnalyzer(self.cache_enabled, self.cache_ttl_hours)
                 raw_data = market_analyzer.generate_market_report(date)
                 print("✓ 已回退使用本地数据源")
