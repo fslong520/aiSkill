@@ -8,6 +8,7 @@
 2. AKShare - 提供完整的财务报表绝对值数据
 """
 
+from re import M
 import baostock as bs
 import akshare as ak
 import pandas as pd
@@ -53,6 +54,61 @@ class FinancialAnalyzer:
             quarters.append((target_year, target_quarter))
         
         return quarters
+    
+    def _get_multi_year_data(self, symbol, years=5):
+        """
+        获取多年的财务数据（用于《读财报.md》中的多年趋势分析）
+        
+        Args:
+            symbol: 股票代码
+            years: 获取多少年的数据（默认 5 年）
+            
+        Returns:
+            list: 包含每年数据的列表，按时间倒序排列
+        """
+        print(f"📊 正在获取 {symbol} 的多年财务数据（{years}年）...")
+        
+        multi_year_data = []
+        current_year = datetime.now().year
+        current_quarter = (datetime.now().month - 1) // 3 + 1
+        
+        # 获取最近 N 年的所有季度数据
+        for year_offset in range(years):
+            target_year = current_year - year_offset
+            
+            # 如果是今年，只到当前季度；如果是过去年份，获取全部 4 个季度
+            if year_offset == 0:
+                quarters_to_get = range(current_quarter, 0, -1)
+            else:
+                quarters_to_get = range(4, 0, -1)
+            
+            for quarter in quarters_to_get:
+                try:
+                    # 跳过未来的季度
+                    if target_year == current_year and quarter > current_quarter:
+                        continue
+                    
+                    data = {
+                        'balance_sheet': self.get_balance_sheet(symbol, target_year, quarter),
+                        'cash_flow': self.get_cash_flow(symbol, target_year, quarter),
+                        'profit_statement': self.get_profit_statement(symbol, target_year, quarter),
+                        'operation_data': self.get_operation_analysis(symbol, target_year, quarter),
+                        'growth_data': self.get_growth_analysis(symbol, target_year, quarter),
+                        'dupont_data': self.get_dupont_analysis(symbol, target_year, quarter)
+                    }
+                    
+                    # 如果至少有一个报表有数据，就添加到列表中
+                    if any(v is not None for v in data.values()):
+                        data['year'] = target_year
+                        data['quarter'] = quarter
+                        multi_year_data.append(data)
+                        
+                except Exception as e:
+                    print(f"⚠️ 获取 {target_year}年 Q{quarter} 数据失败：{e}")
+                    continue
+        
+        print(f"✅ 成功获取 {len(multi_year_data)} 个季度的多年数据")
+        return multi_year_data
     
     def get_balance_sheet(self, symbol, year=None, quarter=None):
         """获取资产负债表数据"""
@@ -570,38 +626,59 @@ class FinancialAnalyzer:
         if use_akshare:
             akshare_data = self.get_akshare_financial_report(symbol)
         
-        # 使用 baostock 获取比率和增长率数据
-        print(f"\n📊 使用 baostock 获取财务比率和增长率数据...")
+        # 使用 baostock 获取多年的财务比率和增长率数据（至少 5 年）
+        print(f"\n📊 使用 baostock 获取多年财务数据（最近 5 年）...")
         bs.login()
         
-        balance_sheet_bs = self.get_balance_sheet(symbol, year, quarter)
-        cash_flow_bs = self.get_cash_flow(symbol, year, quarter)
-        profit_statement_bs = self.get_profit_statement(symbol, year, quarter)
-        operation_data = self.get_operation_analysis(symbol, year, quarter)
-        growth_data = self.get_growth_analysis(symbol, year, quarter)
-        dupont_data = self.get_dupont_analysis(symbol, year, quarter)
-        bs.logout()
+        try:
+            # 获取多年的数据（最近 5 年，每年 4 个季度）
+            multi_year_data = self._get_multi_year_data(symbol, years=5)
+            
+            # 使用最新季度的数据作为主要数据
+            if multi_year_data and len(multi_year_data) > 0:
+                latest_data = multi_year_data[0]  # 最新的季度数据
+                balance_sheet_bs = latest_data.get('balance_sheet')
+                cash_flow_bs = latest_data.get('cash_flow')
+                profit_statement_bs = latest_data.get('profit_statement')
+                operation_data = latest_data.get('operation_data')
+                growth_data = latest_data.get('growth_data')
+                dupont_data = latest_data.get('dupont_data')
+            else:
+                # 如果多年数据获取失败，回退到单季度数据
+                print("⚠️ 多年数据获取失败，回退到单季度数据")
+                balance_sheet_bs = self.get_balance_sheet(symbol, year, quarter)
+                cash_flow_bs = self.get_cash_flow(symbol, year, quarter)
+                profit_statement_bs = self.get_profit_statement(symbol, year, quarter)
+                operation_data = self.get_operation_analysis(symbol, year, quarter)
+                growth_data = self.get_growth_analysis(symbol, year, quarter)
+                dupont_data = self.get_dupont_analysis(symbol, year, quarter)
+            
+            # 提取关键指标
+            key_metrics = self._extract_key_metrics(
+                balance_sheet_bs, cash_flow_bs, profit_statement_bs,
+                operation_data, growth_data, dupont_data
+            )
+            
+            # 如果 AKShare 获取成功，补充绝对值数据
+            if akshare_data:
+                key_metrics = self._merge_akshare_data(key_metrics, akshare_data)
+            
+            result = {
+                'balance_sheet': balance_sheet_bs,
+                'cash_flow': cash_flow_bs,
+                'profit_statement': profit_statement_bs,
+                'operation_data': operation_data,
+                'growth_data': growth_data,
+                'dupont_data': dupont_data,
+                'key_metrics': key_metrics,
+                'akshare_data': akshare_data,  # 保存原始 AKShare 数据
+                'multi_year_data': multi_year_data  # 添加多年数据
+            }
+        finally:
+            # 确保 logout 被调用，但在 return 之前调用
+            bs.logout()
         
-        # 提取关键指标
-        key_metrics = self._extract_key_metrics(
-            balance_sheet_bs, cash_flow_bs, profit_statement_bs,
-            operation_data, growth_data, dupont_data
-        )
-        
-        # 如果 AKShare 获取成功，补充绝对值数据
-        if akshare_data:
-            key_metrics = self._merge_akshare_data(key_metrics, akshare_data)
-        
-        return {
-            'balance_sheet': balance_sheet_bs,
-            'cash_flow': cash_flow_bs,
-            'profit_statement': profit_statement_bs,
-            'operation_data': operation_data,
-            'growth_data': growth_data,
-            'dupont_data': dupont_data,
-            'key_metrics': key_metrics,
-            'akshare_data': akshare_data  # 保存原始 AKShare 数据
-        }
+        return result
     
     def _merge_akshare_data(self, metrics, akshare_data):
         """
@@ -1009,7 +1086,7 @@ class FinancialAnalyzer:
         standards['通过数量'] = f"{passed}/5"
         standards['评价'] = '优秀' if passed >= 4 else '良好' if passed >= 3 else '一般' if passed >= 2 else '较差'
             
-        return standards
+        return standards, metrics
     
     def _check_golden_standards_baostock(self, metrics):
         """检查五大黄金标准（baostock 简化版，基于比率数据）"""
@@ -1045,7 +1122,7 @@ class FinancialAnalyzer:
         standards['通过数量'] = f"{passed}/5"
         standards['评价'] = '优秀' if passed >= 4 else '良好' if passed >= 3 else '一般' if passed >= 2 else '较差'
             
-        return standards
+        return standards, metrics
         
     def _quick_risk_check(self, metrics):
         """快速排雷清单（8 项）（完整版）"""
@@ -1087,7 +1164,7 @@ class FinancialAnalyzer:
         checklist['通过数量'] = f"{passed}/8"
         checklist['结论'] = '继续分析' if passed >= 6 else '谨慎关注' if passed >= 4 else '建议排除'
             
-        return checklist
+        return checklist, metrics
     
     def _quick_risk_check_baostock(self, metrics):
         """快速排雷清单（baostock 简化版，8 项）"""
@@ -1136,7 +1213,7 @@ class FinancialAnalyzer:
         checklist['通过数量'] = f"{passed}/8"
         checklist['结论'] = '优质' if passed >= 6 else '良好' if passed >= 5 else '关注' if passed >= 4 else '谨慎'
             
-        return checklist
+        return checklist, metrics
 
 
 def get_default_financial_analyzer():
