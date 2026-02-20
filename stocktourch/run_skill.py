@@ -231,14 +231,14 @@ def main():
         
         print("\n【七、风险评估结果】")
         if '五大黄金标准' in key_metrics:
-            standards = key_metrics['五大黄金标准']
+            standards = key_metrics['五大黄金标准'][0]
             print(f"  五大黄金标准：{standards.get('通过数量', 'N/A')} - {standards.get('评价', 'N/A')}")
             for k, v in standards.items():
                 if not k.startswith('标准') and k not in ['通过数量', '评价']:
                     print(f"    - {k}: {v}")
         
         if '快速排雷清单' in key_metrics:
-            checklist = key_metrics['快速排雷清单']
+            checklist = key_metrics['快速排雷清单'][0]
             print(f"  快速排雷清单：{checklist.get('通过数量', 'N/A')} - {checklist.get('结论', 'N/A')}")
             for k, v in checklist.items():
                 if k not in ['通过数量', '结论', '风险提示']:
@@ -247,7 +247,7 @@ def main():
                 print(f"    ⚠️ 风险提示：{checklist['风险提示']}")
         
         if '现金流肖像' in key_metrics:
-            print(f"  现金流肖像：{key_metrics['现金流肖像']}")
+            print(f"  现金流肖像：{key_metrics['现金流肖像'][0]}")
         
         print("\n" + "="*70)
         print("💡 AI 将基于以上完整数据进行深度财务分析")
