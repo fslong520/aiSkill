@@ -1,0 +1,23 @@
+2026-02-22 13:56:22,685 - INFO - 开始数据库更新流程
+2026-02-22 13:56:22,686 - INFO - 扫描目录: /home/fslong/Documents/blog/uploads/statics/lesson
+2026-02-22 13:56:22,850 - INFO - 扫描目录: /home/fslong/Documents/blog/uploads/statics/training
+2026-02-22 13:56:22,887 - INFO - 扫描目录: /home/fslong/Documents/blog/uploads/statics/blog
+2026-02-22 13:56:22,902 - INFO - 扫描目录: /home/fslong/Documents/blog/uploads/statics/tools
+2026-02-22 13:56:23,030 - INFO - 共找到 626 个有效文件
+2026-02-22 13:56:23,031 - ERROR - 更新过程中发生错误: Model class teach.models.Item doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS.
+Traceback (most recent call last):
+  File "/home/fslong/Documents/blog/blog/apps/teach/update_item.py", line 305, in run_update
+    self.updater.update_database(items_data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/home/fslong/Documents/blog/blog/apps/teach/update_item.py", line 189, in update_database
+    from apps.teach.models import Item
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fslong/Documents/blog/blog/apps/teach/models.py", line 4, in <module>
+    class Item(models.Model):
+    ...<17 lines>...
+            return str(self.name)
+  File "/home/fslong/.local/lib/python3.13/site-packages/django/db/models/base.py", line 134, in __new__
+    raise RuntimeError(
+    ...<3 lines>...
+    )
+RuntimeError: Model class teach.models.Item doesn't declare an explicit app_label and isn't in an application in INSTALLED_APPS.
