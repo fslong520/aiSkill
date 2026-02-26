@@ -10,8 +10,13 @@ import sys
 import os
 from pathlib import Path
 
-# 添加当前目录到路径
-sys.path.insert(0, str(Path(__file__).parent))
+# 获取技能根目录的绝对路径 (无论从哪里执行)
+SKILL_ROOT = Path(__file__).resolve().parent
+
+# 将技能根目录添加到 Python 搜索路径
+# 这样即使从工作目录执行，也能正确导入技能模块
+if str(SKILL_ROOT) not in sys.path:
+    sys.path.insert(0, str(SKILL_ROOT))
 
 from executor.skill_executor import execute_skill
 from core.stock_analyzer import StockAnalyzer
