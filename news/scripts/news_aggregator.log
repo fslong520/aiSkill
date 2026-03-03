@@ -65,3 +65,23 @@
 2026-02-04 22:15:41 | DEBUG    | NewsAggregator | debug:68 | 缓存未命中: tencent
 2026-02-04 22:15:41 | INFO     | NewsAggregator | info:72 | 共获取 10 条新闻
 2026-02-04 22:15:41 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260204_221541.md
+2026-03-03 23:51:02 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github', 'weibo', '36kr', 'v2ex', 'tencent', 'wallstreetcn', 'producthunt', 'reddit', 'techcrunch']
+2026-03-03 23:51:02 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-03-03 23:51:32 | ERROR    | NewsAggregator | error:80 | Reddit 获取失败: 
+2026-03-03 23:51:32 | ERROR    | NewsAggregator | error:80 | V2EX 获取失败: 
+2026-03-03 23:51:32 | ERROR    | NewsAggregator | error:80 | Hacker News 请求错误: 
+2026-03-03 23:51:32 | ERROR    | NewsAggregator | error:80 | HN 第 1 页获取失败: 
+2026-03-03 23:51:32 | INFO     | NewsAggregator | info:72 | 缓存已设置: 36kr (TTL: 300s)
+2026-03-03 23:51:32 | INFO     | NewsAggregator | info:72 | 共获取 60 条新闻
+2026-03-03 23:51:32 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260303_235132.json
+2026-03-03 23:51:36 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github', 'weibo', '36kr', 'v2ex', 'tencent', 'wallstreetcn', 'producthunt', 'reddit', 'techcrunch']
+2026-03-03 23:51:36 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
+2026-03-03 23:52:06 | ERROR    | NewsAggregator | error:80 | Reddit 获取失败: 
+2026-03-03 23:52:06 | ERROR    | NewsAggregator | error:80 | V2EX 获取失败: 
+2026-03-03 23:52:06 | ERROR    | NewsAggregator | error:80 | Hacker News 请求错误: 
+2026-03-03 23:52:06 | ERROR    | NewsAggregator | error:80 | HN 第 1 页获取失败: 
+2026-03-03 23:52:06 | INFO     | NewsAggregator | info:72 | 缓存已设置: 36kr (TTL: 300s)
+2026-03-03 23:52:06 | INFO     | NewsAggregator | info:72 | 共获取 60 条新闻
+2026-03-03 23:52:06 | INFO     | NewsAggregator | info:72 | 报告已保存: reports/news_report_20260303_235206.json
+2026-03-03 23:54:09 | INFO     | NewsAggregator | info:72 | 开始获取新闻，数据源: ['hackernews', 'github', 'weibo', '36kr', 'v2ex', 'tencent', 'wallstreetcn', 'producthunt', 'reddit', 'techcrunch']
+2026-03-03 23:54:10 | INFO     | NewsAggregator | info:72 | 微博热搜获取成功: 10 条
