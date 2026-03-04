@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【破晓日报】2026 年 3 月 4 日</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(79, 70, 229, 0.15);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+        }
+        
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        
+        /* 顶部导航 */
+        .navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-tags {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .nav-tag {
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-tag:hover { transform: translateY(-2px); }
+        .nav-tag.ai { background: #e0e7ff; color: #4338ca; }
+        .nav-tag.invest { background: #fef3c7; color: #b45309; }
+        .nav-tag.melon { background: #fce7f3; color: #be185d; }
+        
+        /* 平滑滚动 */
+        html { scroll-behavior: smooth; }
+        
+        /* 投资观点 - 核心板块 */
+        .invest-opinion {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: #fff;
+            padding: 2.5rem;
+            border-radius: 24px;
+            margin: 2rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .invest-opinion::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+        }
+        
+        .invest-opinion h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .invest-opinion .opinion {
+            font-size: 1.85rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+        
+        .invest-opinion .opinion strong {
+            color: #fbbf24;
+        }
+        
+        .invest-opinion .opinion.bull strong { color: #34d399; }
+        .invest-opinion .opinion.bear strong { color: #f87171; }
+        
+        .action-table {
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .action-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .action-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            opacity: 0.7;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .action-table td {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .action-table tr:last-child td { border: none; }
+        
+        .action-table .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .action-table .tag.buy { background: #34d399; color: #064e3b; }
+        .action-table .tag.sell { background: #f87171; color: #7f1d1d; }
+        .action-table .tag.watch { background: #60a5fa; color: #1e3a8a; }
+        
+        /* 板块标题 */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+        }
+        
+        .section-header h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+        
+        .section-header .icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .section-header .icon.news { background: #e0e7ff; color: #4338ca; }
+        .section-header .icon.melon { background: #fce7f3; color: #be185d; }
+        
+        /* 板块锚点 */
+        #ai-section, #auto-section, #finance-section, #pharma-section, #internet-section, #energy-section, #fintech-section, #retail-section, #estate-section, #melon-section {
+            scroll-margin-top: 80px;
+        }
+        
+        /* 新闻卡片 */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.25rem;
+        }
+        
+        .news-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+        }
+        
+        .news-card .tag {
+            display: inline-block;
+            padding: 0.25rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .news-card .tag.tech { background: #e0e7ff; color: #4338ca; }
+        .news-card .tag.auto { background: #d1fae5; color: #065f46; }
+        .news-card .tag.finance { background: #fef3c7; color: #92400e; }
+        .news-card .tag.pharma { background: #fce7f3; color: #be185d; }
+        .news-card .tag.energy { background: #dcfce7; color: #166534; }
+        .news-card .tag.retail { background: #ffedd5; color: #9a3412; }
+        .news-card .tag.estate { background: #dbeafe; color: #1e40af; }
+        
+        .news-card h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .news-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .news-card .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        .news-card .meta a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* 吃瓜板块 */
+        .melon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .melon-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border-left: 4px solid #f472b6;
+        }
+        
+        .melon-card .hot {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: #f472b6;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .melon-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .melon-card .review {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+        
+        /* 风险提示 */
+        .risk-notice {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin: 2rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .risk-notice i {
+            color: #ef4444;
+            margin-top: 0.2rem;
+        }
+        
+        .risk-notice p {
+            font-size: 0.85rem;
+            color: #991b1b;
+        }
+        
+        /* 底部 */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+        
+        /* 动画 */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .news-card, .melon-card { animation: slideIn 0.5s ease-out backwards; }
+        .news-card:nth-child(1) { animation-delay: 0.05s; }
+        .news-card:nth-child(2) { animation-delay: 0.1s; }
+        .news-card:nth-child(3) { animation-delay: 0.15s; }
+        
+        /* 移动端 */
+        @media (max-width: 768px) {
+            .navbar .container { flex-direction: column; gap: 0.75rem; }
+            .invest-opinion { padding: 1.5rem; }
+            .invest-opinion .opinion { font-size: 1.35rem; }
+            .news-grid, .melon-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">破晓日报 · 2026 年 3 月 4 日</div>
+            <div class="nav-tags">
+                <a href="#news-section" class="nav-tag ai">📰 资讯</a>
+                <a href="#invest-opinion" class="nav-tag invest">💰 投资</a>
+                <a href="#melon-section" class="nav-tag melon">🍉 吃瓜</a>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- 投资观点 -->
+        <section class="invest-opinion">
+            <h2><i class="fas fa-bullseye"></i> 今日核心观点</h2>
+            <p class="opinion bull">
+                <strong>做多</strong> AI 算力产业链与<strong>自动驾驶</strong>商业化落地，关注<strong>国产替代</strong>与<strong>储能爆发</strong>机会
+            </p>
+            <div class="action-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>标的</th>
+                            <th>方向</th>
+                            <th>仓位</th>
+                            <th>逻辑</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>688256·寒武纪</td>
+                            <td><span class="tag buy">买入</span></td>
+                            <td>15-20%</td>
+                            <td>国产 AI芯片龙头，大模型竞赛受益</td>
+                        </tr>
+                        <tr>
+                            <td>002594·比亚迪</td>
+                            <td><span class="tag buy">买入</span></td>
+                            <td>10-15%</td>
+                            <td>L4 自动驾驶加速，2026 全面交付</td>
+                        </tr>
+                        <tr>
+                            <td>300750·宁德时代</td>
+                            <td><span class="tag buy">买入</span></td>
+                            <td>10-15%</td>
+                            <td>储能赛道爆发，政策驱动高增长</td>
+                        </tr>
+                        <tr>
+                            <td>688399·硕世生物</td>
+                            <td><span class="tag watch">观望</span></td>
+                            <td>-</td>
+                            <td>创新药出海承压，等待拐点</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- 风险提示 -->
+        <div class="risk-notice">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>风险提示：</strong>本日报仅供娱乐参考，不构成任何投资建议。投资有风险，入市需谨慎。股市专治各种不服，亏钱别来找小妹。</p>
+        </div>
+        
+        <!-- 今日焦点 -->
+        <div id="news-section" class="section-header">
+            <div class="icon news"><i class="fas fa-fire"></i></div>
+            <h2>今日焦点 TOP3</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag tech">AI</span>
+                <h3>OpenAI发布 GPT-5.3 Instant：最常用模型重大升级</h3>
+                <p>提升稳定性、流畅性和实用性，减少不必要的拒答，增强事实依据和信息质量，3 月 3 日起向所有用户开放...</p>
+                <div class="meta">
+                    <span>2 小时前 · OpenAI</span>
+                    <a href="https://openai.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag auto">汽车</span>
+                <h3>何小鹏：完全自动驾驶将在未来 1～3 年内到来</h3>
+                <p>小鹏第二代 VLA 系统采用端到端架构，计划 2027 年实现全球交付，2026 年将成为自动驾驶全面到来的关键年份...</p>
+                <div class="meta">
+                    <span>4 小时前 · 小鹏汽车</span>
+                    <a href="https://xiaopeng.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag finance">芯片</span>
+                <h3>台积电 2nm工艺启动量产，苹果等大客户将采用</h3>
+                <p>2026 年半导体市场迎来关键技术节点，先进制程竞赛加剧，3nm 硅片单价预计突破 3 万美元...</p>
+                <div class="meta">
+                    <span>6 小时前 · SEMI</span>
+                    <a href="https://www.semi.org" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- AI 科技 -->
+        <div id="ai-section" class="section-header">
+            <div class="icon news"><i class="fas fa-robot"></i></div>
+            <h2>AI 科技</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag tech">AI</span>
+                <h3>谷歌 Gemini 2.5 Pro 发布：单条文本生成完整应用</h3>
+                <p>AI 编程模型领域突破性进展，支持自动匹配界面风格、快速转换视频为互动应用，几乎无需手动编码...</p>
+                <div class="meta">
+                    <span>3 小时前 · Google DeepMind</span>
+                    <a href="https://deepmind.google" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag tech">AI</span>
+                <h3>百度云升级模型服务：百度版 GPTs 即日开放</h3>
+                <p>提供 54 个基础和行业大模型，推出 AppBuilder 平台支持低代码开发，2024 年将成为 AI 原生应用元年...</p>
+                <div class="meta">
+                    <span>5 小时前 · 百度</span>
+                    <a href="https://baidu.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag tech">AI</span>
+                <h3>马云强调AI变革下教育转型：培养创造力和共情能力</h3>
+                <p>中国企业在大模型方面取得突破，阿里千问等开源模型快速增长，推动行业竞争和技术创新...</p>
+                <div class="meta">
+                    <span>8 小时前 · 阿里巴巴</span>
+                    <a href="https://alibaba.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 新能源汽车 -->
+        <div id="auto-section" class="section-header">
+            <div class="icon news"><i class="fas fa-car"></i></div>
+            <h2>新能源汽车</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag auto">汽车</span>
+                <h3>特斯拉 FSD V13 发布：无图模式超越人类司机</h3>
+                <p>安全性提升 40%，6 月试行自动驾驶 Model Y"无人送车"功能，搭载 HW5.0 硬件平台，算力达 1.1EFLOPS...</p>
+                <div class="meta">
+                    <span>1 小时前 · Tesla</span>
+                    <a href="https://tesla.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag auto">汽车</span>
+                <h3>2026 自动驾驶"八重巨浪"：L3 只是开胃菜</h3>
+                <p>L3 级自动驾驶正式合法上路，渗透率预计从 0.2% 跃升至 3.4%，无人配送车、出租车、矿卡竞争激烈...</p>
+                <div class="meta">
+                    <span>3 小时前 · OFweek</span>
+                    <a href="https://www.ofweek.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag auto">汽车</span>
+                <h3>大众汽车：2026 年起一汽 - 大众将推出 11 款新车型</h3>
+                <p>其中 9 款新能源车，捷达品牌首款纯电动车专注入门级市场，依托本土研发推进智能化升级...</p>
+                <div class="meta">
+                    <span>7 小时前 · 大众集团</span>
+                    <a href="https://volkswagengroupchina.com.cn" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 半导体 -->
+        <div id="finance-section" class="section-header">
+            <div class="icon news"><i class="fas fa-microchip"></i></div>
+            <h2>半导体</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag finance">芯片</span>
+                <h3>2026 年晶圆代工市场增长 19%，台积电主导全球</h3>
+                <p>占据 72% 市场份额，3nm 硅片单价预计突破 3 万美元，AI 和车用芯片需求强劲推动先进工艺发展...</p>
+                <div class="meta">
+                    <span>2 小时前 · SEMI</span>
+                    <a href="https://www.semi.org" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag finance">芯片</span>
+                <h3>全球 300mm晶圆厂产能 2026 年将达每月 960 万片新高</h3>
+                <p>尽管 2023 年产能扩张放缓，但长期需求强劲，特别是在晶圆厂、存储器和功率芯片领域...</p>
+                <div class="meta">
+                    <span>4 小时前 · SEMI</span>
+                    <a href="https://www.semi.org" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag finance">芯片</span>
+                <h3>盛合晶微科创板过会：先进封装龙头募资 48 亿元</h3>
+                <p>专注晶圆级封装和多芯片集成技术，2026 年 3 月新股市场聚焦半导体硬科技领域...</p>
+                <div class="meta">
+                    <span>6 小时前 · 科创板</span>
+                    <a href="https://www.sse.com.cn/starmarket/" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 医药生物 -->
+        <div id="pharma-section" class="section-header">
+            <div class="icon news"><i class="fas fa-pills"></i></div>
+            <h2>医药生物</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag pharma">医药</span>
+                <h3>艾迪药业拟定增 12.77 亿元：超六成用于抗HIV创新药</h3>
+                <p>主要用于新型 HIV 整合酶抑制剂全球临床开发，是国内首个进入临床阶段的国产创新 HIV 药物...</p>
+                <div class="meta">
+                    <span>1 天前 · 艾迪药业</span>
+                    <a href="http://www.adimmdrug.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag pharma">医药</span>
+                <h3>国产明星抗癌药转战东南亚：应对欧美注册难题</h3>
+                <p>康方生物、君实生物通过授权合作开拓东南亚市场，人口众多潜力巨大，药品价格优势明显...</p>
+                <div class="meta">
+                    <span>2 天前 · 医药魔方</span>
+                    <a href="https://www.pharmcube.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag pharma">医药</span>
+                <h3>2026 生物药创新开发峰会：聚焦新型抗体和细胞治疗</h3>
+                <p>苏州举办第九届峰会，涵盖多肽药物、单核酸药物等创新药物研发与应用，推动产业高质量发展...</p>
+                <div class="meta">
+                    <span>3 天前 · 生物药峰会</span>
+                    <a href="https://www.cptexpo.com.cn/product/4412331/" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 互联网 -->
+        <div id="internet-section" class="section-header">
+            <div class="icon news"><i class="fas fa-globe"></i></div>
+            <h2>互联网</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag tech">互联网</span>
+                <h3>京东投入超 200 亿元补贴：推动线上超市销售增量</h3>
+                <p>旨在实现 2000 亿销售增量，彰显"低价"战略深度布局，持续加码商超零售业务...</p>
+                <div class="meta">
+                    <span>2 小时前 · 京东</span>
+                    <a href="https://jd.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag tech">互联网</span>
+                <h3>百度电商卷土重来：靠 AI 翻身？</h3>
+                <p>推出"百度优选"结合大模型对话式导购、数字人直播，试图借助 AI 赋能电商生态，挑战抖音快手主导地位...</p>
+                <div class="meta">
+                    <span>5 小时前 · 百度</span>
+                    <a href="https://baidu.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag tech">互联网</span>
+                <h3>市场监管总局：2026 年重点打击电商领域侵权假冒</h3>
+                <p>2025 年查处 3.7 万起违法案件，涉案金额 6.77 亿元，新规强化平台责任，建立"守护品牌"政企合作机制...</p>
+                <div class="meta">
+                    <span>1 天前 · 市场监管总局</span>
+                    <a href="http://www.samr.gov.cn" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 新能源 -->
+        <div id="energy-section" class="section-header">
+            <div class="icon news"><i class="fas fa-solar-panel"></i></div>
+            <h2>新能源</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag energy">能源</span>
+                <h3>政策重构！2026 年万亿储能赛道蓄势爆发</h3>
+                <p>中国完成储能政策系统升级，从"政策任务型"向"市场盈利型"转变，未来三年新增装机超 1 亿千瓦...</p>
+                <div class="meta">
+                    <span>1 小时前 · 腾讯新闻</span>
+                    <a href="https://news.qq.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag energy">能源</span>
+                <h3>2026 新能源展望：风电、光伏和储能谁领风骚？</h3>
+                <p>光伏面临产能过剩但技术创新突破，深远海风电项目密集推进，储能从辅助角色转变为核心驱动力...</p>
+                <div class="meta">
+                    <span>3 小时前 · QQ 新闻</span>
+                    <a href="https://news.qq.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag energy">能源</span>
+                <h3>欧洲储能市场快速发展：总投资超 3.7GWh</h3>
+                <p>Allianz GI、Luxcara 等机构在德国、芬兰、西班牙等地投资电池储能系统，结合光伏风电提升电网调节能力...</p>
+                <div class="meta">
+                    <span>6 小时前 · Energy-Storage.News</span>
+                    <a href="https://www.energy-storage.news" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 金融科技 -->
+        <div id="fintech-section" class="section-header">
+            <div class="icon news"><i class="fas fa-coins"></i></div>
+            <h2>金融科技</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag finance">金融</span>
+                <h3>新一代数字人民币 2026 年正式启动：钱包余额可计息</h3>
+                <p>从现金型升级为存款货币型，商业银行钱包中的数字人民币成为银行负债，推动数字货币广泛应用...</p>
+                <div class="meta">
+                    <span>1 天前 · 中国人民银行</span>
+                    <a href="http://www.pbc.gov.cn" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag finance">金融</span>
+                <h3>稳定币第一股上市："美国支付宝"首日暴涨 168%</h3>
+                <p>USDC 发行商 Circle 纽交所成功上市，市值达 184 亿美元，带动稳定币行业巨大潜力，香港立法生效...</p>
+                <div class="meta">
+                    <span>2 天前 · 36Kr</span>
+                    <a href="https://36kr.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag finance">金融</span>
+                <h3>普华永道：2026 年将成为加密货币监管落实之年</h3>
+                <p>全球范围内加快跨境协调，推动稳定币、合规性和行业信任重塑，欧洲、美国、英国完善数字资产法规...</p>
+                <div class="meta">
+                    <span>3 天前 · CoinDesk</span>
+                    <a href="https://www.coindesk.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 消费 -->
+        <div id="retail-section" class="section-header">
+            <div class="icon news"><i class="fas fa-shopping-cart"></i></div>
+            <h2>消费</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag retail">消费</span>
+                <h3>屈臣氏计划 IPO：估值约 300 亿美元，美妆个护高利润</h3>
+                <p>行业毛利率普遍超过 60%，雅诗兰黛达 74%，屈臣氏通过门店翻新和数字化转型应对市场挑战...</p>
+                <div class="meta">
+                    <span>2 小时前 · 亿邦动力</span>
+                    <a href="https://www.ebrun.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag retail">消费</span>
+                <h3>2026 年消费行业展望：无声处听惊雷，平淡中觅转机</h3>
+                <p>传统消费面临需求疲软，但企业通过创新、渠道拓展和品牌提升实现基本面反转，国产品牌崛起...</p>
+                <div class="meta">
+                    <span>5 小时前 · 浦银国际</span>
+                    <a href="https://www.spdbi.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag retail">消费</span>
+                <h3>永辉联合百佳、腾讯成立合资公司：区域零售洗牌提速</h3>
+                <p>整合广东地区超市资源，打造"百佳永辉"品牌，结合永辉供应链和腾讯数字化技术，提升一体化能力...</p>
+                <div class="meta">
+                    <span>1 天前 · 36Kr</span>
+                    <a href="https://36kr.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 地产 -->
+        <div id="estate-section" class="section-header">
+            <div class="icon news"><i class="fas fa-building"></i></div>
+            <h2>地产</h2>
+        </div>
+        
+        <div class="news-grid">
+            <article class="news-card">
+                <span class="tag estate">地产</span>
+                <h3>2026 年地产新局：政策底已确认，市场有望企稳回升</h3>
+                <p>中央强调扩大内需、优化供给，上海放松限购，广州深圳加快土地供应，香港提高豪宅印花税...</p>
+                <div class="meta">
+                    <span>1 小时前 · 经济观察网</span>
+                    <a href="http://www.eeo.com.cn" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag estate">地产</span>
+                <h3>标普信评：2026 年商品房销售额或下降 10%</h3>
+                <p>市场仍面临下行压力，托底措施预计上半年集中释放，上海二手房成交量创五年新高显示筑底信号...</p>
+                <div class="meta">
+                    <span>3 小时前 · 腾讯新闻</span>
+                    <a href="https://news.qq.com" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+            
+            <article class="news-card">
+                <span class="tag estate">地产</span>
+                <h3>住建部：2026 年着力稳定房地产市场</h3>
+                <p>因城施策控增量、去库存、优化供给，利用存量用地推动保障性住房建设，支持刚性和改善性住房需求...</p>
+                <div class="meta">
+                    <span>1 天前 · 人民日报</span>
+                    <a href="http://paper.people.com.cn" target="_blank" rel="noopener noreferrer">阅读全文 →</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 吃瓜现场 -->
+        <div class="section-header">
+            <div class="icon melon"><i class="fas fa-watermelon"></i></div>
+            <h2>吃瓜现场</h2>
+        </div>
+        
+        <div class="melon-grid">
+            <article class="melon-card">
+                <span class="hot">🔥🔥🔥 热搜第一</span>
+                <h4>Block 裁员 40% 约 4000 人，CEO 称 AI 是主因</h4>
+                <div class="review">
+                    "AI 这玩意儿吧，就像当年的蒸汽机。效率是上去了，工人也得下岗了。股东笑开了花，打工人只能默默改简历。这波啊，叫'智能革命'的代价。"
+                </div>
+            </article>
+            
+            <article class="melon-card">
+                <span class="hot">🔥🔥 热议</span>
+                <h4>Meta AI 大裁员 20%，田渊栋等 600 人一夜被裁</h4>
+                <div class="review">
+                    "基础研究部门留 5%，产品和基础设施部门裁 27%。这操作就很 Meta：PPT 可以画，产品不用做。反正股价涨了，谁在乎你能不能用？"
+                </div>
+            </article>
+            
+            <article class="melon-card">
+                <span class="hot">🔥 新瓜</span>
+                <h4>字节 AI 布局大调整：猫箱负责人离职，星绘并入豆包</h4>
+                <div class="review">
+                    "字节的 AI 战略就像走马灯，今天这个明天那个。最后发现还是豆包能打。早干嘛去了？打工人的青春可不是你的试验田。"
+                </div>
+            </article>
+            
+            <article class="melon-card">
+                <span class="hot">🔥 热议</span>
+                <h4>大厂裁员的 N+1 到底给不给？</h4>
+                <div class="review">
+                    "赔偿？那得看公司良心。良心这玩意儿吧...跟工资一样，都是数字游戏。唯有劳动仲裁，才是打工人最后的体面。"
+                </div>
+            </article>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <p>破晓日报 · 2026 年 3 月 4 日 · 仅供参考 · 娱乐为主 · 投资需谨慎</p>
+    </footer>
+</body>
+</html>
