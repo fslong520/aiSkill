@@ -125,7 +125,7 @@ metadata:
 
 ### 3.1 problem_zh.md格式要求
 ```markdown
-<hr class="nextpage"/><div class="water">
+<div class="water">
 
 # 题目名称
 
@@ -157,7 +157,7 @@ metadata:
 </div>
 ```
 **关键要求**:
-- 必须用`<hr class="nextpage"/><div class="water">`开头
+- 必须用`<div class="water">`开头
 - 必须用`</div>`结尾(防盗用标记)
 - 所有小标题使用四级标题`####`
 - 题目名称使用一级标题`#`,前面空一行
@@ -391,7 +391,7 @@ subtasks:
 
 # 必须遵守的规则
 
-1. ✅ 题面必须以`<hr class="nextpage"/><div class="water">`开头,以`</div>`结尾
+1. ✅ 题面必须以`<div class="water">`开头,以`</div>`结尾
 2. ✅ 标题不要加"搬运"等前缀
 3. ✅ 打包后保留题目文件夹
 4. ✅ 不使用任何第三方库
