@@ -285,3 +285,8 @@ cd ../stocktourch && pip install -r requirements.txt
 ⭐ 如果你觉得这些技能有用，请给项目点赞支持！
 
 </div>
+
+```mermaid
+
+
+```
