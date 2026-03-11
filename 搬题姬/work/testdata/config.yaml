@@ -1,0 +1,78 @@
+type: default
+time: 2s
+memory: 256MB
+subtasks:
+  # 样例测试
+  - score: 10
+    if: []
+    id: 1
+    type: min
+    cases:
+      - input: 1.in
+        output: 1.out
+      - input: 2.in
+        output: 2.out
+      - input: 3.in
+        output: 3.out
+  # 边界情况：最小值和最大值
+  - score: 10
+    if: []
+    id: 2
+    type: min
+    cases:
+      - input: 4.in
+        output: 4.out
+      - input: 5.in
+        output: 5.out
+  # 中间值测试：N=3到10
+  - score: 40
+    if: []
+    id: 3
+    type: min
+    cases:
+      - input: 6.in
+        output: 6.out
+      - input: 7.in
+        output: 7.out
+      - input: 8.in
+        output: 8.out
+      - input: 9.in
+        output: 9.out
+      - input: 10.in
+        output: 10.out
+      - input: 11.in
+        output: 11.out
+      - input: 12.in
+        output: 12.out
+      - input: 13.in
+        output: 13.out
+  # 随机测试：覆盖1到11范围内的各种情况
+  - score: 40
+    if: []
+    id: 4
+    type: min
+    cases:
+      - input: 14.in
+        output: 14.out
+      - input: 15.in
+        output: 15.out
+      - input: 16.in
+        output: 16.out
+      - input: 17.in
+        output: 17.out
+      - input: 18.in
+        output: 18.out
+      - input: 19.in
+        output: 19.out
+      - input: 20.in
+        output: 20.out
+      - input: 21.in
+        output: 21.out
+      - input: 22.in
+        output: 22.out
+      - input: 23.in
+        output: 23.out
+      - input: 24.in
+        output: 24.out
+      - input: 25.in
+        output: 25.out
