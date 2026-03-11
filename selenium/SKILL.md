@@ -25,6 +25,48 @@ metadata:
 - 需要处理 iframe、弹窗、Alert 等特殊元素
 - 需要隐式/显式等待元素加载
 - **需要看到浏览器操作过程（默认有头模式）**
+- **需要访问网站并抓取数据（如 Codeforces、智国 OJ 等）**
+
+## 核心原则
+
+### 🎯 AI 自主决策模式
+
+**重要：使用本技能时，小妹应自主决策，不依赖预写脚本！**
+
+当哥哥说"访问网站"、"抓取数据"、"搬运题目"等涉及网站操作时：
+1. ✅ **直接使用 Selenium 连接浏览器**
+2. ✅ **自主编写 Python 代码** 完成操作
+3. ✅ **现场解析页面结构**，提取所需数据
+4. ❌ **不要依赖** `/tmp/xxx.py` 或 `~/桌面/copaw/xxx.py` 等预写脚本
+
+**示例流程：**
+```python
+# 1. 连接浏览器（使用哥哥的原有配置，避免 Cloudflare）
+from selenium import webdriver
+from selenium.webdriver.edge.options import Options
+options = Options()
+options.add_experimental_option('debuggerAddress', '127.0.0.1:9222')
+driver = webdriver.Edge(options=options)
+
+# 2. 访问目标网站
+driver.get('https://codeforces.com/problemset/problem/677/A')
+
+# 3. 等待页面加载（处理 Cloudflare）
+import time
+time.sleep(2)
+
+# 4. 解析页面内容（使用 BeautifulSoup）
+from bs4 import BeautifulSoup
+html = driver.page_source
+soup = BeautifulSoup(html, 'html.parser')
+
+# 5. 提取数据
+title = soup.find('div', class_='title').text
+# ... 自主决策提取逻辑
+
+# 6. 断开连接
+driver.service.process.terminate()
+```
 
 ## 核心功能
 
@@ -439,6 +481,131 @@ driver.quit()  # 关闭所有窗口并结束会话
 
 ## 完整示例
 
+### 示例 0：AI 自主决策 - 批量搬运 Codeforces 题目（最佳实践）
+
+```python
+from selenium import webdriver
+from selenium.webdriver.edge.options import Options
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup
+import openpyxl
+import os
+import shutil
+import re
+import subprocess
+import json
+import time
+import random
+
+print("🚀 批量搬运开始")
+
+# 1. 连接浏览器（使用哥哥的原有配置）
+options = Options()
+options.add_experimental_option('debuggerAddress', '127.0.0.1:9222')
+driver = webdriver.Edge(options=options)
+print("✅ 已连接浏览器")
+
+# 2. 加载待搬运列表
+with open('/tmp/to_move.json', 'r') as f:
+    to_move = json.load(f)
+
+# 3. 加载 Excel
+wb = openpyxl.load_workbook('/home/fslong/桌面/题目分类整理.xlsx')
+ws = wb.active
+
+banji_dir = '/home/fslong/.copaw/active_skills/搬题姬'
+question_template = f'{banji_dir}/question'
+
+for idx, item in enumerate(to_move[:5], 1):
+    print(f"\n📦 [{idx}/5] {item['name']}")
+    
+    # 4. 访问题目页面
+    driver.get(item['url'])
+    time.sleep(2)
+    
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    problem = soup.find('div', class_='problem-statement')
+    
+    # 5. 提取题目内容（自主决策解析逻辑）
+    title = problem.find('div', class_='title').text.strip()
+    
+    # 提取描述
+    desc = ""
+    for p in problem.find_all(['p', 'div']):
+        text = p.get_text(strip=True)
+        if len(text) > 50:
+            desc = text[:500]
+            break
+    
+    # 提取样例（正确处理换行）
+    samples = []
+    for sample in problem.find_all('div', class_='sample-test'):
+        input_pre = sample.find('div', class_='input')
+        output_pre = sample.find('div', class_='output')
+        if input_pre and output_pre:
+            inp = input_pre.find('pre')
+            out = output_pre.find('pre')
+            if inp and out:
+                samples.append({
+                    'input': inp.get_text(separator='\n', strip=False),
+                    'output': out.get_text(separator='\n', strip=False)
+                })
+    
+    # 6. 生成题目文件
+    work_dir = f'{banji_dir}/work'
+    shutil.copytree(question_template, work_dir)
+    
+    # 生成 problem_zh.md（中文翻译）
+    content = f"""<div class="water">
+# {title}
+## 题目描述
+{desc}
+## 输入格式
+...
+## 输出格式
+...
+"""
+    for i, s in enumerate(samples, 1):
+        content += f"""## 样例输入 {i}
+```
+{s['input']}```
+## 样例输出 {i}
+```
+{s['output']}```
+"""
+    content += "</div>"
+    
+    with open(f"{work_dir}/problem_zh.md", 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    # 7. 生成其他文件（yaml, std.cpp, 测试数据）
+    # ...
+    
+    # 8. 打包并移动到桌面
+    dir_name = f"{item['contestId']}_{item['index']}_{clean_title}"
+    shutil.make_archive(f'{banji_dir}/{dir_name}', 'zip', work_dir)
+    shutil.move(f'{banji_dir}/{dir_name}.zip', f'/home/fslong/桌面/{dir_name}.zip')
+    
+    # 9. 更新 Excel
+    ws.cell(row=item['row'], column=6, value='是')
+    wb.save('/home/fslong/桌面/题目分类整理.xlsx')
+    
+    print(f"✅ 完成！休息中...")
+    time.sleep(random.randint(30, 60))  # 休息 30-60 秒
+
+# 10. 断开连接
+driver.service.process.terminate()
+print("🎉 全部完成！")
+```
+
+**关键要点：**
+- ✅ 使用 `get_text(separator='\n', strip=False)` 保留样例换行
+- ✅ 每道题休息 30-60 秒，避免触发反爬
+- ✅ 搬运完成后立即更新 Excel
+- ✅ 题目包生成后立即移动到桌面
+- ✅ 使用 `driver.service.process.terminate()` 断开而不关闭浏览器
+
 ### 示例 1：使用 Edge 浏览器抓取数据（有头模式）
 
 ```python
@@ -563,8 +730,10 @@ except StaleElementReferenceException:
 - ✅ **默认有头模式**：哥哥可以看到浏览器操作过程
 - ✅ **Edge/Chrome 都支持**：根据需要选择浏览器
 - ✅ **无头模式可选**：添加 `--headless` 参数即可启用
+- ✅ **AI 自主决策**：涉及网站访问时直接使用 Selenium，不依赖预写脚本
+- ✅ **使用原有配置**：访问有防护的网站时，使用 `~/.config/microsoft-edge` 而非新目录
 - 确保已安装 selenium：`pip install selenium`
 - 需要对应的 WebDriver（EdgeDriver 或 ChromeDriver）
-- 频繁请求可能被反爬，适当添加延迟
+- 频繁请求可能被反爬，适当添加延迟（30-60秒）
 - 遵守目标网站的 robots.txt 和使用条款
 - 有 Cloudflare 防护的网站需要等待验证通过
