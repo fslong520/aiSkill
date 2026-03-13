@@ -446,3 +446,34 @@ metadata:
 - 删除了"充当"、"体现"、"至关重要"等AI词汇
 - 具体例子代替模糊描述
 - 更贴近14岁学生的理解方式
+
+## 技术偏好
+
+### CDN 源偏好
+
+生成 HTML 讲义时，**所有 CDN 链接优先使用国内可访问的源**：
+
+- **推荐使用**：unpkg.com（首选）、fastly.jsdelivr.net、cdnjs.cloudflare.com
+- **避免使用**：bootcdn（太慢）、cdn.jsdelivr.net（国内访问不了）、被墙的国外 CDN
+- **示例**：
+  ```html
+  <!-- 推荐 - unpkg.com -->
+  <script src="https://unpkg.com/highlight.js@11.9.0/highlight.min.js"></script>
+  <link href="https://unpkg.com/highlight.js@11.9.0/styles/atom-one-dark.min.css" rel="stylesheet">
+  
+  <!-- 或使用 fastly.jsdelivr.net -->
+  <script src="https://fastly.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
+  
+  <!-- 或使用 cdnjs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  ```
+
+### 讲义文件处理规则
+
+在更新讲义数据库时（`update_item.py`），遵循以下规则：
+
+1. **HTML 优先原则**：同时存在 `.html` 和 `.md` 版本的讲义，只添加 HTML 版本到数据库
+2. **MD 文件过滤**：`.md` 文件必须以 `_ppt` 结尾才会被添加到数据库
+   - 例如：`循环结构_ppt.md` ✅ 会被添加
+   - 例如：`循环结构.md` ❌ 不会被添加
+3. **支持的文件类型**：`.pdf`、`.html`、`.md`（需符合上述规则）
