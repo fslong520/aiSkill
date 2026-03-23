@@ -1,0 +1,206 @@
+{
+  "version": "1.0.0",
+  "created": "2026-03-24",
+  "world": {
+    "name": "艾尔德兰大陆",
+    "type": "奇幻中世纪",
+    "era": "第二纪元·魔法衰退时代",
+    "year": 1250,
+    "magic_system": ["元素魔法", "符文魔法"],
+    "magic_rarity": "普通法师占人口5%",
+    "races": [
+      {"name": "人类", "population": "60%", "traits": "适应性强"},
+      {"name": "精灵", "population": "15%", "traits": "魔法亲和、长寿"},
+      {"name": "矮人", "population": "15%", "traits": "锻造大师、坚韧"},
+      {"name": "兽人", "population": "8%", "traits": "强壮、野性"},
+      {"name": "龙裔", "population": "2%", "traits": "龙血、稀有"}
+    ],
+    "nations": [
+      {
+        "name": "艾尔德兰王国",
+        "ruler": "阿尔伯特三世",
+        "main_race": "人类",
+        "strength": "骑士团强大",
+        "weakness": "魔法薄弱"
+      },
+      {
+        "name": "银月森林",
+        "ruler": "精灵议会",
+        "main_race": "精灵",
+        "strength": "魔法圣地",
+        "weakness": "封闭排外"
+      },
+      {
+        "name": "铁山联邦",
+        "ruler": "锻造议会",
+        "main_race": "矮人",
+        "strength": "锻造之都",
+        "weakness": "领土狭小"
+      }
+    ],
+    "history": [
+      {"year": -300, "event": "黑暗魔王降临，五大种族联手击败"},
+      {"year": -100, "event": "魔法开始衰退，引发恐慌"},
+      {"year": -10, "event": "艾尔德兰王子神秘失踪"},
+      {"year": 0, "event": "当前：表面和平，暗流涌动"}
+    ],
+    "current_events": ["魔法衰退引发的社会变革", "王国与精灵关系紧张", "银月森林封锁边境"]
+  },
+  "player": {
+    "name": "艾莉丝",
+    "name_customized": false,
+    "race": "半精灵",
+    "gender": "女",
+    "age": 4,
+    "stage": "童年期",
+    "attributes": {
+      "strength": 7,
+      "dexterity": 11,
+      "intelligence": 17,
+      "charisma": 13,
+      "luck": 9
+    },
+    "skills": [
+      {"name": "魔力感知", "level": "觉醒", "stars": 3, "description": "可感知周围魔力流动"},
+      {"name": "商业基础", "level": "入门", "stars": 1, "description": "基础的交易和算账能力"}
+    ],
+    "traits": [
+      {"name": "魔法亲和", "type": "positive", "effect": "学习魔法效率+20%"},
+      {"name": "早慧", "type": "positive", "effect": "成长速度+50%"},
+      {"name": "混血之姿", "type": "neutral", "effect": "在两族间处境微妙"},
+      {"name": "体弱", "type": "negative", "effect": "力量成长-20%"}
+    ],
+    "relationships": [
+      {"name": "罗伯特", "role": "父亲", "race": "人类", "intimacy": 90, "description": "边境小镇商人，正在教你经商之道"},
+      {"name": "艾琳娜", "role": "母亲", "race": "精灵", "intimacy": 85, "description": "银月森林艾瑟瑞尔家族长女，流亡者，对你选择经商有些失落"},
+      {"name": "莉莉", "role": "妹妹", "race": "半精灵（偏向人类）", "age": 1, "intimacy": 50, "description": "1岁的妹妹，似乎没有魔法天赋"}
+    ],
+    "birthplace": "艾尔德兰王国·边境小镇·河湾镇",
+    "status": {
+      "location": "河湾镇·家中",
+      "energy": 100,
+      "mood": "平静",
+      "goal": null
+    }
+  },
+  "equipment": {
+    "main_hand": null,
+    "off_hand": null,
+    "head": null,
+    "body": null,
+    "hands": null,
+    "feet": null,
+    "accessory1": {
+      "name": "母亲的护身符",
+      "type": "accessory",
+      "rarity": "稀有",
+      "effects": ["魔力恢复+5%", "蕴含微弱魔力"],
+      "description": "艾琳娜的遗物，蕴含微弱魔力"
+    },
+    "accessory2": null,
+    "cloak": null,
+    "belt": null,
+    "badge": null
+  },
+  "inventory": {
+    "items": [],
+    "weight_current": 1,
+    "weight_max": 20
+  },
+  "storage": {
+    "items": []
+  },
+  "consumables": {
+    "potions": [],
+    "food": [],
+    "scrolls": []
+  },
+  "quest_items": [],
+  "wealth": {
+    "gold": 50,
+    "silver": 0,
+    "copper": 0,
+    "transactions": [
+      {"turn": 0, "desc": "家庭给予", "gold": 50}
+    ]
+  },
+  "property": {
+    "houses": [],
+    "mounts": [],
+    "businesses": []
+  },
+  "family": {
+    "background": "商人家庭",
+    "wealth": "小康",
+    "reputation": "普通",
+    "secrets": ["母亲隐瞒了精灵贵族身份", "父亲年轻时是冒险者"]
+  },
+  "game": {
+    "turn": 5,
+    "started": true,
+    "ended": false,
+    "end_reason": null
+  },
+  "history": {
+    "events": [
+      {
+        "turn": 1,
+        "age": 0,
+        "title": "天赋觉醒",
+        "description": "出生时尝试感知母亲传递的魔力，成功觉醒了魔力感知能力",
+        "choice": "尝试感知那股力量",
+        "effects": ["获得技能：魔力感知（觉醒）", "获得特质：早慧"]
+      },
+      {
+        "turn": 2,
+        "age": 1,
+        "title": "神秘旅人",
+        "description": "遇到一个神秘的流浪占卜师，他似乎察觉到了你的魔力天赋。你向母亲询问，得知了一些关于她过去的线索。",
+        "choice": "问母亲关于旅人的事",
+        "effects": ["母亲透露部分过去", "解锁线索：银月森林", "旅人离开"]
+      },
+      {
+        "turn": 3,
+        "age": 2,
+        "title": "追查旅人",
+        "description": "在母亲怀孕期间，你主动追查神秘旅人的下落。得知旅人可能来自银月森林，似乎在寻找什么东西或某个人。",
+        "choice": "询问关于旅人的事",
+        "effects": ["获得线索：旅人仍在附近", "发现：旅人似乎在寻找某人", "父母决定加强警戒"]
+      },
+      {
+        "turn": 4,
+        "age": 3,
+        "title": "银月之变",
+        "description": "妹妹莉莉出生，银月森林突然封锁边境。你追问母亲，得知艾瑟瑞尔家族可能发生了内乱。",
+        "choice": "问母亲银月森林发生了什么",
+        "effects": ["解锁线索：家族内乱", "解锁线索：舅父的野心", "婴儿期结束"]
+      },
+      {
+        "turn": 5,
+        "age": 4,
+        "title": "人生的第一课",
+        "description": "选择了跟随父亲学习经商，开始接触商业贸易的基础知识。",
+        "choice": "跟随父亲学习经商",
+        "effects": ["智力+1", "魅力+1", "获得技能：商业基础（入门）", "父亲关系+10", "母亲关系-10"]
+      }
+    ],
+    "choices": [],
+    "achievements": [
+      {"name": "早慧", "description": "出生即觉醒魔力感知"},
+      {"name": "好奇心", "description": "主动追查隐藏线索"}
+    ]
+  },
+  "clues": [
+    {"name": "银月森林", "description": "母亲的故乡，精灵族领地，最近封锁边境", "unlocked": true},
+    {"name": "艾瑟瑞尔家族", "description": "母亲的家族，世代守护月神之泉", "unlocked": true},
+    {"name": "艾尔瑞克", "description": "你的舅父，艾瑟瑞尔家主，企图血脉献祭", "unlocked": true},
+    {"name": "卡萨林", "description": "前家族预言师，可能在追查你们", "unlocked": true},
+    {"name": "月神之泉", "description": "精灵族圣地，魔力源头", "unlocked": true},
+    {"name": "血脉献祭", "description": "艾尔瑞克的疯狂计划，牺牲艾瑟瑞尔血脉逆转魔法衰退", "unlocked": true}
+  ],
+  "settings": {
+    "image_generation": true,
+    "story_detail": "详细",
+    "event_frequency": "正常"
+  }
+}
