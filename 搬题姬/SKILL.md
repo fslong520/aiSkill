@@ -1020,3 +1020,116 @@ done
 - 📙 [常见问题解答](#常见问题处理) - 典型问题解决方案
 
 记住:你的目标是生成一个完整、规范、可直接使用的OJ题目文件包!
+
+---
+
+## ⚠️ 常见错误（血泪教训）
+
+### 1. config.yaml 格式错误
+
+**错误写法**：
+```yaml
+# ❌ 错误！缺少顶层配置
+subtasks:
+  - score: 100
+    time_limit: 2    # ❌ 时间限制应该在顶层
+    memory_limit: 1024
+    type: min        # ❌ 类型错误
+    testcases:       # ❌ 应该是 cases
+      - input: 1.in
+        output: 1.out
+```
+
+**正确写法**：
+```yaml
+# ✅ 正确！
+type: default       # 顶层类型
+time: 2s            # 顶层时间限制
+memory: 1024MB      # 顶层内存限制
+subtasks:
+  - score: 100
+    if: []          # 必须有
+    id: 1           # 必须有
+    type: min       # subtask 内的类型
+    cases:          # ✅ 是 cases 不是 testcases
+      - input: 1.in
+        output: 1.out
+```
+
+**关键点**：
+- 顶层必须有 `type: default`、`time`、`memory`
+- 每个 subtask 必须有 `if: []` 和 `id`
+- 测试点列表是 `cases` 不是 `testcases`
+
+### 2. 分块策略方向搞反
+
+**场景**：Multiple Bonus（给 k 的倍数加值，查询前缀和）
+
+**错误思路**：
+- 小 k（倍数多）→ 直接更新 BIT ❌（太慢！）
+- 大 k（倍数少）→ 记录 lazy ❌（查询时遍历所有大 k 很慢！）
+
+**正确思路**：
+- 小 k（k ≤ √N，倍数多）→ 记录 lazy，查询时计算贡献
+- 大 k（k > √N，倍数少）→ 直接更新 BIT
+
+**原因**：小 k 的倍数多（如 k=1 有 N 个），大 k 的倍数少（如 k>√N 最多 √N 个）
+
+### 3. 打包格式错误
+
+**错误**：直接打包 work 目录
+```bash
+zip -r problem.zip work  # ❌ 解压后是 work/
+```
+
+**正确**：重命名后再打包
+```bash
+mv work problem-name
+zip -r problem.zip problem-name  # ✅ 解压后是 problem-name/
+```
+
+### 4. 不阅读 SKILL.md 就动手
+
+**血泪教训**：SKILL.md 里明明有正确格式，但小妹自己瞎写导致多次返工！
+
+**必须做的事**：
+1. 开始搬运前，先完整阅读 SKILL.md
+2. 特别注意 config.yaml 格式（第 378-420 行）
+3. 遇到问题先查 SKILL.md，不要瞎猜
+
+---
+
+**更新日期**：2026-03-24
+**更新原因**：AWC32C/E 搬运时 config.yaml 格式错误、AWC32E 分块策略搞反导致 TLE、ABC450A 打包结构完全错误（文件直接放根目录）
+
+### 5. 打包结构错误（ABC450A 血泪教训）
+
+**错误打包**：
+```
+problem.zip
+├── 1.in          # ❌ 直接放根目录
+├── 1.out
+├── config.yaml   # ❌ 放根目录，不是 testdata/
+└── ...           # ❌ 缺少 problem_zh.md、std.cpp 等
+```
+
+**正确打包**：
+```
+problem.zip
+└── problem-name/     # ✅ 有子目录
+    ├── problem_zh.md # ✅ 必需文件
+    ├── problem.yaml
+    ├── std.cpp
+    ├── mkin.h
+    ├── mkdata.cpp
+    └── testdata/
+        ├── config.yaml  # ✅ 在 testdata 里
+        ├── 1.in
+        ├── 1.out
+        └── ...
+```
+
+**关键点**：
+- 必须先 `mv work problem-name` 再打包
+- config.yaml 必须在 `testdata/` 目录下
+- 必须有完整的 problem_zh.md、std.cpp、mkin.h 等文件
