@@ -1064,14 +1064,14 @@ subtasks:
 type: default       # 顶层类型
 time: 2s            # 顶层时间限制
 memory: 1024MB      # 顶层内存限制
-subtasks:
-  - score: 100
-    if: []          # 必须有
-    id: 1           # 必须有
-    type: min       # subtask 内的类型
-    cases:          # ✅ 是 cases 不是 testcases
-      - input: 1.in
-        output: 1.out
+# subtasks:
+#   - score: 100
+#     if: []          # 必须有
+#     id: 1           # 必须有
+#     type: min       # subtask 内的类型
+#     cases:          # ✅ 是 cases 不是 testcases
+#       - input: 1.in
+#         output: 1.out
 ```
 
 **关键点**：
@@ -1095,21 +1095,21 @@ subtasks:
 
 ### 3. 打包格式错误
 
-**错误**：zip 包内包含 work 目录本身
+**正确**：zip 包内包含 work 目录本身
 ```bash
-zip -r problem.zip work  # ❌ 解压后是 work/
+zip -r problem.zip work  # ✅ 解压后是 work/
 ```
 
-**正确**：进入 work 目录打包内容
+**错误**：进入 work 目录打包内容
 ```bash
-cd work && zip -r ../problem.zip .  # ✅ 解压后直接是题目文件
+cd work && zip -r ../problem.zip .  # ❌ 解压后直接是题目文件
 cd ..
 ```
 
 **关键**：
-- ❌ 不重命名 work 目录
-- ✅ 在 work 目录内执行 zip
-- ✅ zip 包内不包含 work 目录本身
+- ✅ 不重命名 work 目录
+- ✅ 在 work 目录外内执行 zip
+- ✅ zip 包包含 work 目录本身
 
 ### 4. 不阅读 SKILL.md 就动手
 
@@ -1155,7 +1155,7 @@ problem.zip
 ```
 
 **关键点**：
-- 直接在 work 目录内打包，不重命名
+- 直接在 work 目录外打包，不重命名
 - config.yaml 必须在 `testdata/` 目录下
 - 必须有完整的 problem.yaml、std.cpp、mkin.h 等文件
 - 使用 `cd work && zip -r ../xxx.zip .` 打包
