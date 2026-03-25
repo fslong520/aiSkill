@@ -1,0 +1,95 @@
+{
+  "version": "1.0.0",
+  "created": "初始化模板",
+  "world": {
+    "name": null,
+    "type": null,
+    "era": null,
+    "year": null,
+    "magic_system": null,
+    "races": [],
+    "nations": [],
+    "history": [],
+    "current_events": []
+  },
+  "player": {
+    "name": null,
+    "name_customized": false,
+    "race": null,
+    "gender": null,
+    "age": 0,
+    "stage": "婴儿期",
+    "attributes": {
+      "strength": 10,
+      "dexterity": 10,
+      "intelligence": 10,
+      "charisma": 10,
+      "luck": 10
+    },
+    "skills": [],
+    "traits": [],
+    "relationships": [],
+    "birthplace": null,
+    "status": {
+      "location": null,
+      "energy": 100,
+      "mood": "平静",
+      "goal": null
+    }
+  },
+  "equipment": {
+    "main_hand": null,
+    "off_hand": null,
+    "head": null,
+    "body": null,
+    "hands": null,
+    "feet": null,
+    "accessory1": null,
+    "accessory2": null,
+    "cloak": null,
+    "belt": null,
+    "badge": null
+  },
+  "inventory": {
+    "items": [],
+    "weight_current": 0,
+    "weight_max": 20
+  },
+  "storage": {
+    "items": []
+  },
+  "consumables": {
+    "potions": [],
+    "food": [],
+    "scrolls": []
+  },
+  "quest_items": [],
+  "wealth": {
+    "gold": 0,
+    "silver": 0,
+    "copper": 0,
+    "transactions": []
+  },
+  "property": {
+    "houses": [],
+    "mounts": [],
+    "businesses": []
+  },
+  "game": {
+    "turn": 0,
+    "started": false,
+    "ended": false,
+    "end_reason": null
+  },
+  "history": {
+    "events": [],
+    "choices": [],
+    "achievements": []
+  },
+  "clues": [],
+  "settings": {
+    "image_generation": true,
+    "story_detail": "详细",
+    "event_frequency": "正常"
+  }
+}
