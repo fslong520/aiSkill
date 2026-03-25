@@ -373,7 +373,7 @@ signed main()
 
 ## 阶段6:配置测试数据
 
-创建`work/testdata/config.yaml`:
+创建`work/testdata/testdata/config.yaml`:
 
 ```yaml
 type: default
@@ -510,7 +510,7 @@ memory: 256MB
 - [ ] std.cpp能正确编译运行
 - [ ] std.cpp通过所有测试数据
 - [ ] 测试数据生成器正常工作
-- [ ] config.yaml配置合理,总分100
+- [ ] testdata/config.yaml配置合理,总分100
 - [ ] (如需)spj.cpp正确实现
 - [ ] 文件名无"搬运"等前缀
 - [ ] 代码符合风格规范
@@ -1043,7 +1043,7 @@ done
 
 ## ⚠️ 常见错误（血泪教训）
 
-### 1. config.yaml 格式错误
+### 1. testdata/config.yaml 格式错误
 
 **错误写法**：
 ```yaml
@@ -1117,14 +1117,14 @@ cd ..
 
 **必须做的事**：
 1. 开始搬运前，先完整阅读 SKILL.md
-2. 特别注意 config.yaml 格式（第 378-420 行）
+2. 特别注意 testdata/config.yaml 格式（第 378-420 行）
 3. 遇到问题先查 SKILL.md，不要瞎猜
 
 ---
 
 **更新日期**：2026-03-25
 **更新原因**：
-- 2026-03-24: AWC32C/E 搬运时 config.yaml 格式错误、AWC32E 分块策略搞反导致 TLE、ABC450A 打包结构完全错误
+- 2026-03-24: AWC32C/E 搬运时 testdata/config.yaml 格式错误、AWC32E 分块策略搞反导致 TLE、ABC450A 打包结构完全错误
 - 2026-03-25: 改进打包流程 - 不重命名 work 目录，直接打包 work 内容，一道题一个 zip 包
 
 ### 5. 打包结构错误（ABC450A 血泪教训）
