@@ -379,43 +379,43 @@ signed main()
 type: default
 time: 1s
 memory: 256MB
-subtasks:
-  # 样例测试
-  - score: 10
-    if: []
-    id: 1
-    type: min
-    cases:
-      - input: 1.in
-        output: 1.out
-      - input: 2.in
-        output: 2.out
-  
-  # 小数据测试
-  - score: 20
-    if: []
-    id: 2
-    type: min
-    cases:
-      - input: 3.in
-        output: 3.out
-      - input: 4.in
-        output: 4.out
-      - input: 5.in
-        output: 5.out
-  
-  # 大数据测试
-  - score: 70
-    if: []
-    id: 3
-    type: min
-    cases:
-      - input: 6.in
-        output: 6.out
-      - input: 7.in
-        output: 7.out
-      - input: 8.in
-        output: 8.out
+# subtasks:
+#   # 样例测试
+#   - score: 10
+#     if: []
+#     id: 1
+#     type: min
+#     cases:
+#       - input: 1.in
+#         output: 1.out
+#       - input: 2.in
+#         output: 2.out
+#   
+#   # 小数据测试
+#   - score: 20
+#     if: []
+#     id: 2
+#     type: min
+#     cases:
+#       - input: 3.in
+#         output: 3.out
+#       - input: 4.in
+#         output: 4.out
+#       - input: 5.in
+#         output: 5.out
+#   
+#   # 大数据测试
+#   - score: 70
+#     if: []
+#     id: 3
+#     type: min
+#     cases:
+#       - input: 6.in
+#         output: 6.out
+#       - input: 7.in
+#         output: 7.out
+#       - input: 8.in
+#         output: 8.out
 ```
 
 **配置要求**:
@@ -447,26 +447,44 @@ subtasks:
    # 测试所有输入文件
    ```
 
-## 阶段9:打包发布
+## 阶段 9:打包发布
 
 1. 清理临时文件:
    ```bash
-   rm -f std mkdata
+   rm -f work/std work/mkdata
    ```
-   **注意**: 保留`mkdata.cpp`和`mkin.h`
+   **注意**: 保留 `mkdata.cpp` 和 `mkin.h`
 
-2. 重命名work目录:
-   - 如果有用户提供的pid: `[用户PID]-[title]`
-   - 如果无pid且原pid为null: `[title]`
-   - 如果无pid且原pid有值: `[原pid]-[title]`
+2. 确定 zip 文件名:
+   - 从 `work/problem.yaml` 读取 `pid` 和 `title`
+   - 格式：`[PID]-[title].zip`
+   - title 中的空格替换为短横线 `-`
+   - 示例：`AWC33A-Grading-the-Answer-Sheet.zip`
 
-3. 打包:
+3. 打包 (直接打包 work 目录内容，不重命名目录):
    ```bash
-   zip -r [目录名].zip [目录名]
+   cd work && zip -r ~/桌面/copaw/[PID]-[title].zip .
+   cd ..
    ```
+   
+   **关键改进**: 
+   - ❌ 不重命名 work 目录
+   - ✅ 直接在 work 目录内执行 zip
+   - ✅ zip 包内不包含 work 目录本身，只包含题目文件
+   - ✅ 一道题一个 zip 包
 
-4. **保留重命名后的目录**,方便用户后续调整
+4. 打包后清理 work 目录:
+   ```bash
+   rm -rf work
+   ```
+   为下一道题腾出空间
 
+5. 多题打包 (如用户要求多题打包):
+   ```bash
+   # 每道题单独打包成 [PID]-[title].zip
+   # 然后可选：将所有题目打包成一个大包
+   zip -r ~/桌面/copaw/[比赛编号].zip [PID1]-[title1] [PID2]-[title2] ...
+   ```
 # 质量检查清单
 
 在打包前必须确认:
@@ -501,7 +519,7 @@ subtasks:
 
 1. ✅ 题面必须以`<div class="water">`开头,以`</div>`结尾
 2. ✅ 标题不要加"搬运"等前缀
-3. ✅ 打包后保留题目文件夹
+3. ✅ 打包后清理 work 目录，为下一道题腾出空间
 4. ✅ 不使用任何第三方库
 5. ✅ 严格遵循C++代码风格规范
 6. ❌ 不删除`mkdata.cpp`和`mkin.h`
@@ -1077,16 +1095,21 @@ subtasks:
 
 ### 3. 打包格式错误
 
-**错误**：直接打包 work 目录
+**错误**：zip 包内包含 work 目录本身
 ```bash
 zip -r problem.zip work  # ❌ 解压后是 work/
 ```
 
-**正确**：重命名后再打包
+**正确**：进入 work 目录打包内容
 ```bash
-mv work problem-name
-zip -r problem.zip problem-name  # ✅ 解压后是 problem-name/
+cd work && zip -r ../problem.zip .  # ✅ 解压后直接是题目文件
+cd ..
 ```
+
+**关键**：
+- ❌ 不重命名 work 目录
+- ✅ 在 work 目录内执行 zip
+- ✅ zip 包内不包含 work 目录本身
 
 ### 4. 不阅读 SKILL.md 就动手
 
@@ -1099,8 +1122,10 @@ zip -r problem.zip problem-name  # ✅ 解压后是 problem-name/
 
 ---
 
-**更新日期**：2026-03-24
-**更新原因**：AWC32C/E 搬运时 config.yaml 格式错误、AWC32E 分块策略搞反导致 TLE、ABC450A 打包结构完全错误（文件直接放根目录）
+**更新日期**：2026-03-25
+**更新原因**：
+- 2026-03-24: AWC32C/E 搬运时 config.yaml 格式错误、AWC32E 分块策略搞反导致 TLE、ABC450A 打包结构完全错误
+- 2026-03-25: 改进打包流程 - 不重命名 work 目录，直接打包 work 内容，一道题一个 zip 包
 
 ### 5. 打包结构错误（ABC450A 血泪教训）
 
@@ -1130,6 +1155,7 @@ problem.zip
 ```
 
 **关键点**：
-- 必须先 `mv work problem-name` 再打包
+- 直接在 work 目录内打包，不重命名
 - config.yaml 必须在 `testdata/` 目录下
-- 必须有完整的 problem_zh.md、std.cpp、mkin.h 等文件
+- 必须有完整的 problem.yaml、std.cpp、mkin.h 等文件
+- 使用 `cd work && zip -r ../xxx.zip .` 打包
