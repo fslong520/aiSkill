@@ -1,0 +1,62 @@
+2026-03-24 02:41:03 | INFO | application.py:148 | start | Init ReMe with config: {"backend":"","app_name":"ReMe","working_dir":"/home/fslong/.copaw/workspaces/xiaoyu","enable_logo":false,"language":"","thread_pool_max_workers":16,"ray_max_workers":-1,"log_to_console":false,"disabled_flows":[],"enabled_flows":[],"mcp_servers":{},"mcp":{"transport":"stdio","host":"0.0.0.0","port":8001},"http":{"host":"0.0.0.0","port":8001,"timeout_keep_alive":3600,"limit_concurrency":1000},"cmd":{"flow":""},"ops":{},"flows":{},"as_llms":{"default":{"backend":"openai","model_name":"qwen3.5-plus"}},"as_llm_formatters":{"default":{"backend":"openai"}},"as_token_counters":{"default":{"backend":"rule","token_count_estimate_divisor":3.75}},"llms":{},"embedding_models":{"default":{"backend":"openai","model_name":"","dimensions":1024,"use_dimensions":false,"enable_cache":true,"max_batch_size":10,"max_cache_size":2000,"max_input_length":8192,"api_key":"","base_url":""}},"vector_stores":{},"file_stores":{"default":{"backend":"chroma","embedding_model":"default","store_name":"copaw","vector_enabled":false,"fts_enabled":true}},"token_counters":{},"file_watchers":{"default":{"backend":"full","file_store":"default","watch_paths":["/home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md","/home/fslong/.copaw/workspaces/xiaoyu/memory.md","/home/fslong/.copaw/workspaces/xiaoyu/memory"],"suffix_filters":[".md"],"recursive":false,"scan_on_start":true}},"metadata":{}}
+2026-03-24 02:41:04 | INFO | base_embedding_model.py:158 | _load_cache | No cache file found at /home/fslong/.copaw/workspaces/xiaoyu/embedding_cache/embedding_cache.jsonl, starting with empty cache
+2026-03-24 02:41:04 | INFO | chroma_file_store.py:135 | start | ChromaDB initialized with collection: chunks_copaw
+2026-03-24 02:41:04 | INFO | chroma_file_store.py:136 | start | File metadata will be persisted to: /home/fslong/.copaw/workspaces/xiaoyu/copaw_file_metadata.json
+2026-03-24 02:41:04 | INFO | chroma_file_store.py:623 | clear_all | Cleared all data from ChromaDB collection: chunks_copaw
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:84 | start | Cleared all indexed data on start
+2026-03-24 02:41:04 | WARNING | base_file_watcher.py:125 | _scan_existing_files | Watch path does not exist: /home/fslong/.copaw/workspaces/xiaoyu/memory.md
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:146 | _scan_existing_files | [SCAN_ON_START] Found 2 existing files matching watch criteria
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:66 | _on_changes | delete_file /home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:69 | _on_changes | Upserted 1 chunks for /home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:78 | _on_changes | File 1 changed: /home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:66 | _on_changes | delete_file /home/fslong/.copaw/workspaces/xiaoyu/memory/2026-03-24.md
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:69 | _on_changes | Upserted 1 chunks for /home/fslong/.copaw/workspaces/xiaoyu/memory/2026-03-24.md
+2026-03-24 02:41:04 | INFO | full_file_watcher.py:78 | _on_changes | File 1 changed: /home/fslong/.copaw/workspaces/xiaoyu/memory/2026-03-24.md
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:221 | on_changes | [FullFileWatcher] on_changes: {(<Change.added: 1>, '/home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md'), (<Change.added: 1>, '/home/fslong/.copaw/workspaces/xiaoyu/memory/2026-03-24.md')}
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:148 | _scan_existing_files | [SCAN_ON_START] Added 2 files to memory store
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:156 | _scan_existing_files | Found existing file: /home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md, 1 chunks
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:156 | _scan_existing_files | Found existing file: /home/fslong/.copaw/workspaces/xiaoyu/memory/2026-03-24.md, 1 chunks
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:91 | start | Started watching: ['/home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md', '/home/fslong/.copaw/workspaces/xiaoyu/memory.md', '/home/fslong/.copaw/workspaces/xiaoyu/memory']
+2026-03-24 02:41:04 | INFO | application.py:266 | start | ReMe Application started
+2026-03-24 02:41:04 | WARNING | base_file_watcher.py:182 | _watch_loop | Skipping non-existent paths: {'/home/fslong/.copaw/workspaces/xiaoyu/memory.md'}
+2026-03-24 02:41:04 | INFO | base_file_watcher.py:185 | _watch_loop | Starting watch on valid paths: ['/home/fslong/.copaw/workspaces/xiaoyu/MEMORY.md', '/home/fslong/.copaw/workspaces/xiaoyu/memory']
+2026-03-24 02:43:37 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000535s ==========
+2026-03-24 02:43:38 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.144675s ==========
+2026-03-24 02:43:38 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000257s ==========
+2026-03-24 02:43:38 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.131448s ==========
+2026-03-24 02:43:47 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000267s ==========
+2026-03-24 02:43:48 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.137393s ==========
+2026-03-24 02:43:48 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000257s ==========
+2026-03-24 02:43:48 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.136361s ==========
+2026-03-24 02:44:13 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000275s ==========
+2026-03-24 02:44:14 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.141584s ==========
+2026-03-24 02:44:14 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000253s ==========
+2026-03-24 02:44:14 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.156926s ==========
+2026-03-24 02:44:18 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000262s ==========
+2026-03-24 02:44:18 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.143217s ==========
+2026-03-24 02:44:18 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000258s ==========
+2026-03-24 02:44:18 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.145045s ==========
+2026-03-24 02:45:10 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000259s ==========
+2026-03-24 02:45:10 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.150611s ==========
+2026-03-24 02:45:11 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000248s ==========
+2026-03-24 02:45:11 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.148791s ==========
+2026-03-24 02:46:03 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000260s ==========
+2026-03-24 02:46:03 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.147588s ==========
+2026-03-24 02:46:03 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000257s ==========
+2026-03-24 02:46:03 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.143791s ==========
+2026-03-24 02:46:14 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000600s ==========
+2026-03-24 02:46:14 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.147835s ==========
+2026-03-24 02:46:14 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000268s ==========
+2026-03-24 02:46:14 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.147781s ==========
+2026-03-24 02:51:07 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000264s ==========
+2026-03-24 02:51:07 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.150351s ==========
+2026-03-24 02:51:07 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000272s ==========
+2026-03-24 02:51:08 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.152750s ==========
+2026-03-24 02:52:19 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000538s ==========
+2026-03-24 02:52:19 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.151321s ==========
+2026-03-24 02:52:19 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000260s ==========
+2026-03-24 02:52:19 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.147523s ==========
+2026-03-24 02:54:37 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000277s ==========
+2026-03-24 02:54:37 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.155158s ==========
+2026-03-24 02:54:37 | INFO | base_op.py:287 | ToolResultCompactor.call | ========== cost=0.000281s ==========
+2026-03-24 02:54:38 | INFO | base_op.py:287 | ContextChecker.call | ========== cost=0.154069s ==========
