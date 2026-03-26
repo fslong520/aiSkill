@@ -1,6 +1,6 @@
 ---
 name: 股票研究
-
+version: 1.0.0
 description: |
   增强型股票研究技能，提供实时行情、技术分析、财务分析、行业分类和大盘分析功能。
   从 baostock 和 AKShare 获取 A 股实时数据，计算 MA、RSI、MACD、KDJ 等技术指标，
