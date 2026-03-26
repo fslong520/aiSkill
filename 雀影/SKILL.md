@@ -1,5 +1,6 @@
 ---
 name: 雀影
+version: 1.0.0
 description: |
   雀影 - 你的AI视频创意伙伴，通过交互式引导帮你完善视频创意，生成seedance、即梦提示词！
   
