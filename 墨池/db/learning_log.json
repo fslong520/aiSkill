@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "logs": [
+    {
+      "id": "log_001",
+      "timestamp": "2026-03-27T14:30:00Z",
+      "knowledge_id": "diff_001",
+      "knowledge_name": "差分",
+      "event_type": "new_learning",
+      "trigger": "用户提问",
+      "source_message": "什么是差分？",
+      "duration_estimate": "5min"
+    }
+  ]
+}
