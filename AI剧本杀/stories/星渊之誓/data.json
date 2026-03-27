@@ -1,0 +1,31 @@
+{
+  "script_name": "星渊之誓",
+  "world": {
+    "name": "艾瑟瑞亚大陆",
+    "type": "奇幻中世纪",
+    "era": "第三纪元·星陨纪",
+    "year": 1247
+  },
+  "player": {
+    "name": "德拉贡",
+    "race": "龙裔",
+    "gender": "男",
+    "age": 0,
+    "stage": "婴儿期",
+    "attributes": {
+      "STR": 17,
+      "DEX": 10,
+      "INT": 9,
+      "CHA": 8,
+      "LUK": 15
+    },
+    "traits": ["龙血", "王者之相", "流亡者", "駑钝"],
+    "skills": [],
+    "inventory": [],
+    "relationships": [],
+    "background": "东方秘境的流亡王子"
+  },
+  "turn": 0,
+  "location": "东方秘境·赤龙帝国边境",
+  "history": []
+}
