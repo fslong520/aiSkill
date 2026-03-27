@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-27T15:00:00Z",
+  "profile": {
+    "identity": {
+      "primary_role": "信奥竞赛教练",
+      "secondary_roles": ["算法学习者", "C++开发者"],
+      "confidence": 0.85
+    },
+    "expertise": {
+      "算法数据结构": {
+        "level": "学习中",
+        "knowledge_count": 1,
+        "strong_areas": ["基础算法"],
+        "weak_areas": []
+      }
+    },
+    "interests": ["算法优化", "竞赛题目"],
+    "common_tasks": [],
+    "learning_patterns": {
+      "preferred_depth": "深入",
+      "preferred_style": "代码+解释"
+    }
+  },
+  "behavior_log": [
+    {
+      "date": "2026-03-27",
+      "actions": [
+        {"type": "ask_concept", "topic": "差分", "timestamp": "14:30"}
+      ]
+    }
+  ]
+}

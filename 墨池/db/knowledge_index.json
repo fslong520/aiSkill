@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-03-27T19:30:00Z",
+  "stats": {
+    "total_knowledge": 2,
+    "total_categories": 1,
+    "total_learning_events": 2
+  },
+  "index": {
+    "差分": {
+      "id": "diff_001",
+      "file": "knowledge/算法数据结构/差分.md",
+      "category": "算法数据结构",
+      "subcategory": "基础算法",
+      "tags": ["前缀和", "区间修改", "O1操作"],
+      "summary": "前缀和的逆运算，用于高效处理区间修改问题",
+      "learning_count": 1,
+      "mastery_level": "理解",
+      "first_learned": "2026-03-27",
+      "last_learned": "2026-03-27",
+      "related": ["前缀和", "树状数组", "线段树"],
+      "source": "用户提问"
+    },
+    "树状数组": {
+      "id": "bit_002",
+      "file": "knowledge/算法数据结构/树状数组.md",
+      "category": "算法数据结构",
+      "subcategory": "数据结构",
+      "tags": ["数据结构", "前缀和", "区间查询", "logn"],
+      "summary": "支持单点修改和区间查询的数据结构，时间复杂度O(log n)，代码简洁",
+      "learning_count": 1,
+      "mastery_level": "了解",
+      "first_learned": "2026-03-27",
+      "last_learned": "2026-03-27",
+      "related": ["前缀和", "差分", "线段树"],
+      "source": "用户提问"
+    }
+  },
+  "search_index": {
+    "by_category": {
+      "算法数据结构": ["差分", "树状数组"]
+    },
+    "by_tags": {
+      "前缀和": ["差分", "树状数组"],
+      "区间修改": ["差分"],
+      "O1操作": ["差分"],
+      "数据结构": ["树状数组"],
+      "区间查询": ["树状数组"],
+      "logn": ["树状数组"]
+    }
+  }
+}
