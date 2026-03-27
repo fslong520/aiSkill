@@ -10,6 +10,10 @@ allowed-tools:
   - Write
   - Edit
   - AskUserQuestion
+
+metadata:
+  trigger: 什么是、解释一下、怎么实现、为什么、帮我理解、讲一下、是什么、如何实现、请问、科普、学习、知识点、概念、原理、区别、对比、总结、整理、墨池
+  source: 基于知识管理理论和艾宾浩斯遗忘曲线
 ---
 
 # InkPot - 墨池

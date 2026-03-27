@@ -1,12 +1,26 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-27T19:30:00Z",
+  "last_updated": "2026-03-27T20:00:00Z",
   "stats": {
-    "total_knowledge": 2,
+    "total_knowledge": 3,
     "total_categories": 1,
-    "total_learning_events": 2
+    "total_learning_events": 3
   },
   "index": {
+    "前缀和": {
+      "id": "prefix_sum_003",
+      "file": "knowledge/算法数据结构/前缀和.md",
+      "category": "算法数据结构",
+      "subcategory": "基础算法",
+      "tags": ["前缀和", "区间查询", "O1查询", "预处理"],
+      "summary": "预处理技巧，用O(n)预处理后可O(1)查询任意区间和",
+      "learning_count": 1,
+      "mastery_level": "理解",
+      "first_learned": "2026-03-27",
+      "last_learned": "2026-03-27",
+      "related": ["差分", "树状数组", "线段树", "二维前缀和"],
+      "source": "用户提问"
+    },
     "差分": {
       "id": "diff_001",
       "file": "knowledge/算法数据结构/差分.md",
@@ -38,14 +52,16 @@
   },
   "search_index": {
     "by_category": {
-      "算法数据结构": ["差分", "树状数组"]
+      "算法数据结构": ["前缀和", "差分", "树状数组"]
     },
     "by_tags": {
-      "前缀和": ["差分", "树状数组"],
+      "前缀和": ["前缀和", "差分", "树状数组"],
+      "区间查询": ["前缀和", "树状数组"],
+      "O1查询": ["前缀和"],
+      "预处理": ["前缀和"],
       "区间修改": ["差分"],
       "O1操作": ["差分"],
       "数据结构": ["树状数组"],
-      "区间查询": ["树状数组"],
       "logn": ["树状数组"]
     }
   }
