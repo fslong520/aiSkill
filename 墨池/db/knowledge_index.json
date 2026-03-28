@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "last_updated": "2026-03-29T01:04:41.780038",
+  "last_updated": "2026-03-29T09:15:00",
   "stats": {
-    "total_knowledge": 5,
-    "total_categories": 3,
-    "total_learning_events": 5
+    "total_knowledge": 7,
+    "total_categories": 5,
+    "total_learning_events": 7
   },
   "index": {
     "前缀和": {
@@ -105,6 +105,54 @@
       "last_learned": "2026-03-29",
       "related": [],
       "source": "对话学习"
+    },
+    "Token": {
+      "id": "token_006",
+      "file": "knowledge/计算机基础/Token.md",
+      "category": "计算机基础",
+      "subcategory": "基础概念",
+      "tags": [
+        "Token",
+        "编译原理",
+        "AI",
+        "认证",
+        "区块链"
+      ],
+      "summary": "在不同技术场景中有不同含义的核心概念，通常指"最小单元"或"访问凭证"",
+      "learning_count": 1,
+      "mastery_level": "了解",
+      "first_learned": "2026-03-29",
+      "last_learned": "2026-03-29",
+      "related": [
+        "编译原理",
+        "大模型",
+        "JWT",
+        "区块链"
+      ],
+      "source": "用户提问"
+    },
+    "快速入睡": {
+      "id": "sleep_007",
+      "file": "knowledge/生活健康/快速入睡.md",
+      "category": "生活健康",
+      "subcategory": "睡眠",
+      "tags": [
+        "睡眠",
+        "健康",
+        "放松技巧",
+        "呼吸法"
+      ],
+      "summary": "通过呼吸技巧、肌肉放松、环境优化等方法帮助大脑进入睡眠状态的实用技巧",
+      "learning_count": 1,
+      "mastery_level": "了解",
+      "first_learned": "2026-03-29",
+      "last_learned": "2026-03-29",
+      "related": [
+        "睡眠质量",
+        "褪黑素",
+        "生物钟"
+      ],
+      "source": "用户提问"
     }
   },
   "search_index": {
@@ -119,6 +167,12 @@
       ],
       "学习方法": [
         "数学学习方法"
+      ],
+      "计算机基础": [
+        "Token"
+      ],
+      "生活健康": [
+        "快速入睡"
       ]
     },
     "by_tags": {

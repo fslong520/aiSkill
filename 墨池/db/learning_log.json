@@ -2,7 +2,25 @@
   "version": "1.0",
   "logs": [
     {
-      "id": "log_001",
+      "id": "log_006",
+      "timestamp": "2026-03-29T10:30:00Z",
+      "knowledge_id": "sleep_007",
+      "knowledge_name": "快速入睡",
+      "event_type": "new_learning",
+      "trigger": "用户提问",
+      "source_message": "怎么快速入睡"
+    },
+    {
+      "id": "log_005",
+      "timestamp": "2026-03-29T09:15:00Z",
+      "knowledge_id": "token_006",
+      "knowledge_name": "Token",
+      "event_type": "new_learning",
+      "trigger": "用户提问",
+      "source_message": "什么是token"
+    },
+    {
+      "id": "log_001"",
       "timestamp": "2026-03-27T14:30:00Z",
       "knowledge_id": "diff_001",
       "knowledge_name": "差分",
