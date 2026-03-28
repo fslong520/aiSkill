@@ -139,94 +139,100 @@ metadata:
 ```
 墨池/
 ├── SKILL.md
-├── skill.yaml
+├── inkpot.py                   # 核心库（KV 文本格式）
+├── record.py                   # 快速记录接口
 ├── db/
-│   ├── knowledge_index.json    # 知识点索引数据库
-│   ├── user_profile.json       # 用户画像数据库
-│   └── learning_log.json       # 学习日志数据库
-├── knowledge/                  # 知识点详情文件
-│   ├── 编程语言/
+│   ├── knowledge_index.txt     # 知识点索引（KV 格式）
+│   ├── user_profile.txt        # 用户画像（KV 格式）
+│   └── learning_log.txt        # 学习日志（行格式）
+├── knowledge/                  # 知识点详情 Markdown 文件
 │   ├── 算法数据结构/
 │   ├── 数学/
 │   ├── 计算机基础/
-│   ├── 人工智能/
-│   └── 其他/
-└── profile/                    # 用户画像文件
+│   └── ...
+└── profile/
     ├── index.md
     └── records.md
 ```
 
----
-
-## 知识点索引数据库 (knowledge_index.json)
-
-```json
-{
-  "version": "1.0",
-  "last_updated": "2026-03-27T15:00:00Z",
-  "stats": {
-    "total_knowledge": 15,
-    "total_categories": 5,
-    "total_learning_events": 23
-  },
-  "index": {
-    "差分": {
-      "id": "diff_001",
-      "file": "knowledge/算法数据结构/差分.md",
-      "category": "算法数据结构",
-      "subcategory": "基础算法",
-      "tags": ["前缀和", "区间修改", "O1操作"],
-      "summary": "前缀和的逆运算，用于高效处理区间修改问题",
-      "learning_count": 3,
-      "mastery_level": "熟练",
-      "first_learned": "2026-03-25",
-      "last_learned": "2026-03-27",
-      "related": ["前缀和", "树状数组", "线段树"],
-      "source": "用户提问"
-    }
-  },
-  "search_index": {
-    "by_category": {
-      "算法数据结构": ["差分", "前缀和", "快速排序"]
-    },
-    "by_tags": {
-      "前缀和": ["差分", "前缀和"],
-      "区间修改": ["差分", "线段树"]
-    }
-  }
-}
-```
+**注意**：使用简单 KV 文本格式，避免 JSON 中文引号等格式问题。
 
 ---
 
-## 用户画像数据库 (user_profile.json)
+## 知识点索引数据库 (knowledge_index.txt)
 
-```json
-{
-  "version": "1.0",
-  "last_updated": "2026-03-27T15:00:00Z",
-  "profile": {
-    "identity": {
-      "primary_role": "信奥竞赛教练",
-      "secondary_roles": ["算法学习者", "C++开发者"],
-      "confidence": 0.85
-    },
-    "expertise": {
-      "算法数据结构": {
-        "level": "精通",
-        "knowledge_count": 12,
-        "strong_areas": ["基础算法", "数据结构"],
-        "weak_areas": ["高级数据结构", "动态规划优化"]
-      }
-    },
-    "interests": ["算法优化", "竞赛题目", "代码效率"],
-    "learning_patterns": {
-      "preferred_depth": "深入",
-      "preferred_style": "代码+解释"
-    }
-  }
-}
+**使用简单 KV 格式，每个知识点一个块：**
+
 ```
+=== 差分 ===
+id: 算法_001
+category: 算法数据结构
+tags: 前缀和,区间修改,O1操作
+summary: 前缀和的逆运算，用于高效处理区间修改问题
+file: knowledge/算法数据结构/差分.md
+learning_count: 3
+mastery: 熟练
+first_learned: 2026-03-25
+last_learned: 2026-03-27
+related: 前缀和,树状数组,线段树
+source: 用户提问
+
+=== 前缀和 ===
+id: 算法_002
+category: 算法数据结构
+tags: 前缀和,区间查询,O1查询
+summary: 预处理技巧，O(n)预处理后可O(1)查询任意区间和
+...
+```
+
+**格式说明**：
+- `=== 名字 ===` 标记知识点开始
+- `key: value` 格式存储字段
+- 列表用逗号分隔（如 tags, related）
+- 多行文本用换行符即可，无需转义
+- **完全不用担心 JSON 引号问题！**
+
+---
+
+## 用户画像数据库 (user_profile.txt)
+
+**KV 格式记录用户身份和行为统计（每个 action 作为独立块）：**
+
+```
+=== identity ===
+primary_role: 信奥竞赛教练
+secondary_roles: 算法学习者,C++开发者
+confidence: 0.85
+
+=== action:ask_concept ===
+count: 15
+topics: 前缀和,差分,树状数组
+
+=== action:搬题 ===
+count: 8
+topics: ABC450A,ABC450B
+
+=== action:算法讲解 ===
+count: 5
+topics: 快速排序,二分查找
+```
+
+**格式说明**：
+- `=== identity ===` 存储用户身份推断结果
+- `=== action:<type> ===` 存储各类行为统计（每个行为独立一个块）
+- 避免嵌套字典，保持扁平结构
+
+## 学习日志数据库 (learning_log.txt)
+
+**简单行格式，用 `|` 分隔：**
+
+```
+2026-03-29 01:28 | 信息学竞赛数学学习路径 | 新增 | 对话学习
+2026-03-29 01:30 | 差分 | 复习 | 用户提问
+2026-03-29 02:15 | 快速排序 | 新增 | 算法讲解
+```
+
+**格式**：`时间 | 知识点 | 事件类型 | 触发来源`
 
 ---
 
@@ -333,4 +339,6 @@ AI: [回答问题]
 
 **作者**: fslong
 
-**更新日期**: 2026-03-27
+**更新日期**: 2026-03-29
+
+**更新说明**: 从 JSON 格式改为简单 KV 文本格式，避免中文引号等格式问题，提高稳定性。
