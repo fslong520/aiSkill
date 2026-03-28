@@ -1,0 +1,38 @@
+=== 信息学竞赛数学学习路径 ===
+id: 信竞_001
+category: 信竞教学
+tags: 信竞,数学,学习路径,CSP-J,NOIP
+summary: 信竞数学分基础数论组合代数进阶欧拉函数博弈矩阵高级FFT原根群论采用题目驱动学习法专题突破避免纯刷书
+related: 
+file: knowledge/信竞教学/信息学竞赛数学学习路径.md
+learning_count: 1
+mastery: 了解
+first_learned: 2026-03-29
+last_learned: 2026-03-29
+source: 对话学习
+
+=== ClawHub技能发布 ===
+id: 工具_002
+category: 工具使用
+tags: ClawHub,技能发布,CLI,工具
+summary: 使用clawhub CLI发布技能到技能市场，注意tags只能用英文，slug用小写英文，version用语义化版本x.y.z
+related: 
+file: knowledge/工具使用/ClawHub技能发布.md
+learning_count: 1
+mastery: 了解
+first_learned: 2026-03-29
+last_learned: 2026-03-29
+source: 对话学习
+
+=== 测试知识点 ===
+id: 测试_003
+category: 测试
+tags: 测试
+summary: 测试修复后的墨池
+related: 
+file: knowledge/测试/测试知识点.md
+learning_count: 1
+mastery: 了解
+first_learned: 2026-03-29
+last_learned: 2026-03-29
+source: 对话学习
