@@ -225,8 +225,22 @@ g++ -o mkdata mkdata.cpp -std=c++17
 
 **📖 必读文档**: [常见错误与教训](常见错误与教训.md) - 打包前检查常见错误
 
+**打包文件名格式**：`{pid}_{title}.zip`（PID + 标题）
+
+从 `work/problem.yaml` 中读取 `pid` 和 `title` 字段组合成文件名。
+
 ```bash
-# ✅ 正确做法：在work目录外打包
+# ✅ 正确做法：使用 PID + 标题 命名
+# 1. 先读取 problem.yaml 获取 pid 和 title
+# 2. 打包为 {pid}_{title}.zip
+
+# 示例：abc451_a - illegal → abc451_a_illegal.zip
+zip -r abc451_a_illegal.zip work
+
+# 示例：abc451_c - Understory → abc451_c_Understory.zip
+zip -r abc451_c_Understory.zip work
+
+# ❌ 错误做法：使用固定的 problem.zip
 zip -r problem.zip work
 
 # ❌ 错误做法：进入work打包内容
@@ -235,8 +249,11 @@ cd work && zip -r ../problem.zip .
 
 **打包前清理**:
 ```bash
-rm -f std mkdata *.exe
+rm -f work/std work/mkdata work/*.exe
 ```
+
+**原创题目命名规则**：
+如果 `pid: null`（无题号），使用 `原创_{title}.zip` 作为文件名。
 
 ---
 
@@ -278,7 +295,7 @@ memory: 128m
 | 标程 | `work/std.cpp` |
 | 数据生成器 | `work/mkdata.cpp` |
 | 测试数据配置 | `work/testdata/config.yaml` |
-| 打包命令 | `zip -r problem.zip work` |
+| 打包命令 | `zip -r {pid}_{title}.zip work`（PID+标题命名） |
 
 ---
 
