@@ -3,5 +3,6 @@ primary_role:
 confidence: 0
 
 === action:ask_concept ===
-count: 1
-topics: 测试知识点
+action: ask_concept ===
+count: 2
+topics: 测试知识点,搬题姬公众号推广文
