@@ -36,3 +36,16 @@ mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
 source: 对话学习
+
+=== 搬题姬公众号推广文 ===
+id: 推广_004
+category: 推广文案
+tags: 公众号,推广文,搬题姬,爆款标题
+summary: 按公众号写手技能爆款推文五步法创作搬题姬推广文，包含5个爆款标题、9阶段流程介绍、AI蜜罐防作弊亮点、封面设计方案
+related: 
+file: knowledge/推广文案/搬题姬公众号推广文.md
+learning_count: 1
+mastery: 了解
+first_learned: 2026-03-29
+last_learned: 2026-03-29
+source: 对话学习
