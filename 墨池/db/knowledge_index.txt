@@ -49,3 +49,16 @@ mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
 source: 对话学习
+
+=== 股票综合分析方法 ===
+id: 投资_005
+category: 投资分析
+tags: 股票分析，技术指标，财报分析，资金流，投资建议
+summary: 综合分析整合技术/财务/资金流/新闻数据，多维度评分后生成投资建议报告
+related: 
+file: knowledge/投资分析/股票综合分析方法.md
+learning_count: 1
+mastery: 了解
+first_learned: 2026-03-30
+last_learned: 2026-03-30
+source: 对话学习

@@ -4,5 +4,5 @@ confidence: 0
 
 === action:ask_concept ===
 action: ask_concept ===
-count: 2
-topics: 测试知识点,搬题姬公众号推广文
+count: 3
+topics: 测试知识点,搬题姬公众号推广文,股票综合分析方法
