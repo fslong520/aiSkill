@@ -605,7 +605,7 @@ class FinancialAnalyzer:
             traceback.print_exc()
             return None
         
-    def get_comprehensive_financial_report(self, symbol, year=None, quarter=None, use_akshare=True):
+    def get_comprehensive_financial_report(self, symbol, year=None, quarter=None, use_akshare=True, fast_mode=True):
         """
         获取综合财务报告数据包（用于替代 PDF 财报分析）
         包含《读财报.md》方法论所需的所有关键数据
@@ -615,6 +615,7 @@ class FinancialAnalyzer:
             year: 年份（可选）
             quarter: 季度（可选）
             use_akshare: 是否使用 AKShare 获取完整财报数据（默认 True）
+            fast_mode: 快速模式，只获取最近2个季度数据（默认 True）
             
         Returns:
             dict: 包含三大报表、关键指标和分析数据的字典
@@ -626,13 +627,14 @@ class FinancialAnalyzer:
         if use_akshare:
             akshare_data = self.get_akshare_financial_report(symbol)
         
-        # 使用 baostock 获取多年的财务比率和增长率数据（至少 5 年）
-        print(f"\n📊 使用 baostock 获取多年财务数据（最近 5 年）...")
+        # 使用 baostock 获取财务比率和增长率数据
+        print(f"\n📊 使用 baostock 获取财务数据...")
         bs.login()
         
         try:
-            # 获取多年的数据（最近 5 年，每年 4 个季度）
-            multi_year_data = self._get_multi_year_data(symbol, years=5)
+            # 快速模式：只获取最近2个季度；完整模式：获取5年
+            years = 1 if fast_mode else 5
+            multi_year_data = self._get_multi_year_data(symbol, years=years)
             
             # 使用最新季度的数据作为主要数据
             if multi_year_data and len(multi_year_data) > 0:
@@ -1214,6 +1216,93 @@ class FinancialAnalyzer:
         checklist['结论'] = '优质' if passed >= 6 else '良好' if passed >= 5 else '关注' if passed >= 4 else '谨慎'
             
         return checklist, metrics
+    
+    def get_quick_financial_data(self, symbol):
+        """
+        快速获取多年财务关键数据（使用 akshare 的 stock_financial_abstract 接口）
+        0.5 秒获取近 20 年财务数据，数据准确可靠
+        
+        Args:
+            symbol: 股票代码（如 601668）
+            
+        Returns:
+            dict: 包含多年财务指标的字典
+        """
+        print(f"\n📊 快速获取 {symbol} 的财务数据...")
+        
+        try:
+            import akshare as ak
+            import pandas as pd
+            
+            # 格式化股票代码（去掉交易所前缀）
+            if symbol.startswith('sh.') or symbol.startswith('sz.'):
+                code = symbol[3:]
+            else:
+                code = symbol
+            
+            start_time = datetime.now()
+            
+            # 使用 akshare 获取财务摘要（0.5秒，包含近20年数据）
+            df = ak.stock_financial_abstract(symbol=code)
+            
+            elapsed = (datetime.now() - start_time).total_seconds()
+            print(f"✅ 数据获取成功，耗时 {elapsed:.2f}秒")
+            print(f"   包含 {len(df)} 个指标，{len(df.columns)-2} 个报告期")
+            
+            # 提取关键指标
+            key_indicators = {
+                '归母净利润': 'net_profit',
+                '营业总收入': 'revenue',
+                '扣非净利润': 'net_profit_deducted',
+                '净资产收益率(ROE)': 'roe',
+                '毛利率': 'gross_margin',
+                '销售净利率': 'net_margin',
+                '每股净资产': 'bps',
+                '基本每股收益': 'eps',
+                '经营现金流量净额': 'operating_cash_flow',
+                '资产负债率': 'debt_ratio',
+                '股东权益合计(净资产)': 'net_assets',
+                '营业成本': 'cost',
+                '净利润': 'total_profit',
+            }
+            
+            result = {
+                'symbol': code,
+                'data': {},
+                'years': []
+            }
+            
+            # 获取年份列表（排除前两列：选项、指标）
+            year_cols = [col for col in df.columns if col not in ['选项', '指标']]
+            # 取最近 5 年年报 + 最新季报
+            year_cols = year_cols[:6]  # 最新6个报告期
+            result['years'] = year_cols
+            
+            # 提取数据
+            for _, row in df.iterrows():
+                indicator = row['指标']
+                if indicator in key_indicators:
+                    key = key_indicators[indicator]
+                    result['data'][key] = {
+                        'name': indicator,
+                        'values': {}
+                    }
+                    for year in year_cols:
+                        val = row[year]
+                        if pd.notna(val):
+                            # 转换单位
+                            if key in ['net_profit', 'revenue', 'net_profit_deducted', 'operating_cash_flow', 'net_assets']:
+                                result['data'][key]['values'][year] = float(val) / 1e8  # 转为亿
+                            else:
+                                result['data'][key]['values'][year] = float(val)
+            
+            return result
+                
+        except Exception as e:
+            print(f"快速财务数据获取失败：{e}")
+            import traceback
+            traceback.print_exc()
+            return None
 
 
 def get_default_financial_analyzer():
