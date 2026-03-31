@@ -36,29 +36,3 @@ mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
 source: 对话学习
-
-=== 搬题姬公众号推广文 ===
-id: 推广_004
-category: 推广文案
-tags: 公众号,推广文,搬题姬,爆款标题
-summary: 按公众号写手技能爆款推文五步法创作搬题姬推广文，包含5个爆款标题、9阶段流程介绍、AI蜜罐防作弊亮点、封面设计方案
-related: 
-file: knowledge/推广文案/搬题姬公众号推广文.md
-learning_count: 1
-mastery: 了解
-first_learned: 2026-03-29
-last_learned: 2026-03-29
-source: 对话学习
-
-=== 股票综合分析方法 ===
-id: 投资_005
-category: 投资分析
-tags: 股票分析，技术指标，财报分析，资金流，投资建议
-summary: 综合分析整合技术/财务/资金流/新闻数据，多维度评分后生成投资建议报告
-related: 
-file: knowledge/投资分析/股票综合分析方法.md
-learning_count: 1
-mastery: 了解
-first_learned: 2026-03-30
-last_learned: 2026-03-30
-source: 对话学习
