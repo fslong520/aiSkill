@@ -67,69 +67,7 @@ def main():
         
         from core.financial_analyzer import FinancialAnalyzer
         financial_analyzer = FinancialAnalyzer()
-        
-        # 使用快速财务数据获取（akshare接口，0.5秒获取多年数据）
-        quick_data = financial_analyzer.get_quick_financial_data(stock_input)
-        
-        if quick_data and quick_data.get('data'):
-            print(f"✅ 成功获取 {stock_input} 的财务数据")
-            
-            # 格式化输出多年核心指标
-            print("\n" + "="*80)
-            print("📋 财务核心指标（供 AI 分析使用）")
-            print("="*80)
-            
-            years = quick_data.get('years', [])
-            data = quick_data.get('data', {})
-            
-            # 输出表格头
-            print(f"\n{'指标':<15}", end='')
-            for year in years:
-                # 格式化年份显示
-                if len(year) == 8:  # 如 20240930
-                    display_year = f"{year[:4]}Q{(int(year[4:6])-1)//3+1}"
-                else:
-                    display_year = year
-                print(f"{display_year:>12}", end='')
-            print()
-            print("-" * 80)
-            
-            # 输出各指标
-            indicator_order = ['revenue', 'net_profit', 'net_profit_deducted', 'roe', 'net_margin', 'gross_margin', 'debt_ratio']
-            indicator_names = {
-                'revenue': '营收(亿)',
-                'net_profit': '归母净利润(亿)',
-                'net_profit_deducted': '扣非净利润(亿)',
-                'roe': 'ROE(%)',
-                'net_margin': '净利率(%)',
-                'gross_margin': '毛利率(%)',
-                'debt_ratio': '资产负债率(%)',
-            }
-            
-            for key in indicator_order:
-                if key in data:
-                    name = indicator_names.get(key, data[key]['name'])
-                    values = data[key]['values']
-                    print(f"{name:<15}", end='')
-                    for year in years:
-                        val = values.get(year)
-                        if val is not None:
-                            if key in ['roe', 'net_margin', 'gross_margin']:
-                                print(f"{val:>12.2f}", end='')
-                            else:
-                                print(f"{val:>12.2f}", end='')
-                        else:
-                            print(f"{'N/A':>12}", end='')
-                    print()
-            
-            print("\n" + "="*80)
-            print("💡 提示：以上数据可分析近年的盈利趋势、成长性和财务健康度")
-            print("="*80)
-            return 0
-        
-        # 如果快速获取失败
-        print(f"❌ 财务数据获取失败")
-        return 1
+        report_data = financial_analyzer.get_comprehensive_financial_report(stock_input)
         
         if not report_data:
             print(f"❌ 错误：财报数据获取失败")
