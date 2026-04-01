@@ -294,11 +294,11 @@ zip -r abc451_a_illegal.zip work
 # 示例：abc451_c - Understory → abc451_c_Understory.zip
 zip -r abc451_c_Understory.zip work
 
-# ❌ 错误做法：使用固定的 problem.zip
-zip -r problem.zip work
-
-# ❌ 错误做法：进入work打包内容
+# ❌ 错误做法：进入 work 打包内容（解压后直接是文件，无 work 目录）
 cd work && zip -r ../problem.zip .
+
+# ✅ 正确做法：打包整个 work 目录（解压后有 work/ 子目录）
+zip -r problem.zip work
 ```
 
 **打包前清理**:
