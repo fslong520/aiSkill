@@ -242,6 +242,37 @@ g++ -o mkdata mkdata.cpp -std=c++17
 - 第16-20组: 边界情况
 - 第21-25组: 随机压力
 
+**⚠️ 大样例处理规则**:
+
+| 文件大小 | 处理方式 | 原因 |
+|---------|---------|------|
+| < 500 字节 | `read_file` 读取 | 小文件，上下文足够 |
+| ≥ 500 字节 | **禁止 `read_file`** | 上下文会炸 |
+| 大样例 (> 1KB) | shell 命令验证 | 只确认能正常运行 |
+
+**大样例验证方法**（不用 read_file）：
+```bash
+# ✅ 检查文件大小
+wc -c testdata/1.in
+
+# ✅ 查看前几行
+head -5 testdata/1.in
+
+# ✅ 查看后几行
+tail -5 testdata/1.in
+
+# ✅ 直接运行标程验证
+./std < testdata/1.in > testdata/1.out
+
+# ✅ 对比输出（如果有预期输出）
+diff testdata/1.out expected.txt
+```
+
+**❌ 禁止做法**：
+```
+read_file("testdata/1.in")  # ❌ 大样例会炸掉上下文！
+```
+
 ---
 
 ### 阶段10: 打包发布
