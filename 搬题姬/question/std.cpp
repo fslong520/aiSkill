@@ -1,16 +1,11 @@
-#include <iostream>
-#include <cmath>
+#include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
-    int n;
-    cin >> n;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
     
-    // 计算 2^n - 2*n
-    long long ans = (1LL << n) - 2LL * n;
-    
-    cout << ans << endl;
+    // 解题代码
     
     return 0;
 }

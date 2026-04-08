@@ -96,7 +96,7 @@ metadata:
 │              └─ --remote-debugging-port     │
 │                                             │
 │  Step 5 ──► 建立 CDP 连接                   │
-│              └─ http://localhost:9222       │
+│              └─ http://localhost:9022       │
 │                                             │
 │  Step 6 ──► 开始你的浏览器之旅 🎉           │
 │                                             │
@@ -129,7 +129,7 @@ find /usr -name "*edge*" -type f 2>/dev/null | grep -i bin
 **启动命令：**
 
 ```bash
-nohup /opt/microsoft/msedge/msedge \n  --remote-debugging-port=9222 \n  > /tmp/edge-cdp.log 2>&1 &
+nohup /opt/microsoft/msedge/msedge \n  --remote-debugging-port=9022 \n  > /tmp/edge-cdp.log 2>&1 &
 ```
 
 ---
@@ -154,13 +154,13 @@ dir "C:\Program Files\Microsoft\Edge\Application\msedge.exe"
 **启动命令：**
 
 ```cmd
-start "" "C:\Program Files\Microsoft\Edge\Application\msedge.exe" --remote-debugging-port=9222
+start "" "C:\Program Files\Microsoft\Edge\Application\msedge.exe" --remote-debugging-port=9022
 ```
 
 或使用 PowerShell：
 
 ```powershell
-Start-Process "C:\Program Files\Microsoft\Edge\Application\msedge.exe" -ArgumentList "--remote-debugging-port=9222"
+Start-Process "C:\Program Files\Microsoft\Edge\Application\msedge.exe" -ArgumentList "--remote-debugging-port=9022"
 ```
 
 ---
@@ -193,10 +193,10 @@ echo %OS%
 用户：「帮我打开百度」
 
 AI 执行：
-1. curl localhost:9222 ──► 检测端口
+1. curl localhost:9022 ──► 检测端口
 2. ls /opt/microsoft/msedge/msedge ──► 定位浏览器
-3. nohup msedge --remote-debugging-port=9222 & ──► 启动
-4. connect_cdp http://localhost:9222 ──► 连接
+3. nohup msedge --remote-debugging-port=9022 & ──► 启动
+4. connect_cdp http://localhost:9022 ──► 连接
 5. navigate https://baidu.com ──► 打开百度
 
 AI：「已打开百度！」
@@ -208,10 +208,10 @@ AI：「已打开百度！」
 用户：「帮我打开百度」
 
 AI 执行：
-1. curl localhost:9222 ──► 检测端口
+1. curl localhost:9022 ──► 检测端口
 2. where msedge ──► 定位浏览器
-3. start msedge --remote-debugging-port=9222 ──► 启动
-4. connect_cdp http://localhost:9222 ──► 连接
+3. start msedge --remote-debugging-port=9022 ──► 启动
+4. connect_cdp http://localhost:9022 ──► 连接
 5. navigate https://baidu.com ──► 打开百度
 
 AI：「已打开百度！」
@@ -266,11 +266,11 @@ AI：「已打开百度！」
 
 **Linux：**
 1. 检查进程：`pgrep -x msedge`
-2. 检查端口：`curl http://localhost:9222/json/version`
+2. 检查端口：`curl http://localhost:9022/json/version`
 
 **Windows：**
 1. 检查进程：`tasklist | findstr msedge`
-2. 检查端口：浏览器访问 `http://localhost:9222/json`
+2. 检查端口：浏览器访问 `http://localhost:9022/json`
 </details>
 
 <details>
