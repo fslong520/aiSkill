@@ -68,16 +68,119 @@ def generate_report(submissions):
         else:
             student_data[user]['failed_problems'][problem].append(status)
     
-    # 生成总榜单
+    # 生成总榜单（只显示用户ID）
     ranking = []
-    for user, data in student_data.items():
+    for user_id, data in student_data.items():
         ac_count = len(data['ac_problems'])
         if ac_count > 0:
-            ranking.append((user, ac_count))
+            ranking.append((user_id, ac_count))
     
     ranking.sort(key=lambda x: -x[1])
     
     return ranking, student_data
+
+
+def generate_student_explanation(user_id, failed_problems, submission_details):
+    """
+    生成学生单独讲解文件内容
+    
+    Args:
+        user_id: 学生用户ID
+        failed_problems: 未AC的题目集合
+        submission_details: 提交详情列表，包含 {problem, runId, code, status, error_type}
+    
+    Returns:
+        markdown_content: 学生讲解文件的 Markdown 内容
+    """
+    from datetime import datetime
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    md_lines = [
+        f"# {user_id} 的刷题讲解 - {today}",
+        "",
+        f"**用户ID**：{user_id}",
+        "",
+        f"**日期**：{today}",
+        "",
+        "---",
+        "",
+        f"## 🔍 未 AC 题目（共 {len(failed_problems)} 道）",
+        "",
+        "> 说明：以下题目今天有提交，但最终未 AC。针对每道题给出详细讲解。",
+        "",
+    ]
+    
+    for detail in submission_details:
+        problem_id = detail['problem']
+        run_id = detail['runId']
+        status = detail['status']
+        error_type = detail.get('error_type', 'Unknown')
+        code = detail.get('code', '')
+        
+        md_lines.extend([
+            f"### {problem_id}",
+            "",
+            f"**最终状态**：{status} | **错误类型**：{error_type}",
+            "",
+            "**题目分析**：",  # 需要 AI 根据题目页面内容填写
+            "",
+            "**思路分析**：",  # 需要 AI 给出正确解法思路
+            "",
+            "**错误原因**：",  # 需要 AI 分析学生代码的具体问题
+            "",
+            "**参考代码**：",
+            "```cpp",
+            "// 这里放正确解法",
+            "```",
+            "",
+            "---",
+            "",
+        ])
+    
+    md_lines.extend([
+        "## 🎯 今日训练重点点评",
+        "",
+        "_这里总结今日练习的题目类型和需要重点关注的问题_",
+        "",
+        "---",
+        "",
+        "*Generated with ❤️ by 智国 AI*",
+        "",
+    ])
+    
+    return '\n'.join(md_lines)
+
+
+def save_student_explanation(user_id, md_content, html_content, output_dir):
+    """
+    保存学生讲解文件
+    
+    Args:
+        user_id: 学生用户ID
+        md_content: Markdown 内容
+        html_content: HTML 内容
+        output_dir: 输出目录
+    """
+    from datetime import datetime
+    import os
+    
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    # 确保输出目录存在
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # 保存 Markdown
+    md_file = os.path.join(output_dir, f"{user_id}_{today}.md")
+    with open(md_file, 'w', encoding='utf-8') as f:
+        f.write(md_content)
+    
+    # 保存 HTML
+    html_file = os.path.join(output_dir, f"{user_id}_{today}.html")
+    with open(html_file, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    return md_file, html_file
 
 def main():
     # 示例数据（从浏览器抓取的两页）
