@@ -8,99 +8,98 @@ using namespace std;
 
 const int TEST_CASES = 25;
 
-void test(int case_num, ofstream& fout) {
-    // 第1-2组: 样例
-    if (case_num == 1) {
-        fout << "7\n";
-        fout << "ooparts\n";
-    } else if (case_num == 2) {
-        fout << "6\n";
-        fout << "abcooo\n";
+struct Node {
+    char val;
+    Node *left, *right;
+    Node(char v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+// 递归建树（用于遍历输出）
+void inorder(Node* root, string& s) {
+    if (!root) return;
+    inorder(root->left, s);
+    s += root->val;
+    inorder(root->right, s);
+}
+
+void preorder(Node* root, string& s) {
+    if (!root) return;
+    s += root->val;
+    preorder(root->left, s);
+    preorder(root->right, s);
+}
+
+void freeTree(Node* root) {
+    if (!root) return;
+    freeTree(root->left);
+    freeTree(root->right);
+    delete root;
+}
+
+// 构建对称树
+Node* buildSymmetric(int depth, char& ch) {
+    if (depth == 0) return nullptr;
+    Node* root = new Node(ch++);
+    root->left = buildSymmetric(depth - 1, ch);
+    root->right = buildSymmetric(depth - 1, ch); // 简化：左右子树相同结构
+    return root;
+}
+
+// 手动构造对称树样例
+Node* buildSymmetricSample() {
+    Node* root = new Node('A');
+    root->left = new Node('B');
+    root->right = new Node('B');
+    root->left->left = new Node('D');
+    root->left->right = new Node('E');
+    root->right->left = new Node('E');
+    root->right->right = new Node('D');
+    return root;
+}
+
+void test(int case_num, ofstream& fout)
+{
+    if (case_num == 1)
+    {
+        // 样例：对称树
+        fout << "ABDEBED" << endl;
+        fout << "DBEAEBD" << endl;
     }
-    
-    // 第3-5组: 小规模
-    else if (case_num == 3) {
-        fout << "5\n";
-        fout << "ooooo\n";
-    } else if (case_num == 4) {
-        fout << "1\n";
-        fout << "o\n";
-    } else if (case_num == 5) {
-        fout << "1\n";
-        fout << "a\n";
+    else if (case_num == 2)
+    {
+        // 单节点：对称
+        fout << "A" << endl;
+        fout << "A" << endl;
     }
-    
-    // 第6-10组: 中等规模
-    else if (case_num == 6) {
-        fout << "10\n";
-        fout << "ooabcdefgh\n";
-    } else if (case_num == 7) {
-        fout << "15\n";
-        fout << "abcdefghijklmno\n";
-    } else if (case_num == 8) {
-        fout << "20\n";
-        fout << "oooooxxxxxooooooooo\n";
-    } else if (case_num == 9) {
-        fout << "25\n";
-        fout << "xoooooooooooooooooooooo\n";
-    } else if (case_num == 10) {
-        fout << "30\n";
-        fout << "oooooooooooooooooooooooxxx\n";
+    else if (case_num == 3)
+    {
+        // 只有左子树：不对称
+        fout << "AB" << endl;
+        fout << "BA" << endl;
     }
-    
-    // 第11-15组: 大规模
-    else if (case_num == 11) {
-        fout << "35\n";
-        fout << "ooooooooooabcdefghijklmnopqrstuvwxyz\n";
-    } else if (case_num == 12) {
-        fout << "40\n";
-        fout << "abcdefghijklmnopqrstuvwxyzabcdefghij\n";
-    } else if (case_num == 13) {
-        fout << "45\n";
-        fout << "ooooooooooooooooooooooooooooooooooooox\n";
-    } else if (case_num == 14) {
-        fout << "50\n";
-        fout << "oooooooooooooooooooooooooooooooooooooooooo\n";
-    } else if (case_num == 15) {
-        fout << "50\n";
-        fout << "xooooooooooooooooooooooooooooooooooooooooo\n";
+    else if (case_num == 4)
+    {
+        // 满二叉树且对称
+        fout << "ABB" << endl;
+        fout << "BAB" << endl;
     }
-    
-    // 第16-20组: 边界情况
-    else if (case_num == 16) {
-        fout << "2\n";
-        fout << "oa\n";
-    } else if (case_num == 17) {
-        fout << "2\n";
-        fout << "ao\n";
-    } else if (case_num == 18) {
-        fout << "3\n";
-        fout << "oox\n";
-    } else if (case_num == 19) {
-        fout << "3\n";
-        fout << "oxo\n";
-    } else if (case_num == 20) {
-        fout << "3\n";
-        fout << "xoo\n";
+    else if (case_num == 5)
+    {
+        // 满二叉树但不对称
+        fout << "ABC" << endl;
+        fout << "BAC" << endl;
     }
-    
-    // 第21-25组: 随机压力
-    else {
-        int len = rand() % 50 + 1;
-        int leading_o = rand() % (len + 1);
-        string s;
-        for (int j = 0; j < leading_o; j++) {
-            s += 'o';
-        }
-        for (int j = leading_o; j < len; j++) {
-            if (j == leading_o && leading_o < len) {
-                s += 'a' + (rand() % 14); // 保证第一个非o不是o
-            } else {
-                s += 'a' + (rand() % 26);
-            }
-        }
-        fout << len << "\n";
-        fout << s << "\n";
+    else if (case_num % 2 == 0)
+    {
+        // 偶数用例：对称树
+        fout << "ABB" << endl;
+        fout << "BAB" << endl;
+    }
+    else
+    {
+        // 奇数用例：非对称树
+        fout << "ABC" << endl;
+        fout << "BAC" << endl;
     }
 }
 

@@ -1,5 +1,8 @@
-pid: abc453_a
-title: "Trimo"
+pid: null
+title: "对称树判断"
 tag:
-  - "字符串"
-  - "GESP二级"
+  - "原创"
+  - "树"
+  - "递归"
+  - "二叉树遍历"
+  - "GESP六级"
