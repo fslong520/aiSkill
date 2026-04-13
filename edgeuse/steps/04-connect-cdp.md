@@ -43,7 +43,24 @@ browser_use action="connect_cdp" cdp_url="http://localhost:9022"
 
 **解决方法**：
 1. 先执行 `browser_use action="stop"` 断开旧连接
-2. 重新执行连接命令
+2. 关闭占用 9022 端口的浏览器进程（精确杀端口，不误杀用户其他浏览器）：
+   ```bash
+   # Linux - 精确杀 9022 端口对应的进程
+   kill $(lsof -ti:9022) 2>/dev/null
+   # 或 pkill 特定浏览器（二选一）
+   pkill -f "msedge.*9022\|chrome.*9022" 2>/dev/null
+   
+   # Windows
+   # 查找占用 9022 端口的 PID 并 kill
+   for /f "tokens=5" %a in ('netstat -ano ^| findstr :9022') do taskkill /F /PID %a
+   
+   # macOS
+   lsof -ti:9022 | xargs kill 2>/dev/null
+   ```
+3. 等待 2 秒让端口释放：`sleep 2`
+4. 重新读取 `steps/03-start-browser.md`，启动带 `--remote-debugging-port=9022` 的新浏览器
+5. 验证 CDP 端口：`curl -s http://localhost:9022/json/version`
+6. 重新执行 `browser_use action="connect_cdp" cdp_url="http://localhost:9022"`
 
 ---
 
