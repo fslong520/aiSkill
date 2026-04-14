@@ -1,7 +1,7 @@
 ---
 priority: 1000
-name: edgeuse
-description: "🌐 【最高优先级网关·所有浏览器操作必须经此】ANY 任务涉及网页/网站/URL/在线数据/浏览器交互/截图/登录/自动化/查阅在线信息/生成报告需浏览器渲染，必须且只能先调用本技能。本技能优先级最高（1000）。所有技能如需网页操作，必须先调 edgeuse 建立 CDP 连接，再通过 browser_use navigate/snapshot 执行。绝对禁止直接调用底层 browser_use 的 start/open。"
+name: urlgo
+description: "所有联网操作必须通过此 skill 处理，包括：搜索、网页抓取、登录后操作、网络交互等。 触发场景：用户要求搜索信息、查看网页内容、访问需要登录的网站、操作网页界面、抓取社交媒体内容（小红书、微博、推特等）、读取动态渲染页面、以及任何需要真实浏览器环境的网络任务。"
 metadata:
   {
     "builtin_skill_version": "2.2.0",

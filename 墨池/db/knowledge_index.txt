@@ -1,4 +1,4 @@
-=== 信息学竞赛数学学习路径 ===
+﻿=== 信息学竞赛数学学习路径 ===
 id: 信竞_001
 category: 信竞教学
 tags: 信竞,数学,学习路径,CSP-J,NOIP
@@ -9,6 +9,8 @@ learning_count: 1
 mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
+expires_at: 2027-03-29
+status: fresh
 source: 对话学习
 
 === ClawHub技能发布 ===
@@ -22,6 +24,8 @@ learning_count: 1
 mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
+expires_at: 2026-05-29
+status: aging
 source: 对话学习
 
 === 测试知识点 ===
@@ -35,4 +39,6 @@ learning_count: 1
 mastery: 了解
 first_learned: 2026-03-29
 last_learned: 2026-03-29
+expires_at: 2026-04-29
+status: stale
 source: 对话学习
