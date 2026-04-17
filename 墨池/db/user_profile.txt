@@ -1,7 +1,0 @@
-=== identity ===
-primary_role: 
-confidence: 0
-
-=== action:ask_concept ===
-count: 1
-topics: 测试知识点
