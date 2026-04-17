@@ -10,9 +10,9 @@
 curl -s http://localhost:9022/json/version 2>/dev/null | head -5
 ```
 
-## 📊 判断结果
+## 📊 判断结果与下一步跳转
 
-### 端口已开启（CDP 已运行）
+### ✅ 端口已开启（CDP 已运行）
 
 **输出示例**：
 ```json
@@ -23,11 +23,11 @@ curl -s http://localhost:9022/json/version 2>/dev/null | head -5
 }
 ```
 
-**下一步**：跳到 Step 5 建立 CDP 连接。
+**👉 下一步**：读取 `steps/04-connect-cdp.md` 建立 CDP 连接。
 
 ---
 
-### 端口未开启
+### ❌ 端口未开启
 
 **输出示例**：
 ```
@@ -36,7 +36,7 @@ curl: (7) Failed to connect to localhost port 9022
 
 或无输出。
 
-**下一步**：继续 Step 2 断开旧连接，然后 Step 3 检测操作系统。
+**👉 下一步**：读取 `steps/02-detect-os.md` 检测操作系统。
 
 ---
 
