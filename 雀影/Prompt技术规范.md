@@ -1,6 +1,7 @@
 # Prompt 技术规范
 
-## 基础规范
+> 📖 **来源**：AI漫剧制作与变现全流程指南报告（2026-04-16）
+> 补充 AI 漫剧分镜脚本格式与 Seedance 2.0 进阶语法
 
 **可控三件套**：
 1. 主体：关键特征（年龄气质、服装配饰、材质形态）
@@ -50,3 +51,86 @@
 | 一镜到底 | 一镜到底 + @图片 1@图片 2... + [连续场景描述] + 全程不要切镜头 |
 | 视频编辑 | 将@视频 1 中的 [A] 换成@图片 1 + [其他修改说明] |
 | 音乐卡点 | @图片 1@图片 2...@图片 N + 参考@视频 1 的画面节奏/卡点 + [画面风格说明] |
+
+---
+
+## AI 漫剧分镜脚本格式（Que-man 规范）
+
+> 🎯 **适用场景**：长篇小说转 Seedance 2.0 平台 15 秒动态漫画分镜
+
+### 剧情容量分析
+
+| 字数 | 建议分镜数 | 时长分配 |
+|------|-----------|----------|
+| 500 字以内 | 6-8 镜 | 2-2.5 秒/镜 |
+| 500-1000 字 | 8-12 镜 | 1.5-2 秒/镜 |
+| 1000 字以上 | 分段处理 | 每段独立脚本 |
+
+### 分镜脚本格式
+
+**严格区分旁白与台词**：
+- **旁白**：描述画面、动作、环境变化（括号内）
+- **台词**：角色说的话（引号内）
+- 旁白每句不超过 15 字
+- 台词每句不超过 10 字
+
+```plaintext
+（时长 15 秒）【标题】（风格）（色调）
+
+【剧作要求】...
+【剧情梗概】...
+【人物重点】...
+【场景重点】...
+
+[镜头 1-首帧] 2 秒 景别 + 运镜 人物描述 动作（场景）
+【角色】:"台词" #1.5 秒
+（音效）音效 #1.0 秒
+（音乐）音乐描述 #1.0 秒
+
+[镜头 N-尾帧] 2 秒 ... **转场处理**：最后 0.3 秒快速切黑
+```
+
+### 分镜脚本核心要素
+
+1. **剧情梗概**：20-50 字简述本集核心冲突
+2. **人物重点**：主角姓名 + 主要特征 + 性格定位
+3. **场景重点**：按顺序列出每镜场景（不超过 3 个主要场景）
+4. **角色卡**：角色主图生成要素表（参考人物刻画规范）
+
+### Seedance 2.0 进阶语法
+
+**镜头控制**：
+- 固定镜头：`static shot, centered composition`
+- 推镜头：`slow push-in, close-up on face`
+- 拉镜头：`slow pull-out, revealing environment`
+- 摇镜头：`gentle pan, left to right`
+- 移镜头：`smooth tracking shot, following subject`
+
+**动作控制**：
+- 慢动作：`slow motion, graceful movement`
+- 微动作：`subtle expression, slight head tilt`
+- 连续动作：`turning around, then walking forward`
+- 手部特写：`detailed hands, fingers touching`
+
+**光影氛围**：
+- 暖色调：`warm golden lighting, soft shadows`
+- 冷色调：`cool blue tones, dramatic lighting`
+- 电影感：`cinematic lighting, volumetric light rays`
+- 逆光：`backlit, silhouette, rim lighting`
+
+**画质约束**：
+- 基础：`high quality, 4K, detailed`
+- 电影级：`film grain, cinematic color grading`
+- 超清：`ultra-detailed, sharp focus, 8K quality`
+
+### 尾帧转场设计
+
+**必选**：最后 0.3 秒快速切黑屏
+**可选**：
+- 淡出：`slow fade to black`
+- 闪切：`quick cut to next scene`
+- 悬念留白：`freeze frame, fade to white`
+
+**音乐收尾**：
+- 音乐必须完整结束：`music fades out naturally`
+- 避免戛然而止：`do not cut abruptly`
