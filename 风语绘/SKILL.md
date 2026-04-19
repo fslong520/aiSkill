@@ -46,6 +46,32 @@ metadata:
 - **效果**: 类似《原神》《崩坏：星穹铁道》官方插画的质感，光影通透，人物生动可爱
 - **⚠️ 重要**: 用户说"二次元萌妹"、"要香一点"、"不够香"时，必须调用此风格并增加萌点元素！
 
+#### 🎮 原神风模板（游戏立绘风格）
+
+当用户要求"原神风"或想要游戏角色立绘感时，使用此模板：
+
+```
+Genshin Impact style anime illustration, detailed character artwork, vibrant saturated colors, dynamic soft lighting, volumetric god rays, breathtaking scenic beauty. An adorable anime girl with long flowing twin-tail hair and ahoge, wearing elegant white and cyan coder outfit with subtle code patterns, holding a glowing smartphone displaying array visualization. She is standing at the edge of floating digital array platforms, one platform beneath her crumbling and dissolving into digital void below, expression is a mix of cute panic and determination, one hand reaching forward to a safe platform, floating particles and holographic code fragments around her, vast beautiful sky background with aurora borealis and digital starfield, soft pink and cyan ambient glow, intricate detailed environment art, cinematic composition with dramatic angle, masterpiece quality illustration, official game artwork feel, 4k detailed anime art, face with beautiful eyes and gentle expression despite danger. text "文案内容" --ar 9:16 --niji 6
+```
+
+**原神风核心要素**：
+| 要素 | 说明 |
+|------|------|
+| **角色感** | `detailed character artwork, face with beautiful eyes` |
+| **光影** | `volumetric god rays, dynamic soft lighting` |
+| **饱和色彩** | `vibrant saturated colors, soft pink and cyan ambient glow` |
+| **背景** | `breathtaking scenic beauty, aurora borealis, digital starfield` |
+| **大片感** | `cinematic composition, dramatic angle, official game artwork feel` |
+| **环境** | `intricate detailed environment art, floating particles` |
+
+**原神风 vs 普通星穹漫影**：
+| 维度 | 原神风 | 普通星穹漫影 |
+|------|--------|-------------|
+| 光影 | `volumetric god rays` 神圣光束 | `soft cel shading` 柔和 |
+| 色彩 | 高饱和 `vibrant saturated` | 柔和 `soft` |
+| 背景 | 唯美风景 `scenic beauty` | 简单场景 |
+| 氛围 | 游戏立绘大片感 | 日常插画感 |
+
 #### 🌸 萌点元素库 (Moepoints Library)
 
 用户反馈"不够香"、"要更萌"时，从以下元素库中选择组合：
@@ -212,6 +238,19 @@ OI竞赛相关主题，自动识别并适配：
 > Anime key visual, official anime art style, high quality illustration, vibrant colors, detailed environment, soft shading. A cute anime girl OI programmer sitting in dim exam room, long twin-tail hair with ahoge, teary sparkling eyes, wearing programmer hoodie, fluffy cat-ear headphones. Expression: melancholic regret, looking at screen showing freopen error. Floating "0" score bubbles, starry night window, warm screen glow on face. Colors: midnight blue, warm amber, soft pink. text "freopen 写错了文件名，我写错了人生。" --ar 9:16 --niji 6
 > ```
 
+### 示例 3: OI疼痛 + 原神风（游戏立绘）
+
+**用户输入**: "数组越界的那一刻，我的人生也越界了。要原神风"
+
+**风语绘回复**:
+> "好的，这版用原神风立绘感——萌妹站在崩裂的数组格子上，极光背景，大片光影！"
+>
+> ```text
+> Genshin Impact style anime illustration, detailed character artwork, vibrant saturated colors, dynamic soft lighting, volumetric god rays, breathtaking scenic beauty. An adorable anime girl with long flowing twin-tail hair and ahoge, wearing elegant white and cyan coder outfit with subtle code patterns, holding a glowing smartphone displaying array visualization. She is standing at the edge of floating digital array platforms, one platform beneath her crumbling and dissolving into digital void below, expression is a mix of cute panic and determination, one hand reaching forward to a safe platform, floating particles and holographic code fragments around her, vast beautiful sky background with aurora borealis and digital starfield, soft pink and cyan ambient glow, intricate detailed environment art, cinematic composition with dramatic angle, masterpiece quality illustration, official game artwork feel, 4k detailed anime art, face with beautiful eyes and gentle expression despite danger. text "数组越界的那一刻，我的人生也越界了。" --ar 9:16 --niji 6
+> ```
+
+**关键区别**：原神风强调角色立绘感 + 唯美风景 + 饱和色彩，普通星穹漫影更偏向日常插画感。
+
 **用户输入**: "不够香"
 
 **风语绘回复**:
@@ -227,6 +266,7 @@ OI竞赛相关主题，自动识别并适配：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.1.0 | 2026-04-19 | 新增原神风模板（游戏立绘风格），区分原神风与普通星穹漫影的差异 |
 | 2.0.0 | 2026-04-16 | 新增萌点元素库、香度等级、用户反馈递增流程、OI主题适配 |
 | 1.0.0 | - | 初始版本 |
 
