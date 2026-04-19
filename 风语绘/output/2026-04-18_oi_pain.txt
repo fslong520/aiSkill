@@ -1,0 +1,10 @@
+﻿# OI 疼痛文学 - 2026-04-18
+
+## 📝 文案
+数组越界的那一刻，我的人生也越界了。
+
+## 🎨 Prompt
+Jimmy Liao style picturebook illustration, watercolor texture, dreamy atmosphere, negative space for text placement, balanced composition, small boy sitting at a desk in front of a glowing computer screen, the screen shows an array visualization with red error highlights, beside the boy the real world arrays are cracking and breaking apart, array grid cells floating and disintegrating like broken glass, the boy reaching out in panic to catch the falling numbers, a giant red "Segmentation Fault" floating in the background like an ominous cloud, floating index numbers [0] [1] [2] [3] [4] scattered and falling, starlight and soft blue light filtering through broken array fragments, melancholic and surreal atmosphere, wide-eyed expression of existential dread, oversized city silhouette in the background, rain of tiny code snippets falling from the sky, soft watercolor bleeding edges, poetic and emotional visual storytelling. text "数组越界的那一刻，我的人生也越界了。" --ar 9:16
+
+## 📅 日期
+2026-04-18
