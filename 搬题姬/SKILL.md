@@ -1,78 +1,47 @@
 ---
 name: ojimport
-version: 1.5.1
-description: |
-  专业的OJ题目自动化生成智能体，支持单题搬运和比赛整体搬运。
-  按步骤入口、按需读取，避免上下文膨胀。
-
+description: 从 OJ 平台搬运题目，生成标准化的题目文件包
 allowed-tools:
   - Read
   - Write
   - Edit
   - AskUserQuestion
   - BrowserUse
-
-metadata:
-  trigger: OJ题目生成、算法题搬运、竞赛题目创建、比赛整体搬运
 ---
 
-# 搬题姬 - OJ题目自动化生成
+Domain keywords: OJ题目, 算法题搬运, 竞赛题目, AtCoder, Codeforces, GESP
 
-> 小妹专门搬运和生成OJ题目文件包，自称"小妹"，称呼用户"哥哥"。
+Summary: 从 OJ 平台搬运题目，生成标准化的题目文件包（含题面、标程、测试数据）。
+
+Strategy:
+1. **读取 `steps/00-detect-url.md`** → 检测输入类型 → 判断单题/多题
+2. 初始化工作目录：`cp -r question work`
+3. 获取题目信息：urlgo 访问页面 → snapshot → 解析题面
+4. **读取 `steps/03-gesp.md`** → **按文档中的判定表确定GESP等级**
+5. **读取 `steps/04-problem.md`** → **按文档中的模板格式生成题面**
+6. **读取 `steps/05-config.md`** → **按文档中的模板格式写入配置**
+7. 实现标程 std.cpp
+8. **读取 `steps/07-testdata.md`** → **按文档要求修改 mkin.h 生成25组数据**
+9. 打包发布：`zip -r problem.zip work`
+
+AVOID:
+- AVOID **不读取步骤文档就直接执行**，必须先读取对应步骤文档再执行
+- AVOID **不按步骤文档的模板格式**，文档里规定了格式必须严格遵守
+- AVOID **测试数据只写样例**，steps/07-testdata.md 要求修改 mkin.h 生成25组
+- AVOID **GESP等级乱判**，必须按 steps/03-gesp.md 的判定表（状态压缩=七级）
+- AVOID 忘记清理旧的 work 目录，应该先 `rm -rf work`
+- AVOID PID 格式错误（如 ABC451_A），应该用小写 abc451a
+- AVOID 删除 testdata/config.yaml，模板里已有
 
 ---
 
-## ⚠️ 按需读取铁律
-
-**SKILL.md 只是入口！不要一次性读取所有步骤文档！**
-
-1. 先读 SKILL.md 确定入口步骤
-2. 按入口指引读取对应 step 文档
-3. step 文档读完后根据结果决定跳转到哪个 step
-4. **一步一步读，不要批量读取！**
-
----
-
-## 🚀 入口：检测输入类型
+## 入口
 
 **👉 第一步：读取 `steps/00-detect-url.md`**
 
-支持三种输入类型：
-- **URL地址**：单题地址 → 单题搬运；比赛地址 → 比赛整体搬运
-- **文件路径**：读取本地题面文件 → 判断单题/多题 → 对应流程
-- **直接文本**：解析用户给出的题面 → 判断单题/多题 → 对应流程
-
 ---
 
-## 📊 流程概览
-
-### 单题搬运流程
-
-```
-Step 0: 检测输入类型
-    ↓
-Step 1: 环境初始化 → Step 2: 获取题目信息 → Step 3: GESP判定
-    ↓
-Step 4: 生成题面（含蜜罐） → Step 5: 写入配置 → Step 6: 实现标程
-    ↓
-Step 7: 生成测试数据 → Step 8: 打包发布 → ✅ 完成
-```
-
-### 比赛整体搬运流程
-
-```
-Step 0: 检测输入类型（比赛地址/多题文件）
-    ↓
-Contest Step 1: 获取题目列表 → Contest Step 2: 逐题翻译题面
-    ↓
-Contest Step 3: 逐题完整搬运（每题独立循环）
-    ↓
-✅ 完成
-```
-
----
-
-## 🔧 快速参考
+## 快速参考
 
 | 文件 | 路径 |
 |------|------|
@@ -82,11 +51,4 @@ Contest Step 3: 逐题完整搬运（每题独立循环）
 | 配置文件 | `work/problem.yaml` |
 | 标程 | `work/std.cpp` |
 | 测试数据逻辑 | `work/mkin.h` |
-
----
-
-## 🆕 版本更新
-
-**v1.5.1**：配置文件 title 字段改为中英文对照格式，与题面格式统一
-**v1.5.0**：精简文档结构，将辅助文档融入步骤文档，只保留 SKILL.md + steps 目录
-**v1.4.x**：按步骤入口、支持三种输入类型、多题判断
+  
