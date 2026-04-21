@@ -1,138 +1,50 @@
 ---
 priority: 1000
 name: urlgo
-description: "🌐 浏览器控制技能 | 连接已有 CDP 浏览器，简单 CLI 命令
-触发关键字：https://, http://, www., .com, .cn, .org, mp.weixin, 打开网页、截图、读取文章
-"
-metadata: {"builtin_skill_version": "6.1.0", "copaw": {"emoji": "🌐", "requires": {}, "auto_load": true, "global": true}}
+description: 浏览器控制 CLI
+metadata: {"builtin_skill_version": "6.2.0", "copaw": {"emoji": "🌐", "requires": {}, "auto_load": true, "global": true}}
 ---
 
-# 🌐 urlgo - 浏览器控制 CLI
+Domain keywords: https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin
 
-> **简单粗暴！** 自动查找浏览器，连接 CDP，直接操作。
+Summary: 连接 CDP 浏览器的 CLI 工具，支持打开网页、截图、执行 JS。
 
----
+Strategy:
+1. `urlgo status` → 检查 CDP，未开启则 `urlgo start` 启动浏览器
+2. `urlgo open <url>` → 打开页面，返回 page id
+3. 用户选择操作 → 截图/读取/点击/输入/执行 JS
+4. 返回结果
 
-## 🚀 快速开始
-
-```bash
-# 1. 检查状态
-urlgo status
-
-# 2. 启动浏览器（自动查找 Edge/Chrome/Chromium）
-urlgo start
-
-# 3. 操作
-urlgo list                           # 查看所有页面
-urlgo open https://www.baidu.com     # 打开网页
-urlgo screenshot <id> /tmp/test.png  # 截图
-```
+AVOID:
+- AVOID 未检查 CDP 状态就操作，应该先 status/start
+- AVOID 忘记安装 websockets，截图和 JS 执行需要它
+- AVOID 用 WebFetch 读网页，应该用 urlgo snapshot（见 memory）
 
 ---
 
-## 📋 命令速查
+## 命令
 
 | 命令 | 说明 |
 |------|------|
-| `urlgo status` | 检查 CDP 状态 |
-| `urlgo start` | 查找并启动浏览器 |
-| `urlgo list` | 查看所有页面 |
-| `urlgo open <url>` | 打开新页面 |
-| `urlgo activate <id>` | 激活页面 |
-| `urlgo close <id>` | 关闭页面 |
+| `urlgo status` | 检查 CDP |
+| `urlgo start` | 启动浏览器 |
+| `urlgo list` | 查看页面 |
+| `urlgo open <url>` | 打开网页 |
 | `urlgo screenshot <id> <file>` | 截图 |
-| `urlgo snapshot <id>` | 读取页面内容 |
+| `urlgo snapshot <id>` | 读取内容 |
 | `urlgo eval <id> "<js>"` | 执行 JS |
-| `urlgo click <id> "<sel>"` | 点击元素 |
-| `urlgo type <id> "<sel>" "<text>"` | 输入文字 |
+| `urlgo click <id> "<sel>"` | 点击 |
+| `urlgo type <id> "<sel>" "<text>"` | 输入 |
 
----
-
-## ⚡ 示例
-
-### 检查状态并启动
+## 示例
 
 ```bash
-urlgo status          # 检查 CDP 是否开启
-urlgo start           # 自动查找 Edge/Chrome/Chromium 并启动
+urlgo start
+urlgo open https://example.com
+urlgo snapshot 1
+urlgo screenshot 1 /tmp/a.png
 ```
 
-### 打开网页并截图
+## 依赖
 
-```bash
-urlgo open https://www.zhihu.com
-urlgo screenshot <id> /tmp/zhihu.png
-```
-
-### 自动搜索
-
-```bash
-urlgo open https://www.baidu.com
-urlgo type <id> "input.s_ipt" "搜索内容"
-urlgo click <id> "input.s_btn"
-```
-
----
-
-## 🔧 常用 JS 操作
-
-| 功能 | JS 代码 |
-|------|---------|
-| 获取标题 | `document.title` |
-| 获取 URL | `window.location.href` |
-| 获取元素文本 | `document.querySelector('#id').innerText` |
-| 滚动页面 | `window.scrollBy(0, 500)` |
-
----
-
-## 🔄 状态处理
-
-### CDP 已开启
-
-```
-urlgo status
-✅ CDP 已开启
-   浏览器: Edg/147.0.3912.60
-   端口: 9022
-   页面数: 5
-```
-
-### CDP 未开启
-
-```
-urlgo status
-❌ CDP 未开启
-
-启动方式:
-  1. 运行: urlgo start
-  2. 手动启动: microsoft-edge --remote-debugging-port=9022 &
-```
-
-### urlgo start 行为
-
-- **CDP 已开启** → 提示已开启，不重复启动
-- **CDP 未开启** → 自动查找 Edge → Chrome → Chromium 并启动
-
----
-
-## 📁 文件结构
-
-```
-urlgo/
-├── SKILL.md      # 本文档
-├── urlgo         # CLI 工具
-└── steps/        # 详细步骤文档
-```
-
----
-
-## ⚠️ 依赖
-
-- `curl` - 基础操作
-- `websockets` (Python) - 截图、执行 JS（未安装会提示）
-
----
-
-**版本**: 6.1.0
-**更新**: 2026-04-21
-**变更**: 新增 status、start 命令，自动查找 Edge/Chrome/Chromium
+curl, websockets(Python)
