@@ -41,6 +41,19 @@ BROWSERS = {
         "edge": ["/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"],
         "chrome": ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"],
         "chromium": ["/Applications/Chromium.app/Contents/MacOS/Chromium"],
+    },
+    "Windows": {
+        "edge": [
+            "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+            "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
+        ],
+        "chrome": [
+            "C:/Program Files/Google/Chrome/Application/chrome.exe",
+            "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+        ],
+        "chromium": [
+            "C:/Program Files/Chromium/Application/chrome.exe",
+        ],
     }
 }
 
@@ -80,14 +93,17 @@ def find_browser():
     for browser_type, paths in browsers.items():
         for path in paths:
             # 检查是否是绝对路径
-            if path.startswith("/"):
+            if path.startswith("/") or (system == "Windows" and ":" in path):
                 if os.path.exists(path):
                     return browser_type, path
             else:
-                # 用 which 查找
-                r = run_cmd(f"which {path}")
+                # 用 which/where 查找
+                if system == "Windows":
+                    r = run_cmd(f"where {path}")
+                else:
+                    r = run_cmd(f"which {path}")
                 if r.returncode == 0 and r.stdout.strip():
-                    return browser_type, r.stdout.strip()
+                    return browser_type, r.stdout.strip().split('\n')[0]
 
     return None, None
 
@@ -138,8 +154,14 @@ def cmd_start():
     print(f"🚀 启动中...")
 
     # 启动浏览器
-    user_data_dir = f"/tmp/{browser_type}-cdp-{CDP_PORT}"
-    cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir={user_data_dir} &'
+    system = platform.system()
+    if system == "Windows":
+        import tempfile
+        user_data_dir = os.path.join(tempfile.gettempdir(), f"{browser_type}-cdp-{CDP_PORT}")
+        cmd = f'start "" "{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir="{user_data_dir}"'
+    else:
+        user_data_dir = f"/tmp/{browser_type}-cdp-{CDP_PORT}"
+        cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir={user_data_dir} &'
 
     run_cmd(cmd, capture=False)
 
