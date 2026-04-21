@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-urlgo - 浏览器控制 CLI（连接已有 CDP 9022 端口）
+urlgo - 浏览器控制 CLI（CDP 协议）
 
 用法:
+  urlgo status                   # 检查 CDP 状态
+  urlgo start                    # 查找并启动浏览器（Edge/Chrome/Chromium）
   urlgo list                     # 查看所有页面
   urlgo open <url>               # 打开新页面
   urlgo activate <page_id>       # 激活页面
@@ -14,35 +16,150 @@ urlgo - 浏览器控制 CLI（连接已有 CDP 9022 端口）
   urlgo type <page_id> "<selector>" "<text>"  # 输入
 
 示例:
+  urlgo start                    # 自动查找并启动浏览器
   urlgo open https://www.baidu.com
   urlgo list
   urlgo screenshot xxx /tmp/test.png
-  urlgo eval xxx "document.title"
-  urlgo click xxx "#btn"
-  urlgo type xxx "#input" "hello"
 """
 import sys
 import json
 import subprocess
+import os
+import platform
 
-CDP_URL = "http://localhost:9022"
+CDP_PORT = 9022
+CDP_URL = f"http://localhost:{CDP_PORT}"
+
+# 浏览器配置
+BROWSERS = {
+    "Linux": {
+        "edge": ["microsoft-edge", "microsoft-edge-stable"],
+        "chrome": ["google-chrome", "google-chrome-stable"],
+        "chromium": ["chromium", "chromium-browser"],
+    },
+    "Darwin": {
+        "edge": ["/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"],
+        "chrome": ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"],
+        "chromium": ["/Applications/Chromium.app/Contents/MacOS/Chromium"],
+    }
+}
+
+def run_cmd(cmd, capture=True):
+    """执行命令"""
+    if capture:
+        return subprocess.run(cmd, capture_output=True, text=True, shell=isinstance(cmd, str))
+    else:
+        return subprocess.run(cmd, shell=isinstance(cmd, str))
 
 def check_cdp():
     """检查 CDP 是否可用"""
     try:
-        r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/version"], capture_output=True, text=True)
+        r = run_cmd(["curl", "-s", f"{CDP_URL}/json/version"])
         if r.returncode == 0 and "Browser" in r.stdout:
             return True
     except:
         pass
-    print("❌ CDP 未开启，请先启动浏览器:")
-    print("   microsoft-edge --remote-debugging-port=9022 &")
-    sys.exit(1)
+    return False
+
+def get_browser_info():
+    """获取当前浏览器信息"""
+    try:
+        r = run_cmd(["curl", "-s", f"{CDP_URL}/json/version"])
+        if r.returncode == 0:
+            data = json.loads(r.stdout)
+            return data.get("Browser", "Unknown")
+    except:
+        pass
+    return None
+
+def find_browser():
+    """查找可用的浏览器"""
+    system = platform.system()
+    browsers = BROWSERS.get(system, {})
+
+    for browser_type, paths in browsers.items():
+        for path in paths:
+            # 检查是否是绝对路径
+            if path.startswith("/"):
+                if os.path.exists(path):
+                    return browser_type, path
+            else:
+                # 用 which 查找
+                r = run_cmd(f"which {path}")
+                if r.returncode == 0 and r.stdout.strip():
+                    return browser_type, r.stdout.strip()
+
+    return None, None
+
+def cmd_status():
+    """检查 CDP 状态"""
+    print(f"🔍 检查 CDP 端口 {CDP_PORT}...")
+
+    if check_cdp():
+        browser = get_browser_info()
+        print(f"✅ CDP 已开启")
+        print(f"   浏览器: {browser}")
+        print(f"   端口: {CDP_PORT}")
+
+        # 显示页面数量
+        r = run_cmd(["curl", "-s", f"{CDP_URL}/json/list"])
+        if r.returncode == 0:
+            pages = json.loads(r.stdout)
+            page_count = len([p for p in pages if p.get("type") == "page"])
+            print(f"   页面数: {page_count}")
+    else:
+        print(f"❌ CDP 未开启")
+        print()
+        print("启动方式:")
+        print("  1. 运行: urlgo start")
+        print("  2. 手动启动: microsoft-edge --remote-debugging-port=9022 &")
+
+def cmd_start():
+    """查找并启动浏览器"""
+    print("🔍 查找可用浏览器...")
+
+    # 先检查是否已经开启
+    if check_cdp():
+        browser = get_browser_info()
+        print(f"✅ CDP 已开启: {browser}")
+        print("   如需重启，请先关闭浏览器")
+        return
+
+    # 查找浏览器
+    browser_type, browser_path = find_browser()
+
+    if not browser_path:
+        print("❌ 未找到可用浏览器")
+        print("   请安装 Edge、Chrome 或 Chromium")
+        sys.exit(1)
+
+    print(f"✅ 找到浏览器: {browser_type}")
+    print(f"   路径: {browser_path}")
+    print(f"🚀 启动中...")
+
+    # 启动浏览器
+    user_data_dir = f"/tmp/{browser_type}-cdp-{CDP_PORT}"
+    cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir={user_data_dir} &'
+
+    run_cmd(cmd, capture=False)
+
+    # 等待启动
+    import time
+    for i in range(10):
+        time.sleep(0.5)
+        if check_cdp():
+            print(f"✅ 浏览器已启动 (CDP 端口 {CDP_PORT})")
+            return
+
+    print("❌ 启动超时，请检查浏览器是否正常")
 
 def cmd_list():
     """列出所有页面"""
-    check_cdp()
-    r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/list"], capture_output=True, text=True)
+    if not check_cdp():
+        print("❌ CDP 未开启，请先运行: urlgo start")
+        sys.exit(1)
+
+    r = run_cmd(["curl", "-s", f"{CDP_URL}/json/list"])
     pages = json.loads(r.stdout)
     for p in pages:
         if p.get("type") == "page":
@@ -50,8 +167,11 @@ def cmd_list():
 
 def cmd_open(url):
     """打开新页面"""
-    check_cdp()
-    r = subprocess.run(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/new?{url}"], capture_output=True, text=True)
+    if not check_cdp():
+        print("❌ CDP 未开启，请先运行: urlgo start")
+        sys.exit(1)
+
+    r = run_cmd(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/new?{url}"])
     data = json.loads(r.stdout)
     print(f"✅ 已打开: {url}")
     print(f"   ID: {data['id']}")
@@ -59,18 +179,18 @@ def cmd_open(url):
 def cmd_activate(page_id):
     """激活页面"""
     full_id = get_full_id(page_id)
-    subprocess.run(["curl", "-s", f"{CDP_URL}/json/activate/{full_id}"], capture_output=True)
+    run_cmd(["curl", "-s", f"{CDP_URL}/json/activate/{full_id}"])
     print(f"✅ 已激活: {page_id}")
 
 def cmd_close(page_id):
     """关闭页面"""
     full_id = get_full_id(page_id)
-    subprocess.run(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/close/{full_id}"], capture_output=True)
+    run_cmd(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/close/{full_id}"])
     print(f"✅ 已关闭: {page_id}")
 
 def get_full_id(short_id):
     """获取完整页面 ID"""
-    r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/list"], capture_output=True, text=True)
+    r = run_cmd(["curl", "-s", f"{CDP_URL}/json/list"])
     pages = json.loads(r.stdout)
     for p in pages:
         if p['id'].startswith(short_id) or p['id'] == short_id:
@@ -91,7 +211,7 @@ def ws_command(page_id, method, params=None):
     full_id = get_full_id(page_id)
 
     async def run():
-        ws_url = f"ws://localhost:9022/devtools/page/{full_id}"
+        ws_url = f"ws://localhost:{CDP_PORT}/devtools/page/{full_id}"
         async with websockets.connect(ws_url, max_size=10*1024*1024) as ws:
             cmd = {"id": 1, "method": method}
             if params:
@@ -145,7 +265,11 @@ if __name__ == "__main__":
 
     cmd = sys.argv[1]
 
-    if cmd == "list":
+    if cmd == "status":
+        cmd_status()
+    elif cmd == "start":
+        cmd_start()
+    elif cmd == "list":
         cmd_list()
     elif cmd == "open" and len(sys.argv) >= 3:
         cmd_open(sys.argv[2])
