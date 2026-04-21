@@ -4,22 +4,25 @@ name: urlgo
 description: "🌐 浏览器控制技能 | 连接已有 CDP 浏览器，简单 CLI 命令
 触发关键字：https://, http://, www., .com, .cn, .org, mp.weixin, 打开网页、截图、读取文章
 "
-metadata: {"builtin_skill_version": "6.0.0", "copaw": {"emoji": "🌐", "requires": {}, "auto_load": true, "global": true}}
+metadata: {"builtin_skill_version": "6.1.0", "copaw": {"emoji": "🌐", "requires": {}, "auto_load": true, "global": true}}
 ---
 
 # 🌐 urlgo - 浏览器控制 CLI
 
-> **简单粗暴！** 连接已有的 CDP 浏览器（9022 端口），直接操作。
+> **简单粗暴！** 自动查找浏览器，连接 CDP，直接操作。
 
 ---
 
 ## 🚀 快速开始
 
 ```bash
-# 1. 确保 CDP 浏览器已启动
-microsoft-edge --remote-debugging-port=9022 &
+# 1. 检查状态
+urlgo status
 
-# 2. 使用 urlgo
+# 2. 启动浏览器（自动查找 Edge/Chrome/Chromium）
+urlgo start
+
+# 3. 操作
 urlgo list                           # 查看所有页面
 urlgo open https://www.baidu.com     # 打开网页
 urlgo screenshot <id> /tmp/test.png  # 截图
@@ -31,6 +34,8 @@ urlgo screenshot <id> /tmp/test.png  # 截图
 
 | 命令 | 说明 |
 |------|------|
+| `urlgo status` | 检查 CDP 状态 |
+| `urlgo start` | 查找并启动浏览器 |
 | `urlgo list` | 查看所有页面 |
 | `urlgo open <url>` | 打开新页面 |
 | `urlgo activate <id>` | 激活页面 |
@@ -44,6 +49,13 @@ urlgo screenshot <id> /tmp/test.png  # 截图
 ---
 
 ## ⚡ 示例
+
+### 检查状态并启动
+
+```bash
+urlgo status          # 检查 CDP 是否开启
+urlgo start           # 自动查找 Edge/Chrome/Chromium 并启动
+```
 
 ### 打开网页并截图
 
@@ -60,14 +72,6 @@ urlgo type <id> "input.s_ipt" "搜索内容"
 urlgo click <id> "input.s_btn"
 ```
 
-### 读取页面信息
-
-```bash
-urlgo eval <id> "document.title"
-urlgo eval <id> "window.location.href"
-urlgo eval <id> "document.querySelector('#content').innerText"
-```
-
 ---
 
 ## 🔧 常用 JS 操作
@@ -78,6 +82,36 @@ urlgo eval <id> "document.querySelector('#content').innerText"
 | 获取 URL | `window.location.href` |
 | 获取元素文本 | `document.querySelector('#id').innerText` |
 | 滚动页面 | `window.scrollBy(0, 500)` |
+
+---
+
+## 🔄 状态处理
+
+### CDP 已开启
+
+```
+urlgo status
+✅ CDP 已开启
+   浏览器: Edg/147.0.3912.60
+   端口: 9022
+   页面数: 5
+```
+
+### CDP 未开启
+
+```
+urlgo status
+❌ CDP 未开启
+
+启动方式:
+  1. 运行: urlgo start
+  2. 手动启动: microsoft-edge --remote-debugging-port=9022 &
+```
+
+### urlgo start 行为
+
+- **CDP 已开启** → 提示已开启，不重复启动
+- **CDP 未开启** → 自动查找 Edge → Chrome → Chromium 并启动
 
 ---
 
@@ -99,6 +133,6 @@ urlgo/
 
 ---
 
-**版本**: 6.0.0
+**版本**: 6.1.0
 **更新**: 2026-04-21
-**变更**: 重构为简单 CLI，参考 agent-browser 设计
+**变更**: 新增 status、start 命令，自动查找 Edge/Chrome/Chromium
