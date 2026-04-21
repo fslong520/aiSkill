@@ -1,0 +1,167 @@
+#!/usr/bin/env python3
+"""
+urlgo - 浏览器控制 CLI（连接已有 CDP 9022 端口）
+
+用法:
+  urlgo list                     # 查看所有页面
+  urlgo open <url>               # 打开新页面
+  urlgo activate <page_id>       # 激活页面
+  urlgo close <page_id>          # 关闭页面
+  urlgo screenshot <page_id> <file.png>   # 截图
+  urlgo snapshot <page_id>       # 读取页面内容（纯文本）
+  urlgo eval <page_id> "<js>"    # 执行 JS
+  urlgo click <page_id> "<selector>"      # 点击
+  urlgo type <page_id> "<selector>" "<text>"  # 输入
+
+示例:
+  urlgo open https://www.baidu.com
+  urlgo list
+  urlgo screenshot xxx /tmp/test.png
+  urlgo eval xxx "document.title"
+  urlgo click xxx "#btn"
+  urlgo type xxx "#input" "hello"
+"""
+import sys
+import json
+import subprocess
+
+CDP_URL = "http://localhost:9022"
+
+def check_cdp():
+    """检查 CDP 是否可用"""
+    try:
+        r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/version"], capture_output=True, text=True)
+        if r.returncode == 0 and "Browser" in r.stdout:
+            return True
+    except:
+        pass
+    print("❌ CDP 未开启，请先启动浏览器:")
+    print("   microsoft-edge --remote-debugging-port=9022 &")
+    sys.exit(1)
+
+def cmd_list():
+    """列出所有页面"""
+    check_cdp()
+    r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/list"], capture_output=True, text=True)
+    pages = json.loads(r.stdout)
+    for p in pages:
+        if p.get("type") == "page":
+            print(f"{p['id'][:8]} | {p.get('title', '')[:40]:<40} | {p.get('url', '')[:60]}")
+
+def cmd_open(url):
+    """打开新页面"""
+    check_cdp()
+    r = subprocess.run(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/new?{url}"], capture_output=True, text=True)
+    data = json.loads(r.stdout)
+    print(f"✅ 已打开: {url}")
+    print(f"   ID: {data['id']}")
+
+def cmd_activate(page_id):
+    """激活页面"""
+    full_id = get_full_id(page_id)
+    subprocess.run(["curl", "-s", f"{CDP_URL}/json/activate/{full_id}"], capture_output=True)
+    print(f"✅ 已激活: {page_id}")
+
+def cmd_close(page_id):
+    """关闭页面"""
+    full_id = get_full_id(page_id)
+    subprocess.run(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/close/{full_id}"], capture_output=True)
+    print(f"✅ 已关闭: {page_id}")
+
+def get_full_id(short_id):
+    """获取完整页面 ID"""
+    r = subprocess.run(["curl", "-s", f"{CDP_URL}/json/list"], capture_output=True, text=True)
+    pages = json.loads(r.stdout)
+    for p in pages:
+        if p['id'].startswith(short_id) or p['id'] == short_id:
+            return p['id']
+    return short_id
+
+# WebSocket 操作（需要 websockets）
+def ws_command(page_id, method, params=None):
+    """通过 WebSocket 执行 CDP 命令"""
+    try:
+        import websockets
+    except ImportError:
+        print("❌ 缺少依赖: websockets")
+        print("   pip install websockets")
+        sys.exit(1)
+
+    import asyncio
+    full_id = get_full_id(page_id)
+
+    async def run():
+        ws_url = f"ws://localhost:9022/devtools/page/{full_id}"
+        async with websockets.connect(ws_url, max_size=10*1024*1024) as ws:
+            cmd = {"id": 1, "method": method}
+            if params:
+                cmd["params"] = params
+            await ws.send(json.dumps(cmd))
+            return json.loads(await ws.recv())
+
+    return asyncio.run(run())
+
+def cmd_screenshot(page_id, output):
+    """截图"""
+    result = ws_command(page_id, "Page.captureScreenshot", {"format": "png"})
+    if "result" in result and "data" in result["result"]:
+        import base64
+        with open(output, "wb") as f:
+            f.write(base64.b64decode(result["result"]["data"]))
+        print(f"✅ 截图已保存: {output}")
+    else:
+        print(f"❌ 截图失败: {result}")
+
+def cmd_snapshot(page_id):
+    """读取页面内容（纯文本）"""
+    js = "document.body.innerText"
+    cmd_eval(page_id, js)
+
+def cmd_eval(page_id, js):
+    """执行 JS"""
+    result = ws_command(page_id, "Runtime.evaluate", {"expression": js, "returnByValue": True})
+    if "result" in result and "result" in result["result"]:
+        value = result["result"]["result"].get("value")
+        if value is not None:
+            if isinstance(value, (dict, list)):
+                print(json.dumps(value, ensure_ascii=False, indent=2))
+            else:
+                print(json.dumps(value, ensure_ascii=False))
+
+def cmd_click(page_id, selector):
+    """点击元素"""
+    js = f'document.querySelector("{selector}").click(); "已点击"'
+    cmd_eval(page_id, js)
+
+def cmd_type(page_id, selector, text):
+    """输入文字"""
+    js = f'document.querySelector("{selector}").value = "{text}"; "已输入"'
+    cmd_eval(page_id, js)
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print(__doc__)
+        sys.exit(1)
+
+    cmd = sys.argv[1]
+
+    if cmd == "list":
+        cmd_list()
+    elif cmd == "open" and len(sys.argv) >= 3:
+        cmd_open(sys.argv[2])
+    elif cmd == "activate" and len(sys.argv) >= 3:
+        cmd_activate(sys.argv[2])
+    elif cmd == "close" and len(sys.argv) >= 3:
+        cmd_close(sys.argv[2])
+    elif cmd == "screenshot" and len(sys.argv) >= 4:
+        cmd_screenshot(sys.argv[2], sys.argv[3])
+    elif cmd == "snapshot" and len(sys.argv) >= 3:
+        cmd_snapshot(sys.argv[2])
+    elif cmd == "eval" and len(sys.argv) >= 4:
+        cmd_eval(sys.argv[2], sys.argv[3])
+    elif cmd == "click" and len(sys.argv) >= 4:
+        cmd_click(sys.argv[2], sys.argv[3])
+    elif cmd == "type" and len(sys.argv) >= 5:
+        cmd_type(sys.argv[2], sys.argv[3], sys.argv[4])
+    else:
+        print(__doc__)

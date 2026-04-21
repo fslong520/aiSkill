@@ -1,91 +1,64 @@
-# Step 3: 定位并启动浏览器
+# Step 3: 启动浏览器
 
 ## 🎯 目标
 
-根据操作系统找到浏览器并启动 CDP 模式。
-
-**优先级**：Edge（首选）→ Chrome（备选）
+启动浏览器并开启 CDP 调试端口 9022。
 
 ---
 
-## 🚨 铁律（非常重要！）
-
-1. **启动前必须检查旧进程！** 
-   - 如果浏览器已打开但 **没有开启 9022 端口**，必须关掉旧进程再启动！
-2. **只加 `--remote-debugging-port=9022` 参数！** 不要加其他参数！
-
----
-
-## 🐧 Linux
-
-### 查找并启动 Edge
+## Linux 启动命令
 
 ```bash
-# 先检查并关闭旧进程
-curl -s http://localhost:9022/json/version >/dev/null 2>&1 || pkill -f "msedge|chrome" 2>/dev/null; sleep 2
+# Edge（推荐）
+microsoft-edge --remote-debugging-port=9022 --user-data-dir=/tmp/edge-cdp &
 
-# 启动 Edge
-nohup /opt/microsoft/msedge/msedge --remote-debugging-port=9022 > /tmp/edge-cdp.log 2>&1 &
+# Chrome
+google-chrome --remote-debugging-port=9022 --user-data-dir=/tmp/chrome-cdp &
+
+# Chromium
+chromium --remote-debugging-port=9022 --user-data-dir=/tmp/chromium-cdp &
 ```
 
-### 验证启动
+---
+
+## macOS 启动命令
 
 ```bash
-sleep 5 && curl -s http://localhost:9022/json/version | head -5
+# Edge（推荐）
+/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge --remote-debugging-port=9022 --user-data-dir=/tmp/edge-cdp &
+
+# Chrome
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9022 --user-data-dir=/tmp/chrome-cdp &
+
+# Chromium
+/Applications/Chromium.app/Contents/MacOS/Chromium --remote-debugging-port=9022 --user-data-dir=/tmp/chromium-cdp &
 ```
 
 ---
 
-## 🍎 macOS
-
-### 查找并启动 Edge
+## ⚡ 启动后验证
 
 ```bash
-# 先检查并关闭旧进程
-curl -s http://localhost:9022/json/version >/dev/null 2>&1 || pkill -f "Microsoft Edge|Google Chrome" 2>/dev/null; sleep 2
-
-# 启动 Edge
-nohup "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge" --remote-debugging-port=9022 > /tmp/edge-cdp.log 2>&1 &
+# 等待 2 秒后检测
+sleep 2 && curl -s http://localhost:9022/json/version | head -3
 ```
 
 ---
 
-## 🪟 Windows (PowerShell)
+## 🚀 验证成功后可执行的操作
 
-### 查找并启动 Edge
+```bash
+# 打开新网页
+curl -s -X PUT "http://localhost:9022/json/new?https://example.com"
 
-```powershell
-# 先检查并关闭旧进程
-try { Invoke-WebRequest -Uri "http://localhost:9022/json/version" -TimeoutSec 2 } catch { taskkill /F /IM msedge.exe 2>$null; Start-Sleep -Seconds 2 }
-
-# 启动 Edge
-Start-Process "C:\Program Files\Microsoft\Edge\Application\msedge.exe" -ArgumentList "--remote-debugging-port=9022"
+# 查看所有页面
+curl -s http://localhost:9022/json/list | jq -r '.[] | select(.type=="page") | "\(.title)\n   \(.url)"'
 ```
 
 ---
 
-## 📊 判断结果与下一步跳转
+## ⚠️ 注意事项
 
-### ✅ 启动成功
-
-**输出示例**：
-```json
-{
-   "Browser": "Edg/...",
-   "Protocol-Version": "1.3",
-   ...
-}
-```
-
-**👉 下一步**：读取 `steps/04-connect-cdp.md` 建立 CDP 连接。
-
----
-
-### ❌ 启动失败
-
-**输出示例**：无输出或连接拒绝
-
-**处理**：
-1. 检查日志：`cat /tmp/edge-cdp.log`
-2. 等待旧进程完全退出（多等几秒）
-3. 重新执行启动命令
+- `--user-data-dir` 指定临时目录，避免污染默认配置
+- `&` 后台运行，不阻塞终端
+- 首次启动可能需要几秒钟

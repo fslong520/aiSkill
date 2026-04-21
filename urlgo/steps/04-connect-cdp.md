@@ -1,75 +1,53 @@
-# Step 4: 建立 CDP 连接
+# CDP HTTP API 完整参考
 
-## 🎯 目标
+## 📌 基础 API
 
-通过 `browser_use` 工具建立 CDP 连接。
-
----
-
-## 🔧 命令
-
-```
-browser_use action="connect_cdp" cdp_url="http://localhost:9022"
-```
+| API | 方法 | 说明 |
+|-----|------|------|
+| `/json/version` | GET | 获取浏览器版本信息 |
+| `/json/list` | GET | 获取所有页面列表 |
+| `/json/new?<URL>` | PUT | 打开新页面 |
+| `/json/activate/<ID>` | GET | 激活页面 |
+| `/json/close/<ID>` | PUT | 关闭页面 |
 
 ---
 
-## 📊 判断结果与下一步跳转
+## 🚀 常用操作
 
-### ✅ 连接成功
+### 检测 CDP
 
-**输出示例**：
-```json
-{
-  "ok": true,
-  "message": "Connected to Chrome via CDP at http://localhost:9022",
-  "pages": ["page_0", "page_1", ...]
-}
+```bash
+curl -s http://localhost:9022/json/version
 ```
 
-**👉 下一步**：开始执行任务（open、snapshot、click 等）
+### 打开网页
 
----
-
-### ❌ 连接失败
-
-**输出示例**：
-```json
-{
-  "ok": false,
-  "error": "A Playwright-managed browser is currently running..."
-}
+```bash
+curl -s -X PUT "http://localhost:9022/json/new?https://www.baidu.com"
 ```
 
-**处理流程**：
-1. 执行 `browser_use action="stop"` 断开旧连接
-2. 关闭占用 9022 端口的浏览器进程：
-   ```bash
-   # Linux
-   kill $(lsof -ti:9022) 2>/dev/null
-   
-   # macOS
-   lsof -ti:9022 | xargs kill 2>/dev/null
-   ```
-3. 等待 2 秒让端口释放
-4. **👉 回到** `steps/01-detect-cdp.md` 重新检测
+### 查看页面列表
+
+```bash
+curl -s http://localhost:9022/json/list | jq -r '.[] | select(.type=="page") | "\(.id | .[0:8]) \(.title)"'
+```
+
+### 激活页面
+
+```bash
+curl -s "http://localhost:9022/json/activate/<FULL_PAGE_ID>"
+```
+
+### 关闭页面
+
+```bash
+curl -s -X PUT "http://localhost:9022/json/close/<FULL_PAGE_ID>"
+```
 
 ---
 
-## 🚀 连接后可用操作
+## ⚠️ 重要提示
 
-| 操作 | 命令 |
-|------|------|
-| 打开网页 | `browser_use action="open" url="https://..."` |
-| 页面快照 | `browser_use action="snapshot"` |
-| 点击元素 | `browser_use action="click" ref="xxx"` |
-| 输入文本 | `browser_use action="type" text="xxx"` |
-| 截图 | `browser_use action="screenshot" path="xxx.png"` |
-
----
-
-## ⚠️ 注意事项
-
-- 连接后浏览器保持运行，不会关闭
-- 可以复用已有的登录态和书签
-- 断开连接用 `browser_use action="stop"`，不会关闭浏览器
+1. **打开网页必须用 PUT 方法**
+2. **页面 ID 很长**，建议用变量保存
+3. **URL 中的特殊字符需要编码**
