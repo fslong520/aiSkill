@@ -1,10 +1,27 @@
 ---
 name: 漫语
-version: 1.0.0
+version: 1.1.0
 description: 将长篇小说转换为富有哲理的四格漫画故事，提取核心主题，创作引人深思的视觉叙事
 allowed-tools: [Read, Write, imageGenerate]
 metadata:
   trigger: 用户说"创作漫画"、"小说转漫画"、"四格漫画"、"哲理漫画"等
+---
+
+Domain keywords: 四格漫画, 小说转漫画, 哲理漫画, 视觉叙事
+
+Summary: 提取故事哲理→创作四格剧本→生成漫画图。
+
+Strategy:
+1. 理解主题（提取核心哲理和冲突）
+2. 创作四格剧本（问题→冲突→转折→升华）
+3. `imageGenerate` 生成（2×2布局，橙色标签点睛）
+
+AVOID:
+- AVOID 四格故事拖沓，要简洁有力
+- AVOID 视觉隐喻不清晰
+- AVOID 忘记第四格的橙色标签
+- AVOID 人物造型不统一
+
 ---
 
 # 漫语 - 长篇小说转四格漫画

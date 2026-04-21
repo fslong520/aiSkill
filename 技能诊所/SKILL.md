@@ -5,6 +5,8 @@ description: AI 技能体检诊断
 allowed-tools:
   - Read
   - Glob
+  - Write
+  - Edit
   - AskUserQuestion
 ---
 
@@ -18,11 +20,13 @@ Strategy:
 3. 查 Gene 结构：keywords、summary、strategy、AVOID
 4. 算分：结构(40) + 内容(40) + 实践(20) - 负贡献
 5. 定等级：S/A/B/C
-6. 开处方
+6. 开处方：提出改进建议（可选鲁迅式半文半白风格），问用户是否执行
 
 AVOID:
 - AVOID 只读 SKILL.md 就下结论，目录下其他文档也要看
+- AVOID 只改 SKILL.md 不改其他文档，改进要覆盖所有相关文件
 - AVOID 给了分不给建议，等于没说
+- AVOID 改文档时 AVOID 表述不清，要说清楚"错误行为 + 应该怎样"
 - AVOID 自己写得烂还去评价别人，先照照镜子
 
 ---
