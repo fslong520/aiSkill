@@ -1,9 +1,9 @@
 ---
-name: clawhub发布
+name: ClawHub
 description: |
   将本地技能发布到 ClawHub 技能市场。自动检查技能目录结构、生成版本号、
   构建 changelog，执行发布命令并验证结果。
-  
+
   **触发场景**：用户说"发布技能"、"发布到 ClawHub"、"上传技能"等。
 
 allowed-tools:
@@ -20,6 +20,32 @@ metadata:
 # ClawHub 技能发布
 
 > 一键发布技能到 ClawHub 技能市场。
+
+## Summary
+
+检查登录→确认技能目录→检测发布历史→推荐Slug→确认参数→执行发布→验证结果。
+
+## Keywords
+
+发布技能、ClawHub、publish、技能市场、上传、版本管理
+
+## Strategy
+
+1. **检查登录**：`clawhub whoami`，未登录则`clawhub login`
+2. **确认目录**：检查SKILL.md存在
+3. **检测历史**：`clawhub inspect <slug>`判断是否已发布
+4. **推荐Slug**：提供3个方案（全拼音/英文意译/功能描述），等待用户选择
+5. **确认参数**：slug/name/version/changelog/tags
+6. **执行发布**：`clawhub publish <path> --slug --name --version --changelog --tags`
+7. **验证结果**：检查输出是否成功
+
+## AVOID
+
+- AVOID Slug包含连字符-或下划线_，必须是纯小写字母+数字紧密相连
+- AVOID 更新已发布技能时更改tags，必须与历史版本保持tags和name一致
+- AVOID tags使用中文，只能用英文逗号分隔
+- AVOID 未检测发布历史就发布，必须先`clawhub inspect`判断是否已存在
+- AVOID 未等待用户确认Slug就发布，必须提供3个方案让用户选择
 
 ---
 

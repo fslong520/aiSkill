@@ -1,5 +1,5 @@
 ---
-name: 雀影
+name: QueShadow
 version: 1.3.0
 description: AI 视频创意伙伴，生成分镜脚本和 Seedance 提示词
 allowed-tools:
@@ -7,6 +7,9 @@ allowed-tools:
   - Write
   - Edit
   - AskUserQuestion
+
+metadata:
+  trigger: 雀影、视频生成、AI视频、分镜、Seedance、即梦、视频脚本、视频prompt
 ---
 
 Domain keywords: 雀影, 视频生成, AI视频, 分镜, Seedance, 即梦, prompt

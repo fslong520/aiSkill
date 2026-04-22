@@ -1,5 +1,5 @@
 ---
-name: 见自己
+name: SeeSelf
 version: 2.0.0
 description: 生动有趣的自我探索梳理技能，通过对话式问答引导用户深度探索自我，生成"AI眼中的你"分析和第一人称文章
 allowed-tools:
@@ -7,6 +7,9 @@ allowed-tools:
   - Write
   - Edit
   - AskUserQuestion
+
+metadata:
+  trigger: 见自己、自我探索、自我梳理、人生复盘、认识自己、性格分析
 ---
 
 Domain keywords: 自我探索, 自我梳理, 人生复盘, 认识自己, 性格分析

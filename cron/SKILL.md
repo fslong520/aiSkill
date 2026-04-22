@@ -9,9 +9,29 @@ metadata:
 
 # Cron（定时任务管理）
 
-## 什么时候用
+## Summary
 
-只有在需要**未来某个时间自动执行**，或**按周期重复执行**时，使用本 skill。
+管理定时任务：仅在需要未来定时或周期执行时使用。所有命令必须显式传--agent-id。
+
+## Keywords
+
+定时任务、cron、周期执行、schedule、定时提醒、定时汇报
+
+## Strategy
+
+1. **判断是否需要cron**：确认是未来定时或周期执行，而非立即一次性
+2. **确认参数**：时间/周期、channel、target-user、target-session
+3. **显式传agent-id**：所有命令必须带--agent-id，否则任务落到错误workspace
+4. **创建任务**：copaw cron create，type可选text或agent
+5. **管理任务**：list/state/pause/resume/delete/run
+
+## AVOID
+
+- AVOID 把一次性立即执行当成cron，只有未来定时或周期执行才用cron
+- AVIEW 所有cron命令不传--agent-id，必须显式传否则任务落到错误workspace
+- AVOID 信息没补全就创建任务，缺少时间/周期/channel/session应先追问
+- AVOID 操作已有任务前不先查job_id，必须先list找到正确job_id
+- AVOID 依赖默认agent，否则任务可能落到default workspace
 
 ### 应该使用
 - 用户要求"每天 / 每周 / 每小时"执行某事

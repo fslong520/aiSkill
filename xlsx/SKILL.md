@@ -2,6 +2,9 @@
 name: xlsx
 description: 创建、读取、编辑Excel文件(.xlsx/.xlsm/.csv)，支持公式、格式化、图表等
 license: Proprietary
+
+metadata:
+  trigger: Excel、xlsx、表格、公式、数据分析、Excel文件
 ---
 
 Domain keywords: Excel, xlsx, 表格, 公式, 数据分析, pandas, openpyxl

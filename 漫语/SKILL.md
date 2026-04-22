@@ -1,5 +1,5 @@
 ---
-name: 漫语
+name: ComicTale
 version: 1.1.0
 description: 将长篇小说转换为富有哲理的四格漫画故事，提取核心主题，创作引人深思的视觉叙事
 allowed-tools: [Read, Write, imageGenerate]

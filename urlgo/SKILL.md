@@ -2,7 +2,14 @@
 priority: 1000
 name: urlgo
 description: 浏览器控制 CLI
-metadata: {"builtin_skill_version": "6.3.0", "copaw": {"emoji": "🌐", "requires": {}, "auto_load": true, "global": true}}
+metadata:
+  builtin_skill_version: "6.3.0"
+  trigger: urlgo、浏览器、CDP、截图、网页、打开网页、网页截图、https://、http://
+  copaw:
+    emoji: "🌐"
+    requires: {}
+    auto_load: true
+    global: true
 ---
 
 Domain keywords: https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin

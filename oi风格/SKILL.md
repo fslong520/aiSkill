@@ -1,5 +1,5 @@
 ---
-name: OI风格
+name: OIStyle
 
 description: |
   自动检测文档中的C++代码并将其转换为信息学奥林匹克竞赛风格的代码格式。
@@ -16,70 +16,79 @@ allowed-tools:
   - AskUserQuestion
 
 metadata:
-  trigger: C++代码转换、信奥赛风格、代码规范化、竞赛代码优化
-  source: 基于信息学奥林匹克竞赛代码规范和实践经验
+  trigger: OI风格、信奥赛风格、C++代码转换、竞赛代码、变量命名规范化
 ---
 
 # 信奥赛代码风格转换器
 
-## 功能说明
-自动扫描文档中的C++代码块，将其转换为符合信息学奥林匹克竞赛规范的代码风格：
-- 使用简短变量名（不超过5个字符）
-- 优先使用全局变量
-- 采用竞赛标准格式（左大括号另起一行）
-- 明确包含所需头文件
-- 添加必要的中文注释
+## Summary
 
-## 使用方法
-直接在文档中运行此skill，它会自动找到所有C++代码块并进行转换。
+扫描文档中的C++代码块，转换为OI竞赛规范风格：短变量名、全局变量、左大括号另起一行、明确头文件、中文注释。
 
-## 转换规则
+## Keywords
 
-### 变量命名规范
-- 函数名、变量名、参数名不超过5个字符
-- 优先使用字母：a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
-- 循环变量常用：i, j, k
-- 数组名常用：a, b, c, d
-- 临时变量常用：x, y, z, t
+C++代码转换、信奥赛风格、代码规范化、竞赛代码优化、OI风格、变量命名、头文件
 
-### 代码格式要求
-- 左大括号必须另起一行
-- 使用4个空格缩进
-- 逻辑段落之间留空行
-- 关键步骤添加中文注释
+## Strategy
 
-### 头文件规范
-- 不使用万能头文件 `<bits/stdc++.h>`
-- 明确包含所需的具体头文件
-- 常用：`<iostream>`, `<algorithm>`, `<vector>`, `<queue>`, `<stack>` 等
+1. **扫描定位**：找到文档中所有标记为 `cpp` 的代码块
+2. **分析结构**：识别变量命名、数据结构、头文件、代码格式
+3. **转换执行**：
+   - 变量名 → 5字符以内短名（参考 reference.md 映射表）
+   - vector → 固定数组
+   - 万能头 → 具体头文件
+   - 左大括号 → 另起一行
+4. **添加注释**：在关键步骤添加中文注释
+5. **验证确认**：展示转换结果，询问用户是否满意
 
-## 转换示例
+## AVOID
+
+- AVOID 使用 `bits/stdc++.h` 万能头文件，应替换为具体所需头文件
+- AVOID 变量名超过5个字符，应使用 a, b, c, n, m, ans, mx, mn 等短名
+- AVOID 左大括号不另起一行，竞赛标准格式要求左大括号独占一行
+- AVOID 保留 vector 当可用固定数组替代时，竞赛中优先使用全局数组
+- AVOID 改变原有算法逻辑，只调整命名和格式，核心逻辑必须保持不变
+- AVOID 缺少关键步骤的中文注释，便于阅读和理解
+
+## 转换规则速查
+
+### 变量命名
+| 原名 | 转换后 | 用途 |
+|------|--------|------|
+| numberOfStudents | n | 数量 |
+| result/answer | ans | 结果 |
+| max/min | mx/mn | 最值 |
+| temp | t | 临时 |
+
+### 数据结构
+| 原结构 | 转换后 |
+|--------|--------|
+| vector<int> arr | int a[1005] |
+| vector<vector<int>> | int a[105][105] |
+
+### 头文件映射
+```cpp
+// 删除
+#include <bits/stdc++.h>
+
+// 添加具体头文件
+#include <iostream>    // cin/cout
+#include <algorithm>   // sort, reverse
+#include <vector>      // 如需保留vector
+#include <queue>       // 队列
+```
+
+## 示例
 
 **转换前：**
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
 int main() {
     int numberOfStudents;
     vector<int> studentScores;
-    
     cin >> numberOfStudents;
-    for(int i = 0; i < numberOfStudents; i++) {
-        int score;
-        cin >> score;
-        studentScores.push_back(score);
-    }
-    
-    sort(studentScores.begin(), studentScores.end());
-    
-    int sum = 0;
-    for(int i = 0; i < numberOfStudents; i++) {
-        sum += studentScores[i];
-    }
-    
-    cout << sum << endl;
-    return 0;
+    // ...
 }
 ```
 
@@ -94,27 +103,12 @@ int n, a[1005], ans;
 int main()
 {
     cin >> n;
-    
-    for(int i = 0; i < n; i++)
-    {
-        cin >> a[i];
-    }
-    
-    sort(a, a + n);
-    
-    for(int i = 0; i < n; i++)
-    {
-        ans += a[i];
-    }
-    
-    cout << ans << endl;
-    return 0;
+    // ...
 }
 ```
 
-## 注意事项
-1. 只转换标记为cpp语言的代码块
-2. 保持原有逻辑不变，仅调整格式和命名
-3. 数组索引从0开始（符合C++标准）
-4. 保留原有的算法思路和解题方法
-5. 在关键步骤添加适当的中文注释
+## 详细参考
+
+完整转换映射和更多实例见：
+- [reference.md](reference.md) - 详细转换规范
+- [examples.md](examples.md) - 更多转换实例

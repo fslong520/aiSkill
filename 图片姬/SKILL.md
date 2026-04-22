@@ -1,5 +1,5 @@
 ---
-name: 图片姬
+name: ImgMuse
 description: 专业的插图prompt生成和图片生成技能，AI自主风格分析，支持多维度参数定制。
 allowed-tools:
   - Read

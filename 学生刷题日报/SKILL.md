@@ -1,5 +1,5 @@
 ---
-name: 学生刷题日报
+name: OJDaily
 description: 监控智国OJ学生刷题情况，生成精美的Markdown和HTML日报，支持自定义时间范围
 allowed-tools:
   - edgeuse
@@ -9,6 +9,9 @@ allowed-tools:
   - Edit
   - AskUserQuestion
   - execute_shell_command
+
+metadata:
+  trigger: 学生刷题日报、智国OJ、刷题统计、OJ日报、学生做题
 ---
 
 Domain keywords: 智国OJ, 刷题日报, 学生做题, 提交统计

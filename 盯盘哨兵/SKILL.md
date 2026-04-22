@@ -1,10 +1,13 @@
 ---
-name: 盯盘哨兵
+name: WatchTower
 description: 实时盯盘工具，帮助上班族工作时间查询股票、贵金属价格走势并推送到指定频道
 tags: [股票, 盯盘, 财经, 推送, 实时]
 icon: 📈
 author: 小妹
 version: "1.2.0"
+
+metadata:
+  trigger: 查股票、盯盘、股价、黄金、白银、期货、指数、实时行情、盯盘哨兵
 ---
 
 Domain keywords: 查股票, 盯盘, 股价, 黄金, 白银, 期货, 指数, 实时行情
