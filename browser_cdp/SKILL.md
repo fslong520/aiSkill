@@ -16,6 +16,31 @@ metadata:
 2. **连接已有 Chrome** — 附加到外部 Chrome，不影响其运行
 3. **启动暴露 CDP 端口的浏览器** — 让 Playwright 启动的浏览器对外可见
 
+## Summary
+
+连接/启动带CDP端口的Chrome浏览器，支持多工具共享同一浏览器实例。⚠️ CDP模式会暴露历史/Cookies等敏感信息。
+
+## Keywords
+
+CDP、Chrome DevTools、浏览器连接、远程调试、端口扫描、浏览器共享
+
+## Strategy
+
+1. **确认用户意图**：用户必须明确提到CDP/共享浏览器/远程调试
+2. **告知隐私风险**：CDP模式会暴露历史/Cookies，确认用户知情
+3. **执行操作**：扫描端口/连接已有Chrome/启动带CDP端口的浏览器
+4. **验证连接**：确认CDP端口可访问
+5. **正常使用**：之后可用open/snapshot/click等所有操作
+
+## AVOID
+
+- AVOID 用户未明确提到CDP时使用CDP模式，应使用普通start
+- AVOID 使用CDP前未告知用户隐私风险，必须先确认用户知情
+- AVOID 同一workspace运行多个浏览器，必须先stop再启动新浏览器
+- AVOID connect_cdp后stop会关闭Chrome进程，connect_cdp的stop只断开连接
+- AVOID 忘记Chrome必须用独立user-data-dir启动，否则会被移交给已有进程
+- AVOID CDP连接中断后不重连，任何操作都会提示重新connect_cdp
+
 > **⚠️ 隐私提示：使用 CDP 前请知晓**
 >
 > - **默认模式**（`start` 不带 `cdp_port`）：浏览器完全由 Playwright 私有管理，历史记录、Cookies、登录态**不会暴露**给任何外部程序。

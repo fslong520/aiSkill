@@ -1,9 +1,11 @@
 ---
-name: 记重点
+name: KeyNote
 description: 自动识别人类对话中的重点信息（含情绪识别），生成关键字和处理方式，并记录到记忆系统中
 version: 3.1.0
-trigger: auto
 priority: 最高
+
+metadata:
+  trigger: 记重点、情绪识别、自动记录、记忆系统、关键字
 ---
 
 Domain keywords: 记重点, 情绪识别, 自动记录, 记忆系统, 关键字

@@ -1,5 +1,5 @@
 ---
-name: 股票研究
+name: StockLab
 version: 2.0.0
 description: A股智能分析系统，支持实时行情、技术分析、财务分析、行业分类和大盘分析
 allowed-tools:

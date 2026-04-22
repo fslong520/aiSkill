@@ -1,6 +1,9 @@
 ---
-name: 命题工坊
+name: QuestLab
 description: 为信息学奥赛(NOI/CSP)生成高质量编程题，注重思维深度和巧妙解法
+
+metadata:
+  trigger: 命题工坊、OI命题、信息学竞赛、CSP题目、NOI题目、编程题
 ---
 
 Domain keywords: OI命题, 信息学竞赛, CSP题目, NOI题目, 编程题

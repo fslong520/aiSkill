@@ -1,5 +1,5 @@
 ---
-name: 备课
+name: PrepKit
 
 description: |
   为信息学奥赛培训（NOI/CSP/GESP）准备讲义材料的智能备课系统。
@@ -14,7 +14,7 @@ allowed-tools:
   - AskUserQuestion
 
 metadata:
-  trigger: 信息学奥赛备课、C++编程教学、算法竞赛培训、教学材料生成、备课
+  trigger: 信息学奥赛备课、C++编程教学、算法竞赛培训、教学材料生成、备课、NOI备课、CSP备课
   source: 基于 ADDIE 教学设计模型、信息学竞赛教学大纲和青少年认知发展理论
   version: 2.0 (模块化重构)
 ---
@@ -23,10 +23,50 @@ metadata:
 
 基于 **ADDIE 教学设计模型** 的信息学奥赛备课系统。
 
-```
-触发：用户要求备课/生成讲义/准备教学材料
-流程：ADDIE 五阶段，按需进入对应模块文档
-```
+## Summary
+
+ADDIE五阶段备课：分析→设计→开发→实施→评价，产出讲义/PPT+例题+作业+代码。
+
+## Keywords
+
+备课、信息学奥赛、NOI、CSP、GESP、教学设计、讲义生成、ADDIE
+
+## Strategy
+
+1. **Analysis分析**：确定教谁、教什么、教学目标
+2. **Design设计**：规划怎么教、叙事设计、情绪曲线
+3. **Development开发**：制作讲义/PPT、例题、作业、代码
+4. **Implementation实施**：课堂执行（可选）
+5. **Evaluation评价**：效果评估与迭代（可选）
+
+## AVOID
+
+- AVOID 跳过分析直接设计，必须先搞清楚教谁教什么
+- AVOID 讲义内容AI味太重，参考modules/去AI味指南.md
+- AVOID 例题格式不规范，参考references/例题模板规则.md
+- AVOID 使用cdn.jsdelivr.net，国内访问不了，用unpkg.com
+
+## ADDIE五阶段
+
+| 阶段 | 模块文档 | 做什么 |
+|------|---------|--------|
+| Analysis | modules/01-Analysis分析.md | 搞清楚"教谁、教什么" |
+| Design | modules/02-Design设计.md | 规划"怎么教" |
+| Development | modules/03-Development开发.md | 制作"教学材料" |
+| Implementation | modules/04-Implementation实施.md | 课堂执行 |
+| Evaluation | modules/05-Evaluation评价.md | 效果评估 |
+
+## 级别对照
+
+| 级别 | 难度 | 目标 |
+|------|------|------|
+| 入门级 | 1-5 | CSP-J、GESP 1-4级 |
+| 提高级 | 5-8 | CSP-S、GESP 5-6级 |
+| NOI级 | 7-10 | NOI、省选 |
+
+## 技术偏好
+
+CDN首选：unpkg.com（避免cdn.jsdelivr.net国内访问不了）
 
 ---
 

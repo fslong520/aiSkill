@@ -1,6 +1,9 @@
 ---
 name: gesphw
 description: 为GESP等级考试生成作业卷子，包含选择/判断/编程题。知识点定制，答案随机分布防猜测。
+
+metadata:
+  trigger: GESP作业、作业生成、出题、练习卷、GESP试卷
 ---
 
 Domain keywords: GESP, 作业生成, 出题, 练习卷, 选择题, 编程题

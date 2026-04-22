@@ -1,10 +1,13 @@
 ---
-name: 智国学堂开发技能
+name: TeachZero
 description: 帮助开发和维护智国学堂（TeachZero）Django教学平台项目
 tags: [Django, Python, 教学平台]
 icon: https://fslong.iok.la/assets/images/logo.png
 author: 智国学堂
 url: https://fslong.iok.la:35785
+
+metadata:
+  trigger: 智国学堂、TeachZero、Django教学平台、教学平台开发
 ---
 
 Domain keywords: Django, 智国学堂, TeachZero, 教学平台, 开发维护

@@ -1,5 +1,5 @@
 ---
-name: 公众号写手
+name: MPWriter
 version: 1.1.0
 description: 专业公众号内容创作专家，支持多平台文章写作，提供从构思到成文的全流程服务。
 

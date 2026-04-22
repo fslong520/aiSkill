@@ -1,6 +1,9 @@
 ---
-name: 教育视频生成
+name: EduVid
 description: EduVid - AI驱动的教学视频生成器，基于Manim实现自然语言到教学动画的一键转换
+
+metadata:
+  trigger: EduVid、教学视频、动画生成、Manim、数学可视化、物理动画、教育视频
 ---
 
 Domain keywords: Manim, 教学视频, 动画生成, 数学可视化, 物理动画

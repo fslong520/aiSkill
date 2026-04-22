@@ -7,6 +7,9 @@ allowed-tools:
   - Edit
   - AskUserQuestion
   - BrowserUse
+
+metadata:
+  trigger: OJ题目、搬题、算法题搬运、竞赛题目、AtCoder、Codeforces、GESP、题目导入
 ---
 
 Domain keywords: OJ题目, 算法题搬运, 竞赛题目, AtCoder, Codeforces, GESP
