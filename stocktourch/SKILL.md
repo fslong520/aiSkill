@@ -1,6 +1,5 @@
 ---
-name: StockLab
-version: 2.0.0
+name: 盯盘助手
 description: A股智能分析系统，支持实时行情、技术分析、财务分析、行业分类和大盘分析
 allowed-tools:
   - Read
@@ -9,6 +8,8 @@ allowed-tools:
   - AskUserQuestion
 
 metadata:
+  slug: stocktourch
+  version: 2.0.0
   trigger: 股票分析、技术指标、财务分析、大盘分析、资金流向、同业对比、A股、股票
 ---
 

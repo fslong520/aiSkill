@@ -1,9 +1,10 @@
 ---
-name: pptx
+name: PPT演示
 description: 创建、读取、编辑PowerPoint文件(.pptx)，支持模板编辑、从头创建、格式转换等
 license: Proprietary
 
 metadata:
+  slug: pptx
   trigger: PowerPoint、pptx、幻灯片、演示文稿、模板、PPT生成、PPT编辑
 ---
 
