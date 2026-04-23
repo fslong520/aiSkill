@@ -411,6 +411,95 @@ titleSlide.addText("My Title", { placeholder: "title" });
 
 ---
 
+## html2pptx Constraints (HTML to PPTX Conversion)
+
+When using the `html2pptx` workflow (HTML/CSS → Playwright → PptxGenJS), be aware of these limitations:
+
+### Slide Dimensions
+- **Size**: 720pt × 405pt (16:9 ratio)
+- **Safe margin**: At least 0.5 inches (36pt) from edges
+- **Content overflow error**: `Error: HTML content overflows body by XXpt horizontally`
+
+### CSS Limitations
+
+| CSS Feature | Status | Alternative |
+|-------------|--------|-------------|
+| `linear-gradient` | ❌ Not supported | Use solid colors or pre-rendered gradient images |
+| `border` on text elements (`<p>`, `<h1>`, etc.) | ❌ Not supported | Use separate `<div>` elements for borders |
+| `box-shadow` | ❌ Not supported | Use pre-rendered shadow images |
+| `rgba()` with transparency | ✅ Supported | Use `opacity` property |
+
+### Text Element Restrictions
+```css
+/* ❌ NOT SUPPORTED - will throw error */
+.eva-desc {
+  border-top: 1pt solid rgba(255,255,255,0.1);
+}
+
+/* ✅ CORRECT - use separate div for border */
+.desc-divider {
+  width: 100%;
+  height: 1pt;
+  background: rgba(255,255,255,0.1);
+}
+```
+
+### Coordinate Conversion
+When positioning elements (especially images):
+```javascript
+// Convert points (pt) to inches
+const inches = points / 72;
+
+// Example: card at left: 50pt, top: 85pt with 10pt padding
+const imgX = (50 + 10) / 72;  // = 0.83 inches
+const imgY = (85 + 10) / 72;  // = 1.32 inches
+```
+
+### Common html2pptx Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Text box ... ends too close to bottom edge` | Content too close to edge | Reduce padding, adjust font-size, ensure safe margins |
+| `HTML content overflows body by XXpt horizontally` | Total width exceeds 720pt | Recalculate: margin + (cardWidth × count) + (gap × (count-1)) + margin < 720 |
+| `Text element <p> has border` | Border on text element | Move border to separate `<div>` |
+| `CSS gradients are not supported` | Using `linear-gradient` | Replace with solid color or image |
+
+### Layout Overflow Formula
+```
+Total width = leftMargin + (cardWidth × count) + (gap × (count-1)) + rightMargin
+
+// Example: 3 cards
+50 + (190 × 3) + (20 × 2) + 50 = 710pt ✓ (< 720pt)
+50 + (195 × 3) + (20 × 2) + 50 = 725pt ✗ (overflow)
+```
+
+### Image Integration Best Practice
+Use "HTML placeholder + API insertion" hybrid approach:
+
+```html
+<!-- In HTML -->
+<div class="char-img-placeholder"></div>
+```
+
+```javascript
+// In generation script
+const characterImages = [
+    { file: 'shinji.png', x: 0.69, y: 1.32, w: 2.08, h: 1.39 },
+    // ...
+];
+
+if (characterSlide) {
+    for (const img of characterImages) {
+        characterSlide.addImage({
+            path: path.join(imagesDir, img.file),
+            x: img.x, y: img.y, w: img.w, h: img.h
+        });
+    }
+}
+```
+
+---
+
 ## Quick Reference
 
 - **Shapes**: RECTANGLE, OVAL, LINE, ROUNDED_RECTANGLE
