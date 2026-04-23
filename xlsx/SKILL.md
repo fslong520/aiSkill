@@ -1,9 +1,10 @@
 ---
-name: xlsx
+name: Excel表格
 description: 创建、读取、编辑Excel文件(.xlsx/.xlsm/.csv)，支持公式、格式化、图表等
 license: Proprietary
 
 metadata:
+  slug: xlsx
   trigger: Excel、xlsx、表格、公式、数据分析、Excel文件
 ---
 

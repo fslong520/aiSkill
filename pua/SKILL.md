@@ -1,10 +1,14 @@
 ---
-name: pua
+name: 穷尽调试
 description: "Forces exhaustive problem-solving using corporate PUA rhetoric and structured debugging methodology. MUST trigger when: (1) any task has failed 2+ times or you're stuck in a loop tweaking the same approach; (2) you're about to say 'I cannot', suggest the user do something manually, or blame the environment without verifying; (3) you catch yourself being passive — not searching, not reading source, not waiting for instructions; (4) user expresses frustration in ANY form: 'try harder', 'stop giving up', 'figure it out', 'why isn't this working', 'again???', '换个方法', '为什么还不行', '你再试试', '加油', '你怎么又失败了', or any similar sentiment even if phrased differently. Also trigger when facing complex multi-step debugging, environment issues, config problems, or deployment failures where giving up early is tempting. Applies to ALL task types: code, config, research, writing, deployment, infrastructure, API integration. Do NOT trigger on first-attempt failures or when a known fix is already executing successfully."
-version: 1.0.0
-homepage: https://openpua.ai
-license: MIT
+
+
+
 metadata:
+  slug: pua
+  version: 1.0.0
+  homepage: https://openpua.ai
+  license: MIT
   trigger: pua、PUA、激励、鞭策、失败重试、穷尽方案、再试试、加油、为什么还不行、换个方法、try harder、stop giving up
 ---
 

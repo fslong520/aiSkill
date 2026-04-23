@@ -1,7 +1,8 @@
 ---
-name: multi_agent_collaboration
+name: 多智能体协作
 description: Use this skill when another agent's expertise/context is needed, or when the user explicitly asks to involve another agent. First list agents, then use copaw agents chat for two-way communication with replies. | 当需要其他 agent 的专长/上下文，或用户明确要求调用其他 agent 时使用；先查 agent，再用 copaw agents chat 双向通信（有回复）
 metadata:
+  slug: multi_agent_collaboration
   builtin_skill_version: "1.2"
   trigger: 多智能体、agent协作、调用agent、multi-agent、agent chat
   copaw:

@@ -1,7 +1,8 @@
 ---
-name: file_reader
+name: 文件读取
 description: "Read and summarize text-based file types only. Prefer read_file for text formats; use execute_shell_command for type detection when needed. PDF/Office/images/archives are handled by other skills."
 metadata:
+  slug: file_reader
   builtin_skill_version: "1.1"
   trigger: 读取文件、文件内容、file reader、read file、文本文件
   copaw:

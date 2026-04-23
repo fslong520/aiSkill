@@ -1,9 +1,10 @@
 ---
-name: pdf
+name: PDF处理
 description: PDF文件处理，包括读取、提取文本/表格、合并、拆分、旋转、水印、加密、OCR等
 license: Proprietary
 
 metadata:
+  slug: pdf
   trigger: PDF、文档处理、文本提取、表格提取、合并PDF、拆分PDF、OCR
 ---
 

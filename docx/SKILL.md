@@ -1,9 +1,10 @@
 ---
-name: docx
+name: Word文档
 description: 创建、读取、编辑Word文档(.docx)，支持格式化、表格、图片、页眉页脚、目录等
 license: Proprietary
 
 metadata:
+  slug: docx
   trigger: Word、docx、文档生成、文档编辑、Word文档
 ---
 

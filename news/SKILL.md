@@ -1,7 +1,8 @@
 ---
-name: news
+name: 新闻查询
 description: "Look up the latest news for the user from specified news sites. Provides authoritative URLs for politics, finance, society, world, tech, sports, and entertainment. Use browser_use to open each URL and snapshot to get content, then summarize for the user."
 metadata:
+  slug: news
   builtin_skill_version: "1.1"
   trigger: 新闻、最新新闻、今日新闻、news、时政、财经、科技新闻
   copaw:
