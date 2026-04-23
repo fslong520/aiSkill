@@ -6,11 +6,15 @@ metadata:
   trigger: EduVid、教学视频、动画生成、Manim、数学可视化、物理动画、教育视频
 ---
 
-Domain keywords: Manim, 教学视频, 动画生成, 数学可视化, 物理动画
+## Keywords
 
-Summary: 自然语言描述→Manim代码生成→视频渲染，支持数学、物理、化学、编程等学科。
+Manim, 教学视频, 动画生成, 数学可视化, 物理动画, 教育视频, 视频生成, 教学动画
 
-Strategy:
+## Summary
+
+自然语言描述→Manim代码生成→视频渲染，支持数学、物理、化学、编程等学科。
+
+## Strategy
 1. 理解用户描述，识别学科和场景类型
 2. 生成Manim代码
 3. 调用Manim渲染视频

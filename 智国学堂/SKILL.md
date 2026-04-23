@@ -10,11 +10,15 @@ metadata:
   trigger: 智国学堂、TeachZero、Django教学平台、教学平台开发
 ---
 
-Domain keywords: Django, 智国学堂, TeachZero, 教学平台, 开发维护
+## Keywords
 
-Summary: 帮助开发Django教学平台，遵循项目代码风格，提供代码生成、功能扩展、Bug修复能力。
+Django, 智国学堂, TeachZero, 教学平台, 开发维护, Python, Web开发
 
-Strategy:
+## Summary
+
+帮助开发Django教学平台，遵循项目代码风格，提供代码生成、功能扩展、Bug修复能力。
+
+## Strategy
 1. 理解需求，定位相关代码
 2. 遵循项目规范编写代码
 3. 测试验证功能

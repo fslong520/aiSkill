@@ -7,11 +7,15 @@ metadata:
   trigger: PDF、文档处理、文本提取、表格提取、合并PDF、拆分PDF、OCR
 ---
 
-Domain keywords: PDF, 文档处理, 文本提取, 表格提取, 合并, 拆分, OCR
+## Keywords
 
-Summary: pypdf用于基础操作，pdfplumber用于提取，reportlab用于创建，qpdf用于命令行处理。
+PDF, 文档处理, 文本提取, 表格提取, 合并, 拆分, OCR, 水印, 加密
 
-Strategy:
+## Summary
+
+pypdf用于基础操作，pdfplumber用于提取，reportlab用于创建，qpdf用于命令行处理。
+
+## Strategy
 1. 读取PDF：pypdf或pdfplumber
 2. 提取内容：pdfplumber提取文本/表格
 3. 创建PDF：reportlab

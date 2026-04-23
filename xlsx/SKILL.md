@@ -7,11 +7,15 @@ metadata:
   trigger: Excel、xlsx、表格、公式、数据分析、Excel文件
 ---
 
-Domain keywords: Excel, xlsx, 表格, 公式, 数据分析, pandas, openpyxl
+## Keywords
 
-Summary: pandas用于数据分析，openpyxl用于公式和格式化，必须用Excel公式而非Python计算值。
+Excel, xlsx, 表格, 公式, 数据分析, pandas, openpyxl, csv, 数据处理
 
-Strategy:
+## Summary
+
+pandas用于数据分析，openpyxl用于公式和格式化，必须用Excel公式而非Python计算值。
+
+## Strategy
 1. 选择工具：pandas分析数据，openpyxl处理公式/格式
 2. 创建/加载文件
 3. 添加数据、公式、格式

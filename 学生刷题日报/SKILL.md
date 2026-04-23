@@ -14,11 +14,15 @@ metadata:
   trigger: 学生刷题日报、智国OJ、刷题统计、OJ日报、学生做题
 ---
 
-Domain keywords: 智国OJ, 刷题日报, 学生做题, 提交统计
+## Keywords
 
-Summary: 使用edgeuse复用浏览器，抓取智国OJ学生提交数据，生成日报（总榜单+学生单独讲解文件）。
+智国OJ, 刷题日报, 学生做题, 提交统计, OJ监控, 刷题分析, 学习报告
 
-Strategy:
+## Summary
+
+使用edgeuse复用浏览器，抓取智国OJ学生提交数据，生成日报（总榜单+学生单独讲解文件）。
+
+## Strategy
 1. 建立CDP连接（edgeuse复用浏览器）
 2. 访问/status页面抓取指定时间范围数据
 3. 过滤管理员/教师账号，统计学生AC/未AC

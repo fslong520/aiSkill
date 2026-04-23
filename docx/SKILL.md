@@ -7,11 +7,15 @@ metadata:
   trigger: Word、docx、文档生成、文档编辑、Word文档
 ---
 
-Domain keywords: Word, docx, 文档生成, 文档编辑, 表格, 目录
+## Keywords
 
-Summary: 使用docx-js创建新文档，通过解包→编辑XML→打包的方式编辑现有文档。
+Word, docx, 文档生成, 文档编辑, 表格, 目录, 页眉页脚, 格式化
 
-Strategy:
+## Summary
+
+使用docx-js创建新文档，通过解包→编辑XML→打包的方式编辑现有文档。
+
+## Strategy
 1. 新建文档：使用docx-js生成
 2. 编辑文档：unpack→编辑XML→pack
 3. 读取内容：pandoc提取文本

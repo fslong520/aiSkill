@@ -2,13 +2,20 @@
 name: pptx
 description: 创建、读取、编辑PowerPoint文件(.pptx)，支持模板编辑、从头创建、格式转换等
 license: Proprietary
+
+metadata:
+  trigger: PowerPoint、pptx、幻灯片、演示文稿、模板、PPT生成、PPT编辑
 ---
 
-Domain keywords: PowerPoint, pptx, 幻灯片, 演示文稿, 模板
+## Keywords
 
-Summary: markitdown读取内容，pptxgenjs从头创建，解包→编辑→打包修改模板。
+PowerPoint, pptx, 幻灯片, 演示文稿, 模板, PPT生成, PPT编辑, 幻灯片设计
 
-Strategy:
+## Summary
+
+markitdown读取内容，pptxgenjs从头创建，解包→编辑→打包修改模板。
+
+## Strategy
 1. 读取内容：markitdown或thumbnail.py
 2. 从头创建：pptxgenjs（见pptxgenjs.md）
 3. 编辑模板：unpack→编辑→pack（见editing.md）
