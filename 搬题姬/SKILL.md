@@ -12,11 +12,15 @@ metadata:
   trigger: OJ题目、搬题、算法题搬运、竞赛题目、AtCoder、Codeforces、GESP、题目导入
 ---
 
-Domain keywords: OJ题目, 算法题搬运, 竞赛题目, AtCoder, Codeforces, GESP
+## Keywords
 
-Summary: 从 OJ 平台搬运题目，生成标准化的题目文件包（含题面、标程、测试数据）。
+OJ题目, 算法题搬运, 竞赛题目, AtCoder, Codeforces, GESP, 题目导入, 搬题
 
-Strategy:
+## Summary
+
+从 OJ 平台搬运题目，生成标准化的题目文件包（含题面、标程、测试数据）。
+
+## Strategy
 1. **读取 `steps/00-detect-url.md`** → 检测输入类型 → 判断单题/多题
 2. 初始化工作目录：`cp -r question work`
 3. 获取题目信息：urlgo 访问页面 → snapshot → 解析题面

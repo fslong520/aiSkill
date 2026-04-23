@@ -10,11 +10,15 @@ metadata:
   trigger: 图像prompt生成、插图创作、风格定制、视觉设计
 ---
 
-Domain keywords: 配图, 插图, prompt生成, 图片生成, 视觉设计
+## Keywords
 
-Summary: 输入主题，AI自主推理风格/配色/构图，生成图像prompt或直接生成图片。
+配图, 插图, prompt生成, 图片生成, 视觉设计, AI绘图, 风格定制, 图像创作
 
-Strategy:
+## Summary
+
+输入主题，AI自主推理风格/配色/构图，生成图像prompt或直接生成图片。
+
+## Strategy
 1. 深度理解主题（概念解析、特征识别）
 2. 判断用户意图 → 智能推荐/用户选择模式
 3. AI自主决策参数（受众/风格/氛围/构图/配色）

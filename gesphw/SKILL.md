@@ -6,11 +6,15 @@ metadata:
   trigger: GESP作业、作业生成、出题、练习卷、GESP试卷
 ---
 
-Domain keywords: GESP, 作业生成, 出题, 练习卷, 选择题, 编程题
+## Keywords
 
-Summary: 根据用户指定知识点生成GESP标准作业卷（10选择+5判断+6编程），答案随机分布防猜测。
+GESP, 作业生成, 出题, 练习卷, 选择题, 编程题, 判断题, 试卷生成
 
-Strategy:
+## Summary
+
+根据用户指定知识点生成GESP标准作业卷（10选择+5判断+6编程），答案随机分布防猜测。
+
+## Strategy
 1. 收集信息（班级名、日期、知识点）
 2. 设计故事主题和Front Matter
 3. 生成选择题（融入故事情境）

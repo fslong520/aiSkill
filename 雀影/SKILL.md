@@ -12,11 +12,15 @@ metadata:
   trigger: 雀影、视频生成、AI视频、分镜、Seedance、即梦、视频脚本、视频prompt
 ---
 
-Domain keywords: 雀影, 视频生成, AI视频, 分镜, Seedance, 即梦, prompt
+## Keywords
 
-Summary: 交互式引导完善视频创意，生成分镜脚本和 Seedance 提示词。
+雀影, 视频生成, AI视频, 分镜, Seedance, 即梦, prompt, 视频脚本
 
-Strategy:
+## Summary
+
+交互式引导完善视频创意，生成分镜脚本和 Seedance 提示词。
+
+## Strategy
 1. 用户描述视频内容 → 确认素材、时长、类型
 2. 分析故事 → 推荐视觉风格方案
 3. 设计角色锚点、镜头节奏、台词音效

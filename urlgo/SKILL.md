@@ -12,11 +12,15 @@ metadata:
     global: true
 ---
 
-Domain keywords: https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin
+## Keywords
 
-Summary: 连 CDP，开网页，截图，执行 JS。
+https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin, 打开网页, 网页截图
 
-Strategy:
+## Summary
+
+连 CDP，开网页，截图，执行 JS。
+
+## Strategy
 1. `urlgo status` → CDP 开了没？没开就 `urlgo start`
 2. `urlgo open <url>` → 打开页面
 3. 截图/读取/点击/输入/执行 JS

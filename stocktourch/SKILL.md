@@ -7,13 +7,20 @@ allowed-tools:
   - Write
   - Edit
   - AskUserQuestion
+
+metadata:
+  trigger: 股票分析、技术指标、财务分析、大盘分析、资金流向、同业对比、A股、股票
 ---
 
-Domain keywords: 股票分析, 技术指标, 财务分析, 大盘分析, 资金流向, 同业对比
+## Keywords
 
-Summary: 从baostock和AKShare获取A股数据，提供技术分析（MA/RSI/MACD/KDJ）、财务分析、同业对比、资金流向、大盘分析等功能，生成投资决策报告。
+股票分析, 技术指标, 财务分析, 大盘分析, 资金流向, 同业对比, A股, 股票, MA, RSI, MACD
 
-Strategy:
+## Summary
+
+从baostock和AKShare获取A股数据，提供技术分析（MA/RSI/MACD/KDJ）、财务分析、同业对比、资金流向、大盘分析等功能，生成投资决策报告。
+
+## Strategy
 1. 识别意图：股票代码 + 分析类型（技术/财务/综合/大盘）
 2. 执行脚本：`python3 <技能根目录>/run_skill.py <代码> <类型>`
 3. 财务分析：调用`core/financial_analyzer.py`获取AKShare数据

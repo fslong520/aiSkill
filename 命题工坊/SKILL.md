@@ -6,11 +6,15 @@ metadata:
   trigger: 命题工坊、OI命题、信息学竞赛、CSP题目、NOI题目、编程题
 ---
 
-Domain keywords: OI命题, 信息学竞赛, CSP题目, NOI题目, 编程题
+## Keywords
 
-Summary: 生成OI竞赛编程题，注重思维深度和巧妙解法，符合OI规范。
+OI命题, 信息学竞赛, CSP题目, NOI题目, 编程题, 算法题, 竞赛出题, 思维题
 
-Strategy:
+## Summary
+
+生成OI竞赛编程题，注重思维深度和巧妙解法，符合OI规范。
+
+## Strategy
 1. 明确需求（知识点、难度、数量、分值）
 2. 设计题目（核心思维点→故事包装→题面描述→样例数据）
 3. 质量检查（巧妙性、OI规范、数据梯度、部分分）
