@@ -1,63 +1,78 @@
 ---
+priority: 750
 name: SkillClinic
 slug: skillclinic
-description: AI 技能体检诊断，检测Gene结构完整性、触发配置、内容质量
+description: "🏥 技能诊所 | 诊断优化 + 创建技能。触发：技能体检、技能诊断、创建技能"
 allowed-tools:
   - Read
   - Glob
+  - Grep
   - Write
   - Edit
   - AskUserQuestion
 
 metadata:
-  trigger: 技能体检、技能诊断、技能评估、技能优化、技能检查、skill clinic
+  version: "2.1.0"
+  trigger: 技能体检、技能诊断、技能评估、技能优化、技能检查、创建技能、设计技能、新建技能、skill clinic
+  copaw:
+    emoji: "🏥"
 ---
 
-# 技能诊所
-
-## Summary
-
-技能质量体检：检测Gene结构（keywords/summary/strategy/AVOID）+ 触发配置（metadata.trigger）+ 内容质量，输出评分和改进建议。
+# 🏥 技能诊所
 
 ## Keywords
 
-技能体检、Gene结构、技能质量、触发配置、metadata.trigger
+技能体检、技能诊断、技能创建、Gene结构、metadata.trigger
+
+## Summary
+
+诊断优化现有技能 + 从零创建新技能。
 
 ## Strategy
 
-1. **问用户要体检哪个技能**：支持技能名称或完整路径
-2. **读取技能文件**：SKILL.md 和目录下其他文档
-3. **检查Gene结构**：keywords、summary、strategy、AVOID
-4. **检查触发配置**：metadata.trigger 是否存在（关键！无此字段技能无法触发）
-5. **算分**：结构(35) + 触发(10) + 内容(35) + 实践(20) - 负贡献
-6. **定等级**：S/A/B/C
-7. **开处方**：提出改进建议，问用户是否执行
+1. 询问用户意图（诊断 or 创建）
+2. **诊断**：读取 modules/01-diagnose.md → 检查结构 → 算分评级 → 开处方
+3. **创建**：读取 modules/02-create.md → 收集需求 → 选择模板 → 创建文件 → 验证质量
+
+## Language（评分项，15分）
+
+| 得分 | 标准 |
+|------|------|
+| 15 | 极致简练，无废话，每句话有信息增量 |
+| 10 | 较简练，有少量冗余 |
+| 5 | 冗余较多 |
+| 0 | 废话连篇 |
+
+**要求**：
+- 用表格/列表代替段落
+- 去掉"请"、"可以"、"能够"等虚词
+- 不解释显而易见的事
 
 ## AVOID
 
-- AVOID 只读SKILL.md就下结论，目录下其他文档也要看
-- AVOID 只改SKILL.md不改其他文档，改进要覆盖所有相关文件
-- AVOID 给了分不给建议，等于没说
-- AVOID 改文档时表述不清，要说清楚"错误行为 + 应该怎样"
-- AVOID 忽略metadata.trigger检查，无此字段技能无法被触发
-- AVOID 自己写得烂还去评价别人，先照照镜子
+- AVOID 只读SKILL.md就下结论
+- AVOID 只改SKILL.md不改其他文档
+- AVOID 给了分不给建议
+- AVOID 忽略metadata.trigger检查
+- AVOID 冗余描述、废话连篇
 
 ---
 
-## 入口
+## 功能模块
 
-问用户：要体检哪个技能？
+| 模块 | 触发 | 流程 |
+|------|------|------|
+| 诊断优化 | 体检、诊断、评估 | modules/01-diagnose.md |
+| 创建技能 | 创建、设计、新建 | modules/02-create.md |
 
-支持技能名称或完整路径。
+## 评分标准
 
-## 标准
-
-| 维度 | 满分 | 检测项 |
+| 维度 | 分值 | 检测项 |
 |------|------|--------|
-| 结构分 | 35 | keywords + summary + strategy + AVOID |
-| 触发分 | 10 | metadata.trigger（无此字段=技能无法触发！）|
-| 内容分 | 35 | Token效率 + 信号密度 + 可执行性 |
-| 实践分 | 20 | 渐进式披露 + Human-in-the-Loop + CLI友好 |
+| 结构 | 30 | Keywords(8) + Summary(8) + Strategy(8) + AVOID(6) |
+| 触发 | 10 | metadata.trigger |
+| 内容 | 35 | 语言简练(15) + 信号密度(10) + 可执行性(10) |
+| 实践 | 25 | 渐进式披露(10) + Human-in-the-Loop(10) + CLI友好(5) |
 
 | 等级 | 分数 |
 |------|------|
@@ -68,4 +83,5 @@ metadata:
 
 ## 参考
 
-详细标准见 reference/criteria.md
+- 评分标准：reference/criteria.md
+- 使用示例：examples/demo.md
