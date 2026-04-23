@@ -13,6 +13,14 @@
 5. 写入开始标签：`<div class="water">`
 6. 报告用户："发现 N 道题目，开始逐题翻译..."
 
+## 工具优先级
+
+```
+1. urlgo（优先）
+2. BrowserUse（urlgo 不可用）
+3. WebFetch（以上都不可用）
+```
+
 ## 题面汇总文件格式
 
 ```markdown
