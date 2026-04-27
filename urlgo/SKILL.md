@@ -1,6 +1,6 @@
 ---
 
-name: 浏览器控制
+name: urlgo
 description: 浏览器控制 CLI
 metadata:
   slug: urlgo
