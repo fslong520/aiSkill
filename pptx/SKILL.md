@@ -1,585 +1,239 @@
 ---
-name: PPT演示
-description: 创建、读取、编辑PowerPoint文件(.pptx)，支持模板编辑、从头创建、格式转换等
-license: Proprietary
-
+name: pptx
+description: "Use this skill any time a .pptx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations; reading, parsing, or extracting text from any .pptx file (even if the extracted content will be used elsewhere, like in an email or summary); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates, layouts, speaker notes, or comments. Trigger whenever the user mentions \"deck,\" \"slides,\" \"presentation,\" or references a .pptx filename, regardless of what they plan to do with the content afterward. If a .pptx file needs to be opened, created, or touched, use this skill."
+license: Proprietary. LICENSE.txt has complete terms
 metadata:
-  slug: pptx
-  trigger: PowerPoint、pptx、幻灯片、演示文稿、模板、PPT生成、PPT编辑
+  builtin_skill_version: "1.1"
 ---
 
-## Keywords
+> **Important:** All `scripts/` paths are relative to this skill directory.
+> Run with: `cd {this_skill_dir} && python scripts/...`
+> Or use the `cwd` parameter of `execute_shell_command`.
 
-PowerPoint, pptx, 幻灯片, 演示文稿, 模板, PPT生成, PPT编辑, 幻灯片设计
+# PPTX Skill
 
-## Summary
+## Prerequisites
 
-markitdown读取内容，pptxgenjs从头创建，解包→编辑→打包修改模板。
+- **markitdown[pptx]**: text extraction from presentations
+- **Pillow**: thumbnail grid generation
+- **pptxgenjs** (`npm install -g pptxgenjs`): creating presentations from scratch
+- **LibreOffice** (`soffice`): presentation-to-PDF conversion
+- **pdftoppm** (poppler-utils): PDF-to-image conversion for thumbnail/visual workflows
+- If `pdftoppm` is unavailable, a Python fallback path may use `pdf2image`.
+- On Windows, dependencies must be installed and available in `PATH`; if missing, report the dependency issue and stop (do not keep retrying).
 
-## Strategy
+## Quick Reference
 
-1. **读取内容**：markitdown或thumbnail.py
-2. **从头创建**：pptxgenjs（见pptxgenjs.md）
-3. **编辑模板**：unpack→编辑→pack（见editing.md）
-4. **视觉检查**：转图片后检查问题
-
-## AVOID
-
-**设计禁忌**：
-- AVOID 纯文字幻灯片，必须有视觉元素
-- AVOID 标题下加装饰线，AI生成的标志
-- AVOID 默认蓝色（#0070C0），选择匹配主题的颜色
-- AVOID 重复相同布局，每张应有变化
-- AVOID 居中正文，只标题居中
-- AVOID 低对比度，确保文字/图标与背景对比明显
-
-**层次禁忌**：
-- AVOID 所有文字同样大小，必须有层次
-- AVOID 所有文字同样颜色，主次不分
-- AVOID 标题字号 < 正文字号 × 1.5
-
-**留白禁忌**：
-- AVOID 内容占比 > 70%，必须留白
-- AVOID 边距 < 0.5 英寸，太挤
-- AVOID 元素间距不均匀，显得乱
-
-**配色禁忌**：
-- AVOID 单页颜色 > 4 种，变成彩虹糖
-- AVOID 高饱和度大面积使用，刺眼
-- AVOID 文字与背景对比度不足，看不清
-
-**字体禁忌**：
-- AVOID 使用宋体/楷体，这是文档味
-- AVOID 字号 < 12pt，投影看不清
-- AVOID 中英文混用不同风格字体
+| Task | Guide |
+|------|-------|
+| Read/analyze content | `python -m markitdown presentation.pptx` |
+| Edit or create from template | Read [editing.md](editing.md) |
+| Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
 
 ---
 
-## 快速参考
-
-| 任务 | 方法 |
-|------|------|
-| 读取内容 | `python -m markitdown presentation.pptx` |
-| 视觉预览 | `python scripts/thumbnail.py presentation.pptx` |
-| 从头创建 | pptxgenjs（见pptxgenjs.md） |
-| 编辑模板 | unpack→编辑→pack（见editing.md） |
-
-## 前置依赖
+## Reading Content
 
 ```bash
-# Python 依赖（用于读取和预览）
-pip install markitdown[pptx] Pillow
+# Text extraction
+python -m markitdown presentation.pptx
 
-# Node.js 依赖（用于生成 PPT）
-npm install -g pptxgenjs
+# Visual overview
+python scripts/thumbnail.py presentation.pptx
 
-# html2pptx 工作流依赖
-npm install pptxgenjs playwright sharp
-npx playwright install chromium  # 首次运行必需！
-
-# LibreOffice (soffice) 用于转PDF
-# pdftoppm (poppler-utils) 用于转图片
-```
-
-**注意**：`npx playwright install chromium` 是首次使用 html2pptx 的必需步骤，否则会报错 "Executable doesn't exist"。
-
-## 设计原则
-
-### ⚠️ 核心铁律：代码生成 ≠ 好看
-
-**pptxgenjs 是工具，不是设计师。** 代码只能控制位置和颜色，无法保证美感。
-
-**推荐优先级**：
-1. **模板编辑**（首选）→ 基于专业设计的模板修改内容
-2. **代码生成**（次选）→ 仅用于简单/批量场景，且必须严格遵循设计规范
-
----
-
-### 一、PPT设计四大原则（CPRA）
-
-基于《写给大家看的设计书》的四大核心原则：
-
-#### 1. 对比（Contrast）
-
-**目的**：建立视觉层次，突出重点
-
-| 对比类型 | 应用方法 | 具体数值 |
-|---------|---------|---------|
-| **字号对比** | 标题 ≥ 正文 × 2 | 主标题 44-60pt，正文 16-20pt |
-| **字重对比** | 标题 Bold，正文 Regular | 至少两级字重差 |
-| **色彩对比** | 主色 vs 辅色 vs 背景 | 对比度 ≥ 4.5:1 |
-| **空间对比** | 密集 vs 留白 | 关键内容周围留白 30% |
-
-**禁忌**：
-- 所有文字同样大小 → 无层次
-- 所有元素同样粗细 → 无重点
-- 颜色过于接近 → 看不清
-
-#### 2. 重复（Repetition）
-
-**目的**：建立视觉统一性，形成品牌识别
-
-| 重复元素 | 应用方法 |
-|---------|---------|
-| **色彩** | 全篇使用同一套配色（主色+辅色+强调色） |
-| **字体** | 不超过 2 种字体，建立严格层级 |
-| **图形** | 统一图标风格、分隔线样式 |
-| **布局** | 同类页面保持结构一致 |
-
-**80/20法则**：80% 严格重复，20% 适度变化
-
-#### 3. 对齐（Alignment）
-
-**目的**：创造秩序感和专业感
-
-| 对齐类型 | 适用场景 |
-|---------|---------|
-| **左对齐** | 正文、列表（最常用） |
-| **居中对齐** | 封面、标题页、短句 |
-| **右对齐** | 数字、日期、价格 |
-
-**网格系统**：
-- 使用 4、6 或 12 列网格
-- 所有元素沿网格线对齐
-- 元素间距保持一致
-
-#### 4. 亲密性（Proximity）
-
-**目的**：通过空间关系表现信息关联
-
-| 应用方法 | 具体数值 |
-|---------|---------|
-| **相关元素间距** | 0.2-0.3 英寸 |
-| **不相关元素间距** | ≥ 0.5 英寸 |
-| **组内间距** | 组间距的 1/4 到 1/2 |
-| **留白占比** | 30%-40% |
-
-**原则**：相关内容靠近，不相关内容远离
-
----
-
-### 二、视觉层次（最重要！）
-
-**每页必须有清晰的层次结构**：
-
-| 层次 | 字号 | 颜色 | 粗细 | 用途 |
-|------|------|------|------|------|
-| 主标题 | 44-60pt | 主色/深色 | Bold | 封面标题、核心观点 |
-| 副标题 | 24-32pt | 主色 | Bold | 章节标题、关键信息 |
-| 正文 | 16-20pt | 深灰(#333) | Regular | 内容描述 |
-| 辅助说明 | 12-14pt | 浅灰(#666) | Light | 注释、来源 |
-
-**⚠️ 禁止**：所有文字用同样大小、同样颜色 → 没有层次感
-
----
-
-### 三、留白黄金比例
-
-**留白是设计的灵魂，不是浪费空间。**
-
-**2024年极简设计趋势**：
-- 留白占比：40%-50%（比以往更多）
-- 内容聚焦：每页只传达一个核心信息
-- 呼吸感：元素周围必须有足够的空白
-
-**安全边距**（16:9 幻灯片）：
-- 左右边距：0.8-1.0 英寸
-- 上下边距：0.6-0.8 英寸
-- 内容占比：不超过 60%，留出 40% 空白
-
-**元素间距**：
-- 标题与正文：0.4-0.6 英寸
-- 段落之间：0.3-0.4 英寸
-- 卡片之间：0.4-0.5 英寸
-- 组内元素：0.2-0.3 英寸
-
-**⚠️ 禁止**：把内容塞满整个页面 → 拥挤感，让人窒息
-
----
-
-### 四、配色心理学
-
-**一套配色 = 主色 + 辅色 + 强调色 + 背景色**
-
-| 主题 | 主色 | 辅色 | 强调色 | 背景 | 适用场景 |
-|------|------|------|--------|------|---------|
-| 森林绿 | #2C5F2D | #97BC62 | #F5F5F5 | #FFFFFF | 教育、环保 |
-| 午夜商务 | #1E2761 | #CADCFC | #FFFFFF | #F8F9FA | 商务、科技 |
-| 珊瑚活力 | #F96167 | #F9E795 | #2F3C7E | #FFF5F5 | 创意、营销 |
-| 暖陶土 | #B85042 | #E7E8D1 | #A7BEAE | #FAFAF0 | 艺术、生活 |
-| 极简黑白 | #000000 | #666666 | #FFFFFF | #FFFFFF | 设计、时尚 |
-
-**配色铁律**：
-- 主色占比：10-20%（标题、重点）
-- 辅色占比：20-30%（卡片、图标）
-- 强调色占比：5-10%（按钮、高亮）
-- 背景色占比：40-60%（页面底色）
-
-**⚠️ 禁止**：
-- 使用默认蓝色（#0070C0）→ "PPT味"
-- 一页超过 4 种颜色 → "彩虹糖"
-- 高饱和度大面积使用 → "刺眼"
-
----
-
-### 四、字体规范
-
-**中文字体**：思源黑体 > 微软雅黑 > 方正兰亭黑
-
-**英文字体**：Helvetica > Arial > Calibri
-
-**字号规范**：
-| 元素 | 字号 | 行距 |
-|------|------|------|
-| 封面主标题 | 48-60pt | 1.2 |
-| 页面标题 | 32-44pt | 1.2 |
-| 副标题 | 20-28pt | 1.3 |
-| 正文 | 16-20pt | 1.5 |
-| 辅助说明 | 12-14pt | 1.4 |
-
-**⚠️ 禁止**：使用宋体/楷体 → "文档味"
-
----
-
-### 五、布局模板库
-
-#### 封面页
-```
-┌─────────────────────────────────────┐
-│                                     │
-│         【大标题居中】              │
-│         【副标题】                  │
-│                                     │
-│         【Logo/装饰】               │
-│                                     │
-└─────────────────────────────────────┘
-```
-
-#### 标题+列表页
-```
-┌─────────────────────────────────────┐
-│  【页面标题】                       │
-│  ─────────────────────────────────  │
-│  • 要点1                           │
-│  • 要点2                           │
-│  • 要点3                           │
-│                                     │
-└─────────────────────────────────────┘
-```
-
-#### 双栏对比页
-```
-┌─────────────────────────────────────┐
-│  【页面标题】                       │
-│  ┌──────────┐  ┌──────────┐        │
-│  │  左栏    │  │  右栏    │        │
-│  │  内容    │  │  内容    │        │
-│  └──────────┘  └──────────┘        │
-└─────────────────────────────────────┘
-```
-
-#### 三列卡片页
-```
-┌─────────────────────────────────────┐
-│  【页面标题】                       │
-│  ┌────┐  ┌────┐  ┌────┐           │
-│  │卡1 │  │卡2 │  │卡3 │           │
-│  └────┘  └────┘  └────┘           │
-└─────────────────────────────────────┘
-```
-
-#### 数据展示页
-```
-┌─────────────────────────────────────┐
-│  【页面标题】                       │
-│  ┌─────────┐  ┌─────────┐          │
-│  │ 大数字  │  │ 大数字  │          │
-│  │ 说明    │  │ 说明    │          │
-│  └─────────┘  └─────────┘          │
-└─────────────────────────────────────┘
+# Raw XML
+python scripts/office/unpack.py presentation.pptx unpacked/
 ```
 
 ---
 
-### 六、AI 审美检查清单
+## Editing Workflow
 
-生成 PPT 后，必须逐项检查：
+**Read [editing.md](editing.md) for full details.**
 
-**视觉层次**：
-- [ ] 每页有 3-4 个明确的层次（标题/副标题/正文/辅助）
-- [ ] 标题字号 ≥ 正文字号 × 1.5
-- [ ] 重要信息使用主色或加粗
-
-**留白**：
-- [ ] 内容占比 ≤ 70%
-- [ ] 边距 ≥ 0.5 英寸
-- [ ] 元素间距均匀
-
-**配色**：
-- [ ] 单页颜色 ≤ 4 种
-- [ ] 无默认蓝色（#0070C0）
-- [ ] 文字与背景对比度足够
-
-**字体**：
-- [ ] 无宋体/楷体
-- [ ] 最小字号 ≥ 12pt
-- [ ] 中英文字体风格统一
-
-**布局**：
-- [ ] 每页布局不同
-- [ ] 无纯文字幻灯片
-- [ ] 对齐方式一致
+1. Analyze template with `thumbnail.py`
+2. Unpack → manipulate slides → edit content → clean → pack
 
 ---
 
-### 七、设计迭代方法论
+## Creating from Scratch
 
-从 V1 到 V4 的专业设计进化路径：
+**Read [pptxgenjs.md](pptxgenjs.md) for full details.**
 
-**V1 - 基础原型**：
-- 确定内容结构和信息架构
-- 选择基础配色方案
-- 完成基本布局
-
-**V2 - 内容优化**：
-- 翻译和本地化
-- 修复文字溢出问题
-- 尝试图片集成
-
-**V3 - 布局修复**：
-- 精确计算元素位置
-- 调整卡片尺寸和间距
-- 优化配色细节
-
-**V4 - 专业重构**：
-- 统一视觉语言（如三色顶栏、章节编号、页码系统）
-- 建立清晰的信息层级（颜色、大小、位置区分重要性）
-- 添加装饰元素增强设计感
-- 确保呼吸感（适当留白，避免拥挤）
-
-**统一视觉语言示例**：
-```css
-/* 三色顶栏系统 */
-.top-bar { background: #ff6b6b; width: 240pt; }
-.top-bar2 { background: #4ecdc4; width: 240pt; left: 240pt; }
-.top-bar3 { background: #a855f7; width: 240pt; left: 480pt; }
-
-/* 章节编号系统 */
-.section-num { font-size: 14pt; color: #666; }
-```
-
-**信息层级设计**：
-- 主标题：最大字号 + 主色 + Bold
-- 副标题：中等字号 + 主色/辅色
-- 正文：标准字号 + 深灰色
-- 辅助信息：小字号 + 浅灰色
+Use when no template or reference presentation is available.
 
 ---
 
-### 颜色选择（旧版保留）
-不要默认蓝色，选择匹配主题的调色板：
+## Design Ideas
 
-| 主题 | 主色 | 辅色 | 强调色 |
-|------|------|------|--------|
-| 午夜商务 | 1E2761 | CADCFC | FFFFFF |
-| 森林绿 | 2C5F2D | 97BC62 | F5F5F5 |
-| 珊瑚活力 | F96167 | F9E795 | 2F3C7E |
-| 暖陶土 | B85042 | E7E8D1 | A7BEAE |
+**Don't create boring slides.** Plain bullets on a white background won't impress anyone. Consider ideas from this list for each slide.
 
-### 字体搭配
+### Before Starting
 
-| 标题字体 | 正文字体 |
-|---------|---------|
+- **Pick a bold, content-informed color palette**: The palette should feel designed for THIS topic. If swapping your colors into a completely different presentation would still "work," you haven't made specific enough choices.
+- **Dominance over equality**: One color should dominate (60-70% visual weight), with 1-2 supporting tones and one sharp accent. Never give all colors equal weight.
+- **Dark/light contrast**: Dark backgrounds for title + conclusion slides, light for content ("sandwich" structure). Or commit to dark throughout for a premium feel.
+- **Commit to a visual motif**: Pick ONE distinctive element and repeat it — rounded image frames, icons in colored circles, thick single-side borders. Carry it across every slide.
+
+### Color Palettes
+
+Choose colors that match your topic — don't default to generic blue. Use these palettes as inspiration:
+
+| Theme | Primary | Secondary | Accent |
+|-------|---------|-----------|--------|
+| **Midnight Executive** | `1E2761` (navy) | `CADCFC` (ice blue) | `FFFFFF` (white) |
+| **Forest & Moss** | `2C5F2D` (forest) | `97BC62` (moss) | `F5F5F5` (cream) |
+| **Coral Energy** | `F96167` (coral) | `F9E795` (gold) | `2F3C7E` (navy) |
+| **Warm Terracotta** | `B85042` (terracotta) | `E7E8D1` (sand) | `A7BEAE` (sage) |
+| **Ocean Gradient** | `065A82` (deep blue) | `1C7293` (teal) | `21295C` (midnight) |
+| **Charcoal Minimal** | `36454F` (charcoal) | `F2F2F2` (off-white) | `212121` (black) |
+| **Teal Trust** | `028090` (teal) | `00A896` (seafoam) | `02C39A` (mint) |
+| **Berry & Cream** | `6D2E46` (berry) | `A26769` (dusty rose) | `ECE2D0` (cream) |
+| **Sage Calm** | `84B59F` (sage) | `69A297` (eucalyptus) | `50808E` (slate) |
+| **Cherry Bold** | `990011` (cherry) | `FCF6F5` (off-white) | `2F3C7E` (navy) |
+
+### For Each Slide
+
+**Every slide needs a visual element** — image, chart, icon, or shape. Text-only slides are forgettable.
+
+**Layout options:**
+- Two-column (text left, illustration on right)
+- Icon + text rows (icon in colored circle, bold header, description below)
+- 2x2 or 2x3 grid (image on one side, grid of content blocks on other)
+- Half-bleed image (full left or right side) with content overlay
+
+**Data display:**
+- Large stat callouts (big numbers 60-72pt with small labels below)
+- Comparison columns (before/after, pros/cons, side-by-side options)
+- Timeline or process flow (numbered steps, arrows)
+
+**Visual polish:**
+- Icons in small colored circles next to section headers
+- Italic accent text for key stats or taglines
+
+### Typography
+
+**Choose an interesting font pairing** — don't default to Arial. Pick a header font with personality and pair it with a clean body font.
+
+| Header Font | Body Font |
+|-------------|-----------|
 | Georgia | Calibri |
 | Arial Black | Arial |
 | Calibri | Calibri Light |
+| Cambria | Calibri |
+| Trebuchet MS | Calibri |
 | Impact | Arial |
+| Palatino | Garamond |
+| Consolas | Calibri |
 
-### 字号规范
+| Element | Size |
+|---------|------|
+| Slide title | 36-44pt bold |
+| Section header | 20-24pt bold |
+| Body text | 14-16pt |
+| Captions | 10-12pt muted |
 
-| 元素 | 字号 |
-|------|------|
-| 幻灯标题 | 36-44pt 粗体 |
-| 章节标题 | 20-24pt 粗体 |
-| 正文 | 14-16pt |
-| 说明文字 | 10-12pt |
+### Spacing
 
-### 间距规范
+- 0.5" minimum margins
+- 0.3-0.5" between content blocks
+- Leave breathing room—don't fill every inch
 
-- 最小边距：0.5英寸
-- 内容块间距：0.3-0.5英寸
-- 留白，不要填满
+### Avoid (Common Mistakes)
 
-### 布局变化
+- **Don't repeat the same layout** — vary columns, cards, and callouts across slides
+- **Don't center body text** — left-align paragraphs and lists; center only titles
+- **Don't skimp on size contrast** — titles need 36pt+ to stand out from 14-16pt body
+- **Don't default to blue** — pick colors that reflect the specific topic
+- **Don't mix spacing randomly** — choose 0.3" or 0.5" gaps and use consistently
+- **Don't style one slide and leave the rest plain** — commit fully or keep it simple throughout
+- **Don't create text-only slides** — add images, icons, charts, or visual elements; avoid plain title + bullets
+- **Don't forget text box padding** — when aligning lines or shapes with text edges, set `margin: 0` on the text box or offset the shape to account for padding
+- **Don't use low-contrast elements** — icons AND text need strong contrast against the background; avoid light text on light backgrounds or dark text on dark backgrounds
+- **NEVER use accent lines under titles** — these are a hallmark of AI-generated slides; use whitespace or background color instead
 
-每张幻灯片应有不同的布局：
-- 双栏（左文字右图）
-- 图标+文字行
-- 2x2或2x3网格
-- 半出血图片+内容叠加
-- 大数字统计
-- 对比列（前后/优缺点）
+---
 
-## 常见错误
+## QA (Required)
 
-### 一般错误
+**Assume there are problems. Your job is to find them.**
 
-| 错误 | 正确做法 |
-|------|---------|
-| 纯文字幻灯片 | 添加图片/图标/图表 |
-| 标题下装饰线 | 用留白或背景色 |
-| 默认蓝色 | 选择匹配主题的颜色 |
-| 重复相同布局 | 每张变化布局 |
-| 居中正文 | 左对齐，只标题居中 |
-| 低对比度 | 确保文字/图标与背景对比明显 |
+Your first render is almost never correct. Approach QA as a bug hunt, not a confirmation step. If you found zero issues on first inspection, you weren't looking hard enough.
 
-### html2pptx 特定错误
+### Content QA
 
-当使用 html2pptx 工作流（HTML/CSS → Playwright → PPTX）时，可能遇到以下错误：
-
-| 错误信息 | 原因 | 解决方案 |
-|----------|------|---------|
-| `Cannot find module 'pptxgenjs'` | node_modules 不在当前目录 | 运行 `npm install pptxgenjs playwright sharp` |
-| `Executable doesn't exist at ...chromium` | Playwright 浏览器未安装 | 运行 `npx playwright install chromium` |
-| `CSS gradients are not supported` | html2pptx 不支持 CSS 渐变 | 使用纯色背景或预渲染的渐变图片 |
-| `Text element <p> has border` | 文本元素不支持 border 属性 | 将 border 移到单独的 `<div>` 元素 |
-| `HTML content overflows body by XXpt horizontally` | 内容总宽度超过 720pt | 精确计算：边距 + (卡片宽 × 数量) + (间距 × (数量-1)) < 720 |
-| `Text box ... ends too close to bottom edge` | 内容太靠近边缘 | 减小 padding、调整 font-size、确保 36pt 安全边距 |
-| 中文文件名读取失败 | Windows 路径编码问题 | 重命名为英文文件名 |
-| 图片位置不准 | 坐标计算错误 | 使用公式：英寸 = 点数 / 72 |
-
-### 调试技巧
-
-1. **逐页测试**：先单独测试每页，确认无误后再批量生成
-2. **浏览器预览**：直接在浏览器中打开 HTML 文件预览效果
-3. **控制台日志**：在脚本中添加详细日志追踪问题
-4. **检查依赖**：确保 `npm install` 和 `npx playwright install chromium` 已执行
-
-## QA检查（必须执行）
-
-### 内容检查
 ```bash
 python -m markitdown output.pptx
-# 检查缺失内容、错别字、顺序错误
 ```
 
-### 检查占位符残留
+Check for missing content, typos, wrong order.
+
+**When using templates, check for leftover placeholder text:**
+
 ```bash
-python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum"
+python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum|this.*(page|slide).*layout"
 ```
 
-### 视觉检查
-转图片后检查：
+If grep returns results, fix them before declaring success.
+
+### Visual QA
+
+**⚠️ USE SUBAGENTS** — even for 2-3 slides. You've been staring at the code and will see what you expect, not what's there. Subagents have fresh eyes.
+
+Convert slides to images (see [Converting to Images](#converting-to-images)), then use this prompt:
+
+```
+Visually inspect these slides. Assume there are issues — find them.
+
+Look for:
+- Overlapping elements (text through shapes, lines through words, stacked elements)
+- Text overflow or cut off at edges/box boundaries
+- Decorative lines positioned for single-line text but title wrapped to two lines
+- Source citations or footers colliding with content above
+- Elements too close (< 0.3" gaps) or cards/sections nearly touching
+- Uneven gaps (large empty area in one place, cramped in another)
+- Insufficient margin from slide edges (< 0.5")
+- Columns or similar elements not aligned consistently
+- Low-contrast text (e.g., light gray text on cream-colored background)
+- Low-contrast icons (e.g., dark icons on dark backgrounds without a contrasting circle)
+- Text boxes too narrow causing excessive wrapping
+- Leftover placeholder content
+
+For each slide, list issues or areas of concern, even if minor.
+
+Read and analyze these images:
+1. /path/to/slide-01.jpg (Expected: [brief description])
+2. /path/to/slide-02.jpg (Expected: [brief description])
+
+Report ALL issues found, including minor ones.
+```
+
+### Verification Loop
+
+1. Generate slides → Convert to images → Inspect
+2. **List issues found** (if none found, look again more critically)
+3. Fix issues
+4. **Re-verify affected slides** — one fix often creates another problem
+5. Repeat until a full pass reveals no new issues
+
+**Do not declare success until you've completed at least one fix-and-verify cycle.**
+
+---
+
+## Converting to Images
+
+Convert presentations to individual slide images for visual inspection:
+
 ```bash
 python scripts/office/soffice.py --headless --convert-to pdf output.pptx
 pdftoppm -jpeg -r 150 output.pdf slide
 ```
 
-检查项目：
-- 元素重叠
-- 文字溢出/被裁切
-- 间距不均匀
-- 边距不足(<0.5")
-- 对齐不一致
-- 低对比度
+This creates `slide-01.jpg`, `slide-02.jpg`, etc.
 
-## 验证循环
-
-1. 生成→转图片→检查
-2. 列出问题（没找到就是检查不够仔细）
-3. 修复问题
-4. 重新验证受影响的幻灯片
-5. 重复直到无新问题
-
----
-
-## 完整示例：从零创建产品介绍PPT
-
-### 需求
-创建一个5页的产品介绍PPT，主题是"智能家居系统"。
-
-### Step 1: 初始化项目
-
-```javascript
-const pptxgen = require("pptxgenjs");
-
-let pres = new pptxgen();
-pres.layout = 'LAYOUT_16x9';
-pres.author = '智国学堂';
-pres.title = '智能家居系统介绍';
-```
-
-### Step 2: 设计配色方案
-
-选择"森林绿"主题：
-- 主色：#2C5F2D（深绿）
-- 辅色：#97BC62（浅绿）
-- 强调色：#F5F5F5（浅灰）
-
-### Step 3: 创建幻灯片
-
-```javascript
-// 第1页：封面（大标题+副标题）
-let slide1 = pres.addSlide();
-slide1.addShape(pres.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '2C5F2D' } });
-slide1.addText("智能家居系统", { x: 0.5, y: 2, w: 9, h: 1.5, fontSize: 44, color: "FFFFFF", bold: true, align: "center" });
-slide1.addText("让生活更智能、更便捷", { x: 0.5, y: 3.5, w: 9, h: 0.5, fontSize: 20, color: "97BC62", align: "center" });
-
-// 第2页：产品特点（图标+文字行布局）
-let slide2 = pres.addSlide();
-slide2.addText("核心特点", { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 32, color: "2C5F2D", bold: true });
-slide2.addText([
-  { text: "🏠 远程控制", options: { breakLine: true } },
-  { text: "📱 语音交互", options: { breakLine: true } },
-  { text: "🔒 安全防护", options: { breakLine: true } },
-  { text: "⚡ 节能环保", options: { breakLine: true } }
-], { x: 0.5, y: 1.5, w: 9, h: 3.5, fontSize: 24, color: "363636" });
-
-// 第3页：数据统计（大数字+说明）
-let slide3 = pres.addSlide();
-slide3.addText("市场数据", { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 32, color: "2C5F2D", bold: true });
-slide3.addText("100万+", { x: 1, y: 1.5, w: 3, h: 1, fontSize: 48, color: "2C5F2D", bold: true });
-slide3.addText("活跃用户", { x: 1, y: 2.5, w: 3, h: 0.5, fontSize: 16, color: "666666" });
-slide3.addText("99.9%", { x: 5, y: 1.5, w: 3, h: 1, fontSize: 48, color: "2C5F2D", bold: true });
-slide3.addText("系统稳定性", { x: 5, y: 2.5, w: 3, h: 0.5, fontSize: 16, color: "666666" });
-
-// 第4页：对比优势（双栏布局）
-let slide4 = pres.addSlide();
-slide4.addText("传统 vs 智能", { x: 0.5, y: 0.3, w: 9, h: 0.8, fontSize: 32, color: "2C5F2D", bold: true });
-slide4.addText("传统家居", { x: 0.5, y: 1.3, w: 4, h: 0.5, fontSize: 20, color: "666666", bold: true });
-slide4.addText("手动操作\n效率低\n能耗高", { x: 0.5, y: 1.8, w: 4, h: 2, fontSize: 16, color: "666666" });
-slide4.addText("智能家居", { x: 5.5, y: 1.3, w: 4, h: 0.5, fontSize: 20, color: "2C5F2D", bold: true });
-slide4.addText("自动控制\n高效便捷\n节能环保", { x: 5.5, y: 1.8, w: 4, h: 2, fontSize: 16, color: "2C5F2D" });
-
-// 第5页：联系方式（简洁收尾）
-let slide5 = pres.addSlide();
-slide5.addShape(pres.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: { color: '2C5F2D' } });
-slide5.addText("联系我们", { x: 0.5, y: 1.5, w: 9, h: 1, fontSize: 36, color: "FFFFFF", bold: true, align: "center" });
-slide5.addText("www.example.com\n400-123-4567", { x: 0.5, y: 2.8, w: 9, h: 1, fontSize: 18, color: "97BC62", align: "center" });
-```
-
-### Step 4: 保存文件
-
-```javascript
-pres.writeFile({ fileName: "智能家居系统介绍.pptx" });
-```
-
-### Step 5: QA检查
+To re-render specific slides after fixes:
 
 ```bash
-# 内容检查
-python -m markitdown 智能家居系统介绍.pptx
-
-# 视觉检查
-python scripts/thumbnail.py 智能家居系统介绍.pptx
-
-# 检查占位符残留
-python -m markitdown 智能家居系统介绍.pptx | grep -iE "xxxx|lorem|ipsum"
+pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
 ```
 
-### 检查清单
-
-- [ ] 每页布局不同（封面→列表→数字→对比→收尾）
-- [ ] 颜色统一使用森林绿主题
-- [ ] 无纯文字幻灯片
-- [ ] 标题左对齐，正文左对齐
