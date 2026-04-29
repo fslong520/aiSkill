@@ -151,20 +151,18 @@ def cmd_start():
 
     print(f"✅ 找到浏览器: {browser_type}")
     print(f"   路径: {browser_path}")
+
     print(f"🚀 启动中...")
 
-    # 启动浏览器
+    # 模仿用户真实环境，仅添加远程调试参数
     system = platform.system()
     if system == "Windows":
-        import tempfile
-        user_data_dir = os.path.join(tempfile.gettempdir(), f"{browser_type}-cdp-{CDP_PORT}")
-        cmd = f'start "" "{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir="{user_data_dir}"'
+        cmd = f'start "" "{browser_path}" --remote-debugging-port={CDP_PORT} --no-first-run'
     else:
-        user_data_dir = f"/tmp/{browser_type}-cdp-{CDP_PORT}"
-        cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --user-data-dir={user_data_dir} &'
+        cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --no-first-run &'
 
     run_cmd(cmd, capture=False)
-
+    print(cmd)
     # 等待启动
     import time
     for i in range(10):
