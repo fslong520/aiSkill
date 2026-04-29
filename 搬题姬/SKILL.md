@@ -27,12 +27,15 @@ OJ题目、搬题、算法题搬运、AtCoder、Codeforces、GESP
 
 1. 读取 steps/00-detect-url.md → 检测类型
 2. 初始化：cp -r question work
-3. 获取题面：urlgo 访问 → snapshot → 解析（urlgo不可用时用 BrowserUse/WebFetch）
+3. 获取题面：按来源类型处理
+   - URL：urlgo 访问 → snapshot → 解析（urlgo不可用时用 BrowserUse/WebFetch）
+   - 文件：读取 steps/09-from-file.md → 从本地文件提取题面
+   - 文本：读取 steps/10-from-text.md → 从用户提供的文本生成题面
 4. 读取 steps/03-gesp.md → 判定等级
 5. 读取 steps/04-problem.md → 生成题面
 6. 读取 steps/05-config.md → 写配置
 7. 实现标程 std.cpp
-8. 读取 steps/07-testdata.md → 生成数据
+8. 读取 steps/07-testdata.md → 生成数据（⚠️ 只改 mkin.h，别动 mkdata.cpp）
 9. 打包：zip -r problem.zip work
 
 ### ⚠️ 比赛搬运（必须先创建题面汇总文件）
@@ -49,8 +52,9 @@ OJ题目、搬题、算法题搬运、AtCoder、Codeforces、GESP
 - AVOID GESP等级乱判
 - AVOID 忘清理 work 目录
 - AVOID PID 格式错误（用小写 abc451a）
-- ⚠️ **AVOID 比赛搬运时跳过题面汇总文件，直接逐题搬运**
 - ⚠️ **AVOID 从对话上下文记忆题面，必须从文件读取**
+- ⚠️ **AVOID 生成数据时修改 mkdata.cpp，只允许修改 mkin.h**
+- ⚠️ **AVOID 测试数据缺少特殊性质和 hack 数据**
 
 ---
 

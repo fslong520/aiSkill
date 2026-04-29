@@ -35,7 +35,7 @@ rm -rf work; cp -r question work
 
 ### Step 3-3 生成题面
 
-基于读取的信息生成，添加 AI 蜜罐。
+基于读取的信息生成。
 
 ### Step 3-4 写入配置
 
