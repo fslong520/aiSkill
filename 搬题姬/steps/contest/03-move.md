@@ -67,9 +67,27 @@ g++ -o mkdata mkdata.cpp -std=c++17
 
 ### Step 3-9 打包发布
 
+⚠️ **打包铁律：必须从 work 的父目录打包整个 work 目录。**
+
 ```bash
-rm -f work/std work/mkdata
+# ✅ 正确：打包整个 work/ 目录（解压后有 work/ 外壳）
+rm -f work/std work/mkdata work/*.exe
 zip -r {pid}_{title}.zip work
+
+# ❌ 错误：cd 进 work 再打包（文件会散落在根目录）
+# cd work && zip -r ../{pid}_{title}.zip .
+# ❌ 错误：在 work 目录内打包当前目录
+# cd work && zip -r {pid}_{title}.zip *
+```
+
+**验证打包结构：**
+```bash
+unzip -l {pid}_{title}.zip | head -5
+# 期望输出：
+#   work/
+#   work/std.cpp
+#   work/problem_zh.md
+#   work/testdata/
 ```
 
 ## 完成当前题目后

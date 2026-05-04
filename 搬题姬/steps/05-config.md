@@ -42,6 +42,11 @@ tag:
 2. title 必须用 `中文(英文)` 格式
 3. tag 必须包含 `GESPX级`
 
+## 测试数据分组配置
+
+测试数据的分组（HydroOJ subtask）在 `testdata/config.yaml` 中配置，
+详见 **Step 07-testdata.md → 配置文件（HydroOJ subtask 格式）**。
+
 ## 下一步
 
 完成 → `06-std.md`
