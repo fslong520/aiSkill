@@ -55,7 +55,8 @@ DATA_DIR = os.environ.get(
     str(Path.home() / ".config" / "opencode" / "skills" / "忆时" / "data"),
 )
 
-SKILL_MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models", "onnx")
+SKILL_MODEL_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models")
+SKILL_MODEL_DIR = os.path.join(SKILL_MODEL_BASE, "onnx")
 
 EMOTION_WEIGHTS = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
 RECALL_DECAY_DAYS = 30.0
@@ -65,14 +66,30 @@ _embedding_client = None
 _embedding_fn = None
 
 
+def _install_model():
+    """按需安装 embedding 模型: 先解压本地 tarball, 无则用 chroma 自动下载."""
+    onnx_dir = Path(SKILL_MODEL_DIR)
+    if (onnx_dir / "model.onnx").exists():
+        return str(Path(SKILL_MODEL_BASE))
+    onnx_tar = onnx_dir / "onnx.tar.gz"
+    if onnx_tar.exists():
+        import tarfile
+        Path(SKILL_MODEL_BASE).mkdir(parents=True, exist_ok=True)
+        with tarfile.open(onnx_tar, "r:gz") as tar:
+            tar.extractall(path=SKILL_MODEL_BASE)
+        if (onnx_dir / "model.onnx").exists():
+            return str(Path(SKILL_MODEL_BASE))
+    return None
+
+
 def get_embedding_fn():
     global _embedding_fn
     if _embedding_fn is None:
-        onnx_dir = Path(SKILL_MODEL_DIR)
-        if onnx_dir.exists() and (onnx_dir / "model.onnx").exists():
-            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+        from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+        model_path = _install_model()
+        if model_path:
             _embedding_fn = ONNXMiniLM_L6_V2()
-            _embedding_fn.DOWNLOAD_PATH = onnx_dir.parent
+            _embedding_fn.DOWNLOAD_PATH = model_path
     return _embedding_fn
 
 

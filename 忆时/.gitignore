@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environment
+venv/
+
+# ChromaDB data (generated at runtime)
+data/
+
+# Extracted model files (auto-generated on first use)
+models/onnx/model.onnx
+models/onnx/config.json
+models/onnx/tokenizer.json
+models/onnx/tokenizer_config.json
+models/onnx/special_tokens_map.json
+models/onnx/vocab.txt
+
+# OS files
+.DS_Store
+Thumbs.db

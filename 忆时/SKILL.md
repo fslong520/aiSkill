@@ -84,23 +84,21 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 │   ├── 04-time-capsule.md      # 时间胶囊操作
 │   ├── 05-retrieval.md         # 类人检索策略
 │   └── 06-import-export.md     # 导入导出操作
-├── models/onnx/                # 内置 embedding 模型 (87MB)
-│   ├── model.onnx
-│   ├── config.json
-│   ├── tokenizer.json
-│   ├── tokenizer_config.json
-│   ├── special_tokens_map.json
-│   └── vocab.txt
+├── models/                     # embedding 模型
+│   └── onnx.tar.gz             # 离线安装包 (80MB, 首次使用自动解压)
 ├── scripts/
 │   └── memory_core.py          # 核心引擎 CLI
 └── references/
     └── chroma-api.md           # ChromaDB API 参考
 ```
 
-## 内置模型
+## 模型安装
 
-本技能自带 all-MiniLM-L6-v2 embedding 模型 (87MB)，位于 `models/onnx/` 目录。
-首次使用无需任何下载，开箱即用。
+本技能使用 all-MiniLM-L6-v2 embedding 模型。安装方式：
+
+1. **有离线包** (`models/onnx.tar.gz`) → 首次调用时自动解压到 `models/onnx/`
+2. **无离线包** → 自动从 Chroma S3 下载到 `models/onnx/`
+3. 也可手动解压: `tar xzf models/onnx.tar.gz -C models/`
 
 ## 使用说明
 

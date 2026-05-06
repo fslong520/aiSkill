@@ -48,10 +48,11 @@ ChromaDB 内会创建以下集合:
 }
 ```
 
-## 内置模型
+## 模型安装
 
-本技能自带 all-MiniLM-L6-v2 embedding 模型 (87MB)，位于 `models/onnx/` 目录。
-初始化时会自动检测并使用本地模型，无需网络下载。
+本技能使用 all-MiniLM-L6-v2 embedding 模型。
+首次初始化时会自动安装：有离线包则解压 `models/onnx.tar.gz`，否则从 Chroma S3 下载。
+安装后模型文件位于 `models/onnx/` 目录。
 
 ## 环境变量
 
