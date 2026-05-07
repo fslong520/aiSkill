@@ -1,18 +1,4 @@
----
-
-name: urlgo
-description: 浏览器控制 CLI
-metadata:
-  slug: urlgo
-  priority: 1000
-  builtin_skill_version: "6.3.0"
-  trigger: urlgo、浏览器、CDP、截图、网页、打开网页、网页截图、https://、http://
-  copaw:
-    emoji: "🌐"
-    requires: {}
-    auto_load: true
-    global: true
----
+# Skill: urlgo
 
 ## Keywords
 
@@ -22,40 +8,50 @@ https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin, 打开网页
 
 连 CDP，开网页，截图，执行 JS。
 
+## 重要：执行方式
+
+urlgo 是 Python 脚本，必须通过 Python 解释器执行：
+
+```bash
+python3 /home/fslong/.config/opencode/skills/urlgo/urlgo <command> [args]
+```
+
 ## Strategy
-1. `urlgo status` → CDP 开了没？没开就 `urlgo start`
-2. `urlgo open <url>` → 打开页面
-3. 截图/读取/点击/输入/执行 JS
-4. 返回结果
+1. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo status` → CDP 开了没？
+2. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo start` → 启动浏览器（后台运行，脚本退出后浏览器不关）
+3. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo open <url>` → 打开页面
+4. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo screenshot <id> <file>` → 截图
+5. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo snapshot <id>` → 读取页面内容
 
 AVOID:
 - AVOID 不检查 CDP 就操作，先 status/start
-- AVOID 忘装 websockets，截图和 JS 要用它
+- AVOID 直接用 `urlgo` 命令（PATH 可能没有），必须用完整 Python 路径
 - AVOID 用 WebFetch 读网页，应该用 urlgo snapshot 代替
-
----
+- AVOID 多次 start（会检测到已启动而跳过）
 
 ## 命令
 
 | 命令 | 说明 |
 |------|------|
-| `urlgo status` | 检查 CDP |
-| `urlgo start` | 启动浏览器 |
-| `urlgo list` | 查看页面 |
-| `urlgo open <url>` | 打开网页 |
-| `urlgo screenshot <id> <file>` | 截图 |
-| `urlgo snapshot <id>` | 读取内容 |
-| `urlgo eval <id> "<js>"` | 执行 JS |
-| `urlgo click <id> "<sel>"` | 点击 |
-| `urlgo type <id> "<sel>" "<text>"` | 输入 |
+| `status` | 检查 CDP |
+| `start` | 启动浏览器（后台运行，进程退出后浏览器不关） |
+| `list` | 查看页面 |
+| `open <url>` | 打开网页 |
+| `activate <id>` | 激活页面 |
+| `close <id>` | 关闭页面 |
+| `screenshot <id> <file>` | 截图 |
+| `snapshot <id>` | 读取内容 |
+| `eval <id> "<js>"` | 执行 JS |
+| `click <id> "<sel>"` | 点击 |
+| `type <id> "<sel>" "<text>"` | 输入 |
 
 ## 示例
 
 ```bash
-urlgo start
-urlgo open https://example.com
-urlgo snapshot 1
-urlgo screenshot 1 /tmp/a.png
+python3 /home/fslong/.config/opencode/skills/urlgo/urlgo start
+python3 /home/fslong/.config/opencode/skills/urlgo/urlgo open https://example.com
+python3 /home/fslong/.config/opencode/skills/urlgo/urlgo snapshot 1
+python3 /home/fslong/.config/opencode/skills/urlgo/urlgo screenshot 1 /tmp/a.png
 ```
 
 ## 依赖

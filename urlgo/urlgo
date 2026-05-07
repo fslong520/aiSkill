@@ -154,15 +154,31 @@ def cmd_start():
 
     print(f"🚀 启动中...")
 
-    # 模仿用户真实环境，仅添加远程调试参数
+    # 使用 Popen + start_new_session 彻底脱离父进程，
+    # 确保 urlgo 脚本退出后浏览器仍然存活
     system = platform.system()
     if system == "Windows":
-        cmd = f'start "" "{browser_path}" --remote-debugging-port={CDP_PORT} --no-first-run'
+        # Windows 上使用 DETACHED_PROCESS 标记
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        proc = subprocess.Popen(
+            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run"],
+            startupinfo=startupinfo,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
     else:
-        cmd = f'"{browser_path}" --remote-debugging-port={CDP_PORT} --no-first-run &'
+        # Unix 上使用 start_new_session 脱离进程组
+        proc = subprocess.Popen(
+            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run"],
+            start_new_session=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
-    run_cmd(cmd, capture=False)
-    print(cmd)
+    print(f"   浏览器进程 PID: {proc.pid}")
+
     # 等待启动
     import time
     for i in range(10):
