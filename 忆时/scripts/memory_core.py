@@ -50,13 +50,25 @@ def _silent_import():
 with _silent_import():
     import chromadb
 
+# 模型和数据统一存到 ~/.local/share/opencode/忆时/ 下，
+# 不放在技能目录（更新技能会覆盖），也不放在 ~/.cache/（清缓存会被删除）。
+LOCAL_BASE = os.path.join(Path.home(), ".local", "share", "opencode", "忆时")
+
 DATA_DIR = os.environ.get(
     "YISHI_DATA_DIR",
-    str(Path.home() / ".config" / "opencode" / "skills" / "忆时" / "data"),
+    os.path.join(LOCAL_BASE, "data"),
 )
 
-SKILL_MODEL_BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "models")
-SKILL_MODEL_DIR = os.path.join(SKILL_MODEL_BASE, "onnx")
+SKILL_MODEL_BASE = os.path.join(LOCAL_BASE, "models")
+
+# Chroma ONNXMiniLM_L6_V2 的 DOWNLOAD_PATH 即模型根目录：
+#   {DOWNLOAD_PATH}/onnx/model.onnx
+CHROMA_MODEL_DIR = os.path.join(SKILL_MODEL_BASE, "onnx")
+CHROMA_MODEL_ONNX = os.path.join(CHROMA_MODEL_DIR, "model.onnx")
+
+# 自动备份文件（JSONL 格式），存于 LOCAL_BASE 而非 data/ 中，
+# 即使 data/ 被误删也能用 recover 命令重建记忆库。
+BACKUP_FILE = os.path.join(LOCAL_BASE, "memories_backup.jsonl")
 
 EMOTION_WEIGHTS = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
 RECALL_DECAY_DAYS = 30.0
@@ -67,29 +79,54 @@ _embedding_fn = None
 
 
 def _install_model():
-    """按需安装 embedding 模型: 先解压本地 tarball, 无则用 chroma 自动下载."""
-    onnx_dir = Path(SKILL_MODEL_DIR)
-    if (onnx_dir / "model.onnx").exists():
-        return str(Path(SKILL_MODEL_BASE))
-    onnx_tar = onnx_dir / "onnx.tar.gz"
-    if onnx_tar.exists():
-        import tarfile
-        Path(SKILL_MODEL_BASE).mkdir(parents=True, exist_ok=True)
-        with tarfile.open(onnx_tar, "r:gz") as tar:
-            tar.extractall(path=SKILL_MODEL_BASE)
-        if (onnx_dir / "model.onnx").exists():
-            return str(Path(SKILL_MODEL_BASE))
-    return None
+    """确保 embedding 模型位于 skill-local models/ 目录，而非 ~/.cache/chroma/."""
+    if os.path.exists(CHROMA_MODEL_ONNX):
+        return True
+
+    # 检查旧版路径（models/onnx/ 结构），若有则迁移
+    old_onnx_dir = os.path.join(SKILL_MODEL_BASE, "onnx")
+    old_model = os.path.join(old_onnx_dir, "model.onnx")
+    if os.path.exists(old_model):
+        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
+        import shutil
+        for f in os.listdir(old_onnx_dir):
+            shutil.copy2(os.path.join(old_onnx_dir, f), os.path.join(CHROMA_MODEL_DIR, f))
+        if os.path.exists(CHROMA_MODEL_ONNX):
+            return True
+
+    # 尝试从本地 onnx.tar.gz 安装（若 skill 打包了离线模型）
+    onnx_tar = os.path.join(SKILL_MODEL_BASE, "onnx.tar.gz")
+    if not os.path.exists(onnx_tar):
+        onnx_tar = os.path.join(SKILL_MODEL_BASE, "..", "models", "onnx.tar.gz")
+    if os.path.exists(onnx_tar):
+        import tarfile, tempfile, shutil
+        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            with tarfile.open(onnx_tar, "r:gz") as tar:
+                tar.extractall(path=tmp)
+            # tarball 结构可能是 onnx/xxx 或直接是文件
+            src = os.path.join(tmp, "onnx")
+            if os.path.isdir(src):
+                for f in os.listdir(src):
+                    shutil.move(os.path.join(src, f), CHROMA_MODEL_DIR)
+            else:
+                for f in os.listdir(tmp):
+                    fp = os.path.join(tmp, f)
+                    if os.path.isfile(fp):
+                        shutil.move(fp, CHROMA_MODEL_DIR)
+        return os.path.exists(CHROMA_MODEL_ONNX)
+
+    return False
 
 
 def get_embedding_fn():
     global _embedding_fn
     if _embedding_fn is None:
         from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
-        model_path = _install_model()
-        if model_path:
-            _embedding_fn = ONNXMiniLM_L6_V2()
-            _embedding_fn.DOWNLOAD_PATH = model_path
+        _install_model()
+        _embedding_fn = ONNXMiniLM_L6_V2()
+        # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
+        _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
     return _embedding_fn
 
 
@@ -122,6 +159,35 @@ def _update_meta_total(client, field, delta):
 
 def _now():
     return datetime.now()
+
+
+# ========== 自动备份 ==========
+def _append_backup(mem_id, content, metadata):
+    """每次存储记忆时追加一条 JSONL 到备份文件，与 data/ 独立存放。"""
+    try:
+        record = {"id": mem_id, "content": content, "metadata": metadata, "backup_at": _now().isoformat()}
+        line = json.dumps(record, ensure_ascii=False)
+        with open(BACKUP_FILE, "a", encoding="utf-8") as f:
+            f.write(line + "\n")
+    except Exception as e:
+        print(f"  ⚠️ 备份写入失败: {e}", file=sys.stderr)
+
+
+def _load_backups():
+    """读取全部备份记录，返回列表。"""
+    if not os.path.exists(BACKUP_FILE):
+        return []
+    records = []
+    with open(BACKUP_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return records
 
 
 # ========== init ==========
@@ -174,11 +240,15 @@ def cmd_store(args):
     mem_col.add(documents=[args.content], metadatas=[metadata], ids=[mem_id])
     _update_meta_total(client, "total_memories", 1)
 
+    # 自动备份到 JSONL（与 data/ 独立，不怕误删）
+    _append_backup(mem_id, args.content, metadata)
+
     print(f"记忆已存储")
     print(f"  ID: {mem_id}")
     print(f"  类型: {mem_type}  情绪: {emotion}")
     if metadata["keywords"]:
         print(f"  关键字: {metadata['keywords']}")
+    print(f"  已自动备份到: {BACKUP_FILE}")
     return mem_id
 
 
@@ -640,6 +710,60 @@ def cmd_forget(args):
         print("\n使用 --auto 自动标记归档")
 
 
+# ========== recover ==========
+def cmd_recover(args):
+    """从备份文件恢复所有记忆到 ChromaDB。"""
+    records = _load_backups()
+    if not records:
+        print(f"未找到备份文件: {BACKUP_FILE}")
+        print("尚无自动备份，若曾用 export 导出过 JSON，可用 import-file 恢复。")
+        return
+
+    client = get_client()
+    mem_col = get_collection(client, "memories")
+    meta_col = get_collection(client, "meta")
+    now = _now()
+    restored = 0
+
+    for rec in records:
+        mid = rec.get("id", str(uuid.uuid4()))
+        content = rec.get("content", "")
+        meta = rec.get("metadata", {})
+        # 确保元数据字段完整
+        meta.setdefault("frequency", "1")
+        meta.setdefault("recall_count", "0")
+        meta.setdefault("updated_at", now.isoformat())
+        # 跳过已存在的（按 id 去重）
+        try:
+            existing = mem_col.get(ids=[mid])
+            if existing["ids"]:
+                continue
+        except Exception:
+            pass
+        try:
+            mem_col.add(documents=[content], metadatas=[meta], ids=[mid])
+            restored += 1
+        except Exception as e:
+            print(f"  ⚠️ 恢复失败 ({mid}): {e}", file=sys.stderr)
+
+    # 更新 meta 统计
+    total = mem_col.count()
+    try:
+        if meta_col.count() > 0:
+            s = json.loads(meta_col.get(ids=["state"])["documents"][0])
+            s["total_memories"] = total
+            s["updated_at"] = now.isoformat()
+            meta_col.update(documents=[json.dumps(s)], ids=["state"], metadatas=[{"key": "state"}])
+    except Exception:
+        pass
+
+    print(f"恢复完成: 备份 {len(records)} 条, 恢复 {restored} 条")
+    print(f"  当前记忆总数: {total}")
+    print(f"  备份文件: {BACKUP_FILE}")
+    if restored < len(records):
+        print(f"  跳过 {len(records) - restored} 条（已存在）")
+
+
 def main():
     parser = argparse.ArgumentParser(description="忆时 Memory Core", formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command")
@@ -674,6 +798,8 @@ def main():
     p.set_defaults(func=cmd_delete)
 
     p = sub.add_parser("stats", help="统计信息"); p.set_defaults(func=cmd_stats)
+
+    p = sub.add_parser("recover", help="从备份文件恢复记忆库（data/ 被误删时使用）"); p.set_defaults(func=cmd_recover)
 
     p = sub.add_parser("forget", help="遗忘/归档旧记忆")
     p.add_argument("--before", help="归档此日期之前的记忆"); p.add_argument("--low-freq", type=int, help="频率阈值"); p.add_argument("--auto", action="store_true", help="自动标记")

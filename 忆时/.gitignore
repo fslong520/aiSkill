@@ -20,3 +20,6 @@ models/onnx/vocab.txt
 # OS files
 .DS_Store
 Thumbs.db
+
+# Auto-generated backup (regenerated on each store)
+memories_backup.jsonl

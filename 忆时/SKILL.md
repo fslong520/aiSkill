@@ -69,6 +69,8 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 导出:      python3 $PY export --format timeline --output output.md
 统计:      python3 $PY stats
 遗忘:      python3 $PY forget --before "2025-01-01" --auto
+恢复:      python3 $PY recover
+查看备份:  cat memories_backup.jsonl | python3 -m json.tool --lines
 ```
 
 ## 项目结构
@@ -96,9 +98,11 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 
 本技能使用 all-MiniLM-L6-v2 embedding 模型。安装方式：
 
-1. **有离线包** (`models/onnx.tar.gz`) → 首次调用时自动解压到 `models/onnx/`
-2. **无离线包** → 自动从 Chroma S3 下载到 `models/onnx/`
-3. 也可手动解压: `tar xzf models/onnx.tar.gz -C models/`
+1. **有离线包** (`models/onnx.tar.gz`) → 首次调用时自动解压到 `models/all-MiniLM-L6-v2/onnx/`
+2. **无离线包** → 自动从 Chroma S3 下载到 `models/all-MiniLM-L6-v2/onnx/`
+3. 也可手动下载并解压至 `models/all-MiniLM-L6-v2/onnx/`
+
+> ⚠️ **注意**：模型文件永远存放在本技能目录下的 `models/` 中，**不会写入 `~/.cache/chroma/`**。即使执行 `rm -rf ~/.cache/chroma` 也不会影响已安装的模型。
 
 ## 使用说明
 
