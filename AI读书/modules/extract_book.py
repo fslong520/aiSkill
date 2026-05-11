@@ -410,7 +410,21 @@ def parse_pdf(path):
     try:
         subprocess.run(['pdftotext', '-v'], capture_output=True, check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
-        raise RuntimeError('需要 pdftotext（poppler-utils），请先安装：sudo apt install poppler-utils')
+        import platform
+        sys = platform.system()
+        if sys == 'Linux':
+            install_cmd = 'sudo apt install poppler-utils    # Debian/Ubuntu\n      sudo yum install poppler-utils        # CentOS/RHEL'
+        elif sys == 'Darwin':
+            install_cmd = 'brew install poppler'
+        elif sys == 'Windows':
+            install_cmd = '下载 https://github.com/oschwartz10612/poppler-windows/releases/ 并加入 PATH'
+        else:
+            install_cmd = '请安装 poppler-utils（pdftotext）'
+        raise RuntimeError(
+            f'[错误] 需要 pdftotext 来解析 PDF，但未找到。\n'
+            f'       请安装 poppler-utils：\n'
+            f'       {install_cmd}'
+        )
 
     # 用 pdftotext 提取文本
     with tempfile.NamedTemporaryFile(suffix='.txt', delete=False, mode='w+') as tmp:
@@ -578,59 +592,92 @@ def _split_by_headings(text):
 # ============================================================
 
 def main():
-    parser = argparse.ArgumentParser(description='提取图书文本，输出章节 JSON')
+    parser = argparse.ArgumentParser(
+        description='提取图书文本，输出章节 JSON',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=(
+            '示例:\n'
+            '  python3 extract_book.py 图书.pdf --pretty\n'
+            '  python3 extract_book.py 图书.epub -o output.json\n'
+            '  python3 extract_book.py 图书.md --pretty\n'
+        )
+    )
     parser.add_argument('input', help='输入文件路径 (.epub / .md / .txt / .pdf)')
     parser.add_argument('-o', '--output', help='输出 JSON 文件路径（默认 stdout）')
     parser.add_argument('--pretty', action='store_true', help='美化 JSON 输出')
     args = parser.parse_args()
 
     path = args.input
-    ext = os.path.splitext(path)[1].lower()
+    if not os.path.exists(path):
+        print(f'[错误] 文件不存在: {path}', file=sys.stderr)
+        sys.exit(1)
 
-    if ext == '.epub':
-        title, author, chapters = parse_epub(path)
-    elif ext == '.md':
-        title, author, chapters = parse_markdown(path)
-    elif ext == '.txt':
-        title, author, chapters = parse_text(path)
-    elif ext == '.pdf':
-        title, author, chapters = parse_pdf(path)
-    else:
-        # 按内容猜测
-        with open(path, 'rb') as f:
-            head = f.read(1024)
-        if head.startswith(b'PK'):
+    ext = os.path.splitext(path)[1].lower()
+    filesize = os.path.getsize(path)
+    print(f'[信息] 解析: {path} ({filesize / 1024:.0f} KB)', file=sys.stderr)
+
+    try:
+        if ext == '.epub':
             title, author, chapters = parse_epub(path)
-        elif head.startswith(b'%PDF'):
+        elif ext == '.md':
+            title, author, chapters = parse_markdown(path)
+        elif ext == '.txt':
+            title, author, chapters = parse_text(path)
+        elif ext == '.pdf':
             title, author, chapters = parse_pdf(path)
         else:
-            try:
-                text = head.decode('utf-8')
-                if text.lstrip().startswith('#') or text.lstrip().startswith('-') or '[TOC]' in text:
-                    title, author, chapters = parse_markdown(path)
-                else:
+            # 按内容猜测
+            with open(path, 'rb') as f:
+                head = f.read(1024)
+            if head.startswith(b'PK'):
+                title, author, chapters = parse_epub(path)
+            elif head.startswith(b'%PDF'):
+                title, author, chapters = parse_pdf(path)
+            else:
+                try:
+                    text = head.decode('utf-8')
+                    if text.lstrip().startswith('#') or text.lstrip().startswith('-') or '[TOC]' in text:
+                        title, author, chapters = parse_markdown(path)
+                    else:
+                        title, author, chapters = parse_text(path)
+                except UnicodeDecodeError:
                     title, author, chapters = parse_text(path)
-            except UnicodeDecodeError:
-                title, author, chapters = parse_text(path)
 
-    result = {
-        'title': title,
-        'author': author,
-        'source': os.path.abspath(path),
-        'total_chapters': len(chapters),
-        'total_chars': sum(len(ch['text']) for ch in chapters),
-        'chapters': chapters,
-    }
+        result = {
+            'title': title,
+            'author': author,
+            'source': os.path.abspath(path),
+            'total_chapters': len(chapters),
+            'total_chars': sum(len(ch['text']) for ch in chapters),
+            'chapters': chapters,
+        }
 
-    indent = 2 if args.pretty else None
-    output = json.dumps(result, ensure_ascii=False, indent=indent)
+        indent = 2 if args.pretty else None
+        output = json.dumps(result, ensure_ascii=False, indent=indent)
 
-    if args.output:
-        with open(args.output, 'w', encoding='utf-8') as f:
-            f.write(output)
-        print(f'已写入 {args.output}', file=sys.stderr)
-    else:
-        print(output)
+        if args.output:
+            with open(args.output, 'w', encoding='utf-8') as f:
+                f.write(output)
+            print(f'[完成] 已写入 {args.output}', file=sys.stderr)
+        else:
+            print(output)
+
+        # 输出摘要信息到 stderr
+        empty_chs = [ch['id'] for ch in chapters if len(ch['text']) < 50]
+        print(
+            f'[完成] 书名: {title} | 作者: {author} | '
+            f'章节: {len(chapters)} | 总字数: {result["total_chars"]}',
+            file=sys.stderr
+        )
+        if empty_chs:
+            print(f'[警告] 以下章节内容过短: {", ".join(empty_chs)}', file=sys.stderr)
+
+    except RuntimeError as e:
+        print(f'{e}', file=sys.stderr)
+        sys.exit(1)
+    except Exception as e:
+        print(f'[错误] 解析失败: {e}', file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
