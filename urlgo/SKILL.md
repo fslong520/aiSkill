@@ -1,22 +1,29 @@
+---
+name: urlgo
+description: 连 CDP，开网页，截图，执行 JS 的浏览器控制 CLI
+allowed-tools:
+  - Read
+  - Write
+  - Bash
+
+metadata:
+  trigger: 浏览器, CDP, 截图, 网页, 打开网页, 网页截图
+---
+
 # Skill: urlgo
 
 ## Keywords
 
-https://, http://, www., 浏览器, CDP, 截图, 网页, mp.weixin, 打开网页, 网页截图
+浏览器, CDP, 截图, 网页, 打开网页
 
 ## Summary
 
 连 CDP，开网页，截图，执行 JS。
 
-## 重要：执行方式
-
-urlgo 是 Python 脚本，必须通过 Python 解释器执行：
-
-```bash
-python3 /home/fslong/.config/opencode/skills/urlgo/urlgo <command> [args]
-```
-
 ## Strategy
+
+路径：`python3 /home/fslong/.config/opencode/skills/urlgo/urlgo`
+
 1. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo status` → CDP 开了没？
 2. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo start` → 启动浏览器（后台运行，脚本退出后浏览器不关）
 3. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo open <url>` → 打开页面

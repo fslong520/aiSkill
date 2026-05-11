@@ -1,38 +1,35 @@
-# Step 1: 准备阶段
+# Step 1：准备
 
 ## 目标
 
-判断输入类型，获取题面信息，确定是单题还是多题。
+获取题面信息，确定是单题还是多题。
 
 ## 输入类型判断
 
-| 类型 | 判断条件 | 下一步 |
-|------|---------|--------|
-| 比赛 URL（`/contests/xxx/tasks`） | 多题 | `steps/03-contest.md` |
-| 单题 URL（`/contests/xxx/tasks/xxx_a`） | 单题 | `steps/02-single.md` |
-| 题面文件（`.md`） | 视内容 | 检测是否为多题 |
-| 直接文本 | 单题 | `steps/02-single.md` |
-| 用户指定标程路径 | 附代码 | 融入精讲 |
+| 输入类型 | 判定 | 下一步 |
+|----------|------|--------|
+| 比赛 URL（含 `/contests/`） | 多题 | `02-write.md` |
+| 单题 URL（AtCoder / CF / 洛谷） | 单题 | `02-write.md` |
+| 题面文件（`.md`） | 视内容 | `02-write.md` |
+| 对话文本 | 单题 | `02-write.md` |
+| 标程文件路径 | 附代码精讲 | 先 Read，再 `02-write.md` |
 
 ## 题面获取
 
-1. **URL 输入**：使用 urlgo 打开页面 → snapshot 获取内容 → 解析题面
-2. **文件输入**：Read 工具读取
-3. **文本输入**：直接使用
+| 来源 | 方法 |
+|------|------|
+| URL | urlgo snapshot（urlgo 不可用时 WebFetch） |
+| 文件 | Read |
+| 对话文本 | 直接使用 |
 
 ## 标程获取
 
-若用户在请求中指定了代码文件路径（如 `/path/to/a.cpp`），需读取该文件，在「代码逐行精讲」节中使用。
+若用户指定了代码文件路径（如 `/path/to/a.cpp`），Read 读取后保留，在撰写阶段融入代码精讲。
 
-## 多题判断
+## 多题检测（自动）
 
-```python
-def is_multi(content):
-    markers = ["## A -", "## B -", "## C -", "## D -", "## E -"]
-    return sum(1 for m in markers if m in content) >= 2
-```
+若题面文本包含 `## A` `## B` `## C` 等多题标记，自动视为比赛场景。
 
-## 下一步
+## 转交
 
-- 单题 → `steps/02-single.md`
-- 多题 → `steps/03-contest.md`
+准备完成后，交 `02-write.md` 处理。
