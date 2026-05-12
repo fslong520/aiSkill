@@ -23,7 +23,7 @@
    - 输出格式
    - 样例
    - 数据范围
-4. 生成 `work/problem_zh.md`（参考 04-problem.md 格式）
+4. 生成 `{WORK_DIR}/problem_zh.md`（参考 04-problem.md 格式）
 
 ## 下一步
 

@@ -7,7 +7,7 @@
 ## 打包前检查
 
 ```bash
-rm -f work/std work/mkdata work/*.exe
+rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
 ```
 
 ## 打包命令
@@ -15,23 +15,23 @@ rm -f work/std work/mkdata work/*.exe
 文件名：`{pid}_{title}.zip`
 
 ```bash
-# ✅ 正确：打包整个 work 目录（解压后有 work/ 外壳）
-zip -r abc451_a_xxx.zip work
+# ✅ 正确：打包整个 {WORK_DIR} 目录（解压后有 {WORK_DIR}/ 外壳）
+zip -r {pid}_{title}.zip {WORK_DIR}
 
-# ❌ 错误：进入 work 打包（文件散落根目录）
-cd work && zip -r ../xxx.zip .
+# ❌ 错误：进入 {WORK_DIR} 打包（文件散落根目录）
+cd {WORK_DIR} && zip -r ../{pid}_{title}.zip .
 ```
 
 ## 验证打包结构
 
 ```bash
-unzip -l xxx.zip | head -5
+unzip -l {pid}_{title}.zip | head -6
 # 必须输出：
-#   work/
-#   work/std.cpp
-#   work/problem_zh.md
-#   work/mkin.h
-#   work/testdata/
+#   {WORK_DIR}/
+#   {WORK_DIR}/std.cpp
+#   {WORK_DIR}/problem_zh.md
+#   {WORK_DIR}/mkin.h
+#   {WORK_DIR}/testdata/
 ```
 
 ## 常见错误
@@ -71,12 +71,12 @@ subtasks:
 
 ```
 ❌ 错误：文件直接放根目录
-problem.zip
+{pid}_{title}.zip
 ├── std.cpp
 
-✅ 正确：有 work 目录
-problem.zip
-└── work/
+✅ 正确：有 {WORK_DIR} 目录
+{pid}_{title}.zip
+└── {WORK_DIR}/
     ├── std.cpp
 ```
 
@@ -92,7 +92,7 @@ problem.zip
 `pid: null` 时：
 
 ```bash
-zip -r 原创_{title}.zip work
+zip -r 原创_{title}.zip {WORK_DIR}
 ```
 
 ## 完成

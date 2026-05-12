@@ -17,7 +17,7 @@
 
 2. 若信息不完整，询问用户补充
 
-3. 生成 `work/problem_zh.md`（参考 04-problem.md 格式）：
+3. 生成 `{WORK_DIR}/problem_zh.md`（参考 04-problem.md 格式）：
    - 翻译为中文（如需）
    - 保持原格式结构
 

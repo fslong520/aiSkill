@@ -2,7 +2,7 @@
 
 ## 目标
 
-写入 `work/problem.yaml`。
+写入 `{WORK_DIR}/problem.yaml`。
 
 ## pid 命名规则
 
@@ -44,7 +44,7 @@ tag:
 
 ## 测试数据分组配置
 
-测试数据的分组（HydroOJ subtask）在 `testdata/config.yaml` 中配置，
+测试数据的分组（HydroOJ subtask）在 `{WORK_DIR}/testdata/config.yaml` 中配置，
 详见 **Step 07-testdata.md → 配置文件（HydroOJ subtask 格式）**。
 
 ## 下一步
