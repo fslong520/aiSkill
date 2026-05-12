@@ -2,7 +2,7 @@
 
 ## 目标
 
-生成中文题面 `work/problem_zh.md`。
+生成中文题面 `{WORK_DIR}/problem_zh.md`。
 
 ## 铁律：仅做翻译
 
@@ -51,6 +51,27 @@
 
 </div>
 ```
+
+## 重命名工作目录（关键！）
+
+生成题面后，**将标题加入工作目录名**，使其更具辨识度：
+
+```bash
+# 确定标题简写：
+# - 英文标题：取完整标题，空格→下划线，转小写
+# - 中文标题：取前 4~8 个字
+# 例如：标题为"移除前导o(Trimo)" → 简写为"移除前导o_Trimo"
+#       标题为"Sensor Data Logging" → 简写为"sensor_data_logging"
+
+mv {WORK_DIR} {WORK_DIR}_{标题简写}
+# {WORK_DIR} = {WORK_DIR}_{标题简写}
+```
+
+> **注意**：如果 PID 为 null（原创题），直接用标题简写：
+> ```bash
+> mv work work_{标题简写}
+> # {WORK_DIR} = work_{标题简写}
+> ```
 
 ## 下一步
 

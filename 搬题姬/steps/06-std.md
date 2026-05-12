@@ -2,7 +2,7 @@
 
 ## 目标
 
-编写标准解题程序 `work/std.cpp`。
+编写标准解题程序 `{WORK_DIR}/std.cpp`。
 
 ## 模板
 

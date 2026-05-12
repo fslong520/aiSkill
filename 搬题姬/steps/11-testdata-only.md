@@ -17,7 +17,7 @@
 
 ### 1. 分析题目
 
-从用户提供的材料中提取以下信息（**必须找全，缺一不可**），记录到 `work/problem_zh.md`（仅自己参考，不作为交付物）：
+从用户提供的材料中提取以下信息（**必须找全，缺一不可**），记录到 `{WORK_DIR}/problem_zh.md`（仅自己参考，不作为交付物）：
 
 | 信息 | 说明 |
 |------|------|
@@ -29,19 +29,19 @@
 
 如果用户提供的信息不足以确定以上任一项，**必须询问用户补充**。
 
-### 2. 编写标程 `work/std.cpp`
+### 2. 编写标程 `{WORK_DIR}/std.cpp`
 
 标程是生成 .out 的唯一手段，必须保证：
 
 - 算法**正确**（能通过所有 25 组测试数据）
-- 用 `std.cpp` 作为文件名，放在 `work/` 目录
+- 用 `std.cpp` 作为文件名，放在 `{WORK_DIR}/` 目录
 - OI 风格：简短变量名、全局变量、`ios::sync_with_stdio(false)`
 - 时间复杂度对标题目限制（不要写出比正解更慢的版本）
 - 注意：Hack 数据是给**选手代码**挖坑的，标程必须能正确跑过所有 Hack 数据
 
 ### 3. 设计测试数据
 
-编辑 `work/mkin.h` 的 `test()` 函数，覆盖 25 组测试数据。
+编辑 `{WORK_DIR}/mkin.h` 的 `test()` 函数，覆盖 25 组测试数据。
 
 **分组方案（5 个子任务，总分 100）：**
 
@@ -55,7 +55,7 @@
 
 **⚠️ 修改 `test()` 分组时同步更新三处：**
 1. `mkin.h` 顶部的 `SUBTASKS[]` 数组
-2. `testdata/config.yaml` 中的 `subtasks[].cases` 列表
+2. `{WORK_DIR}/testdata/config.yaml` 中的 `subtasks[].cases` 列表
 3. 总分保持 100
 
 #### 3a. 样例数据（case 1-2）
@@ -180,7 +180,7 @@ else {
 }
 ```
 
-### 4. 配置 testdata/config.yaml
+### 4. 配置 {WORK_DIR}/testdata/config.yaml
 
 写入 HydroOJ 格式的 subtask 配置。**用例列表必须与 mkin.h 的 SUBTASKS[] 一一对应。**
 
@@ -235,7 +235,7 @@ subtasks:
 ### 5. 编译运行
 
 ```bash
-cd work
+cd {WORK_DIR}
 g++ std.cpp -o std -std=c++17    # 编译标程（被 mkdata 调用）
 g++ mkdata.cpp -o mkdata -std=c++17
 ./mkdata
@@ -258,10 +258,10 @@ g++ mkdata.cpp -o mkdata -std=c++17
 
 必须验证以下全部项：
 
-- [ ] testdata/ 目录下 25 个 .in 和 25 个 .out 成对存在
+- [ ] {WORK_DIR}/testdata/ 目录下 25 个 .in 和 25 个 .out 成对存在
 - [ ] 前 2 组数据与题目样例完全一致（用 `diff` 或 `read_file` 对比）
 - [ ] 每组 .in 格式符合题目的输入格式描述
-- [ ] testdata/config.yaml 的 subtask cases 列表与实际生成的文件一致
+- [ ] {WORK_DIR}/testdata/config.yaml 的 subtask cases 列表与实际生成的文件一致
 - [ ] `lsp_diagnostics` 检查 mkin.h 无误
 
 ### 7. 打包
@@ -269,17 +269,17 @@ g++ mkdata.cpp -o mkdata -std=c++17
 将测试数据和标程打包成 zip，放在 testdata 目录下：
 
 ```bash
-cd work
+cd {WORK_DIR}
 zip testdata/testdata.zip testdata/*.in testdata/*.out testdata/config.yaml std.cpp
 ```
 
-生成的文件：`work/testdata/testdata.zip`（含 .in/.out/config.yaml/std.cpp）
+生成的文件：`{WORK_DIR}/testdata/testdata.zip`（含 .in/.out/config.yaml/std.cpp）
 
 ### 8. 交付
 
 告诉用户测试数据已生成：
-- `work/testdata/` 目录：25 组 `.in` + 25 组 `.out` + `config.yaml`
-- `work/testdata/testdata.zip`：上述文件的打包
+- `{WORK_DIR}/testdata/` 目录：25 组 `.in` + 25 组 `.out` + `config.yaml`
+- `{WORK_DIR}/testdata/testdata.zip`：上述文件的打包
 
 ## 与正常流程的区别
 
@@ -290,5 +290,5 @@ zip testdata/testdata.zip testdata/*.in testdata/*.out testdata/config.yaml std.
 | std.cpp | 编写 | **编写**（生成 .out 必需） |
 | mkin.h | 编辑 | **编辑** |
 | mkdata + 运行 | 执行 | **执行** |
-| 打包 zip | 打包整个 work/ | **只打包 testdata/ 为 testdata.zip** |
-| testdata/config.yaml | 写入 | **写入** |
+| 打包 zip | 打包整个 {WORK_DIR}/ | **只打包 testdata/ 为 testdata.zip** |
+| {WORK_DIR}/testdata/config.yaml | 写入 | **写入** |

@@ -2,13 +2,13 @@
 
 ## 目标
 
-**生成 25 组测试数据 → 只编辑 `work/mkin.h` 的 `test()` 函数**
+**生成 25 组测试数据 → 只编辑 `{WORK_DIR}/mkin.h` 的 `test()` 函数**
 
 ## ⚠️ 唯一要记住的
 
 ```
-生成测试点 = 编辑 work/mkin.h 里的 test() 函数
-别碰 work/mkdata.cpp（那是框架，不需要改）
+生成测试点 = 编辑 {WORK_DIR}/mkin.h 里的 test() 函数
+别碰 {WORK_DIR}/mkdata.cpp（那是框架，不需要改）
 ```
 
 ## 测试数据要求
@@ -25,7 +25,7 @@
 
 **修改 `test()` 后，必须同步更新：**
 1. `mkin.h` 顶部的 `SUBTASKS[]` 数组（仅作注释标记用）
-2. `testdata/config.yaml` 无需更新（OJ 自动从文件名推断）
+2. `{WORK_DIR}/testdata/config.yaml` 无需更新（OJ 自动从文件名推断）
 3. 25 组测试点总分 100（每点约 4 分）
 
 ```cpp
@@ -122,7 +122,7 @@ void test(int case_num, ofstream& fout) {
 
 ## 配置文件
 
-`work/testdata/config.yaml` 使用最简格式（OJ 自动从文件名 `1.in`~`25.in` 推断测试点）：
+`{WORK_DIR}/testdata/config.yaml` 使用最简格式（OJ 自动从文件名 `1.in`~`25.in` 推断测试点）：
 
 ```yaml
 type: default
@@ -135,7 +135,7 @@ memory: 256m
 ## 编译运行
 
 ```bash
-cd work
+cd {WORK_DIR}
 g++ -o mkdata mkdata.cpp -std=c++17
 ./mkdata
 ```

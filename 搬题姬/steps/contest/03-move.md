@@ -29,13 +29,25 @@ read_file abc453.md         # 读取内容
 
 ### Step 3-2 环境初始化
 
+工作目录命名：`work_{PID}`
+PID 可从题号确定（如 `abc453` 比赛中的 A 题 → `abc453a`）。
+
 ```bash
-rm -rf work; cp -r question work
+rm -rf work_{PID}
+cp -r question work_{PID}
+# {WORK_DIR} = work_{PID}
 ```
 
 ### Step 3-3 生成题面
 
-基于读取的信息生成。
+基于读取的信息生成。生成后重命名目录加入标题：
+
+```bash
+mv {WORK_DIR} {WORK_DIR}_{标题简写}
+# {WORK_DIR} = work_{PID}_{标题简写}
+```
+
+写入 `{WORK_DIR}/problem_zh.md`。
 
 ### Step 3-4 写入配置
 
@@ -46,17 +58,20 @@ tag:
   - "GESP X级"
 ```
 
+写入 `{WORK_DIR}/problem.yaml`。
+
 ### Step 3-5 实现标程
 
-根据题面编写解法。
+根据题面编写解法，写入 `{WORK_DIR}/std.cpp`。
 
 ### Step 3-6 编写测试数据
 
-修改 `mkin.h` 的 `test()` 函数。
+修改 `{WORK_DIR}/mkin.h` 的 `test()` 函数。
 
 ### Step 3-7 生成测试数据
 
 ```bash
+cd {WORK_DIR}
 g++ -o mkdata mkdata.cpp -std=c++17
 ./mkdata
 ```
@@ -67,27 +82,27 @@ g++ -o mkdata mkdata.cpp -std=c++17
 
 ### Step 3-9 打包发布
 
-⚠️ **打包铁律：必须从 work 的父目录打包整个 work 目录。**
+⚠️ **打包铁律：必须从 {WORK_DIR} 的父目录打包整个 {WORK_DIR} 目录。**
 
 ```bash
-# ✅ 正确：打包整个 work/ 目录（解压后有 work/ 外壳）
-rm -f work/std work/mkdata work/*.exe
-zip -r {pid}_{title}.zip work
+# ✅ 正确：打包整个 {WORK_DIR}/ 目录（解压后有 {WORK_DIR}/ 外壳）
+rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
+zip -r {pid}_{title}.zip {WORK_DIR}
 
-# ❌ 错误：cd 进 work 再打包（文件会散落在根目录）
-# cd work && zip -r ../{pid}_{title}.zip .
-# ❌ 错误：在 work 目录内打包当前目录
-# cd work && zip -r {pid}_{title}.zip *
+# ❌ 错误：cd 进 {WORK_DIR} 再打包（文件会散落在根目录）
+# cd {WORK_DIR} && zip -r ../{pid}_{title}.zip .
+# ❌ 错误：在 {WORK_DIR} 目录内打包当前目录
+# cd {WORK_DIR} && zip -r {pid}_{title}.zip *
 ```
 
 **验证打包结构：**
 ```bash
-unzip -l {pid}_{title}.zip | head -5
+unzip -l {pid}_{title}.zip | head -6
 # 期望输出：
-#   work/
-#   work/std.cpp
-#   work/problem_zh.md
-#   work/testdata/
+#   {WORK_DIR}/
+#   {WORK_DIR}/std.cpp
+#   {WORK_DIR}/problem_zh.md
+#   {WORK_DIR}/testdata/
 ```
 
 ## 完成当前题目后
