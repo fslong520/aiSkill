@@ -78,32 +78,47 @@ _embedding_client = None
 _embedding_fn = None
 
 
+def _skill_models_dir():
+    """返回技能目录下的 models/ 路径（即 SKILL.md 所在目录之 models/ 子目录）。"""
+    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models")
+
+
 def _install_model():
     """确保 embedding 模型位于 skill-local models/ 目录，而非 ~/.cache/chroma/."""
     if os.path.exists(CHROMA_MODEL_ONNX):
         return True
+
+    import shutil
 
     # 检查旧版路径（models/onnx/ 结构），若有则迁移
     old_onnx_dir = os.path.join(SKILL_MODEL_BASE, "onnx")
     old_model = os.path.join(old_onnx_dir, "model.onnx")
     if os.path.exists(old_model):
         os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
-        import shutil
         for f in os.listdir(old_onnx_dir):
             shutil.copy2(os.path.join(old_onnx_dir, f), os.path.join(CHROMA_MODEL_DIR, f))
         if os.path.exists(CHROMA_MODEL_ONNX):
             return True
 
-    # 尝试从本地 onnx.tar.gz 安装（若 skill 打包了离线模型）
-    onnx_tar = os.path.join(SKILL_MODEL_BASE, "onnx.tar.gz")
-    if not os.path.exists(onnx_tar):
-        onnx_tar = os.path.join(SKILL_MODEL_BASE, "..", "models", "onnx.tar.gz")
+    # 检查技能自身 models/onnx/（完整解压目录）
+    skill_onnx = os.path.join(_skill_models_dir(), "onnx")
+    if os.path.isdir(skill_onnx) and os.path.exists(os.path.join(skill_onnx, "model.onnx")):
+        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
+        for f in os.listdir(skill_onnx):
+            shutil.copy2(os.path.join(skill_onnx, f), os.path.join(CHROMA_MODEL_DIR, f))
+        if os.path.exists(CHROMA_MODEL_ONNX):
+            return True
+
+    # 尝试从本地 onnx.tar.gz 安装（优先技能目录，其次 LOCAL_BASE）
+    skill_tar = os.path.join(_skill_models_dir(), "onnx.tar.gz")
+    local_tar = os.path.join(SKILL_MODEL_BASE, "onnx.tar.gz")
+    onnx_tar = skill_tar if os.path.exists(skill_tar) else local_tar
     if os.path.exists(onnx_tar):
-        import tarfile, tempfile, shutil
+        import tarfile, tempfile
         os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
         with tempfile.TemporaryDirectory() as tmp:
             with tarfile.open(onnx_tar, "r:gz") as tar:
-                tar.extractall(path=tmp)
+                tar.extractall(path=tmp, filter="data")
             # tarball 结构可能是 onnx/xxx 或直接是文件
             src = os.path.join(tmp, "onnx")
             if os.path.isdir(src):
