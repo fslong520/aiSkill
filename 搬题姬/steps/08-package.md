@@ -2,9 +2,9 @@
 
 ## 目标
 
-打包题目文件为 zip 包。
+打包题文件为 zip。
 
-## 打包前检查
+## 打包前查
 
 ```bash
 rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
@@ -15,18 +15,18 @@ rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
 文件名：`{pid}_{title}.zip`
 
 ```bash
-# ✅ 正确：打包整个 {WORK_DIR} 目录（解压后有 {WORK_DIR}/ 外壳）
+# ✅ 正：打包整个 {WORK_DIR} 目录（解压后有 {WORK_DIR}/ 外壳）
 zip -r {pid}_{title}.zip {WORK_DIR}
 
-# ❌ 错误：进入 {WORK_DIR} 打包（文件散落根目录）
+# ❌ 误：进 {WORK_DIR} 打包（文件散根目录）
 cd {WORK_DIR} && zip -r ../{pid}_{title}.zip .
 ```
 
-## 验证打包结构
+## 验打包构
 
 ```bash
 unzip -l {pid}_{title}.zip | head -6
-# 必须输出：
+# 必出：
 #   {WORK_DIR}/
 #   {WORK_DIR}/std.cpp
 #   {WORK_DIR}/problem_zh.md
@@ -34,14 +34,14 @@ unzip -l {pid}_{title}.zip | head -6
 #   {WORK_DIR}/testdata/
 ```
 
-## 常见错误
+## 常见错
 
 ### config.yaml 格式（HydroOJ）
 
-推荐使用 subtask 分组格式：
+荐用 subtask 分组格式：
 
 ```yaml
-# ✅ 正确：顶层 time/memory 作为全局默认（可被子任务覆盖）
+# ✅ 正：顶层 time/memory 为全局默认（可被子任务覆盖）
 type: default
 time: 1s
 memory: 512m
@@ -60,21 +60,21 @@ subtasks:
         output: 3.out
 ```
 
-**注意：**
-- 使用 subtask 时必须显式列出所有 `cases`
-- `subtasks[].id` 建议从 0 开始编号
-- 总分保持 100
-- **必须设置顶层 `time` 和 `memory`**（缺省会显示异常值如 65535MB）
-- `type` 缺省为 `default`，`time`/`memory` 可在子任务级别覆盖
+**注：**
+- 用 subtask 时必显列所有 `cases`
+- `subtasks[].id` 议从 0 始编
+- 总分持 100
+- **必设顶层 `time` 与 `memory`**（缺省会显异常值如 65535MB）
+- `type` 缺为 `default`，`time`/`memory` 可在子任务层覆
 
-### 打包结构
+### 打包构
 
 ```
-❌ 错误：文件直接放根目录
+❌ 误：文件径放根目录
 {pid}_{title}.zip
 ├── std.cpp
 
-✅ 正确：有 {WORK_DIR} 目录
+✅ 正：有 {WORK_DIR} 目录
 {pid}_{title}.zip
 └── {WORK_DIR}/
     ├── std.cpp
@@ -82,12 +82,12 @@ subtasks:
 
 ### 大样例
 
-| 大小 | 处理 |
+| 大小 | 措 |
 |------|------|
 | < 500 字节 | `read_file` |
-| ≥ 500 字节 | 禁止 `read_file`，用 shell |
+| ≥ 500 字节 | 禁 `read_file`，用 shell |
 
-## 原创题目
+## 原创题
 
 `pid: null` 时：
 
@@ -97,4 +97,4 @@ zip -r 原创_{title}.zip {WORK_DIR}
 
 ## 完成
 
-发送 zip 文件给用户。
+发 zip 文件予用户。

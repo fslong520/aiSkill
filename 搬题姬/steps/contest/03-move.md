@@ -1,36 +1,36 @@
-# Contest Step 3: 逐题完整搬运
+# Contest Step 3: 逐题全搬
 
 ## 目标
 
-逐题生成完整题包（题面、标程、测试数据、配置）。
+逐题生完整题包（题面、标程、测数、配）。
 
-## 最高铁律：必须从文件读取题面
+## 最高铁律：必自文件读题面
 
-⚠️ 每搬运一道题前，必须用 grep + read_file 从题面汇总文件读取该题信息！
+⚠️ 每搬一题前，必以 grep + read_file 自题面汇总文件读该题信息！
 
-**禁止**：
-- ❌ 从对话上下文记忆中提取题面
-- ❌ 从之前翻译的内容回忆
-- ❌ 假装记得题目内容直接写
+**禁**：
+- ❌ 自对话上下文记取题面
+- ❌ 自前译内容忆
+- ❌ 伪记题内容径写
 
-**必须**：
-- ✅ 用 `grep` 在题面文件中定位当前题目
-- ✅ 用 `read_file` 读取该题目完整内容
-- ✅ 确认读取成功后才开始搬运
+**必**：
+- ✅ 用 `grep` 于题面文件中定位当前题
+- ✅ 用 `read_file` 读该题全内
+- ✅ 确读成后方始搬
 
-## 步骤（对每道题目）
+## 步骤（对每题）
 
-### Step 3-1 读取题面
+### Step 3-1 读题面
 
 ```bash
-grep -n "## A -" abc453.md  # 定位题目
-read_file abc453.md         # 读取内容
+grep -n "## A -" abc453.md  # 定位题
+read_file abc453.md         # 读内容
 ```
 
 ### Step 3-2 环境初始化
 
-工作目录命名：`work_{PID}`
-PID 可从题号确定（如 `abc453` 比赛中的 A 题 → `abc453a`）。
+工作目录名：`work_{PID}`
+PID 可自题明确（如 `abc453` 赛中 A 题 → `abc453a`）。
 
 ```bash
 rm -rf work_{PID}
@@ -38,9 +38,9 @@ cp -r question work_{PID}
 # {WORK_DIR} = work_{PID}
 ```
 
-### Step 3-3 生成题面
+### Step 3-3 生题面
 
-基于读取的信息生成。生成后重命名目录加入标题：
+据读得信息生。生后更名目录加标题：
 
 ```bash
 mv {WORK_DIR} {WORK_DIR}_{标题简写}
@@ -49,11 +49,11 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 
 写入 `{WORK_DIR}/problem_zh.md`。
 
-### Step 3-4 写入配置
+### Step 3-4 写配
 
 ```yaml
 pid: abc453a
-title: "中文(英文)"
+title: "中(英)"
 tag:
   - "GESP X级"
 ```
@@ -62,13 +62,33 @@ tag:
 
 ### Step 3-5 实现标程
 
-根据题面编写解法，写入 `{WORK_DIR}/std.cpp`。
+据题面编解法，写入 `{WORK_DIR}/std.cpp`。
 
-### Step 3-6 编写测试数据
+### ⚠️ Step 3-6 验标程（铁律：生数前必行）
 
-修改 `{WORK_DIR}/mkin.h` 的 `test()` 函数。
+写完 std.cpp **必即**用全样例验，不跳：
 
-### Step 3-7 生成测试数据
+```bash
+cd {WORK_DIR}
+g++ std.cpp -o std -std=c++17
+
+# 逐样例入验出，一一对照题面
+echo "【样例输入1】" | ./std
+# 核出与题面否
+
+echo "【样例输入2】" | ./std
+# 核出与题面否
+# ... 诸样例逐一验
+```
+
+**禁**：样例未全过便写 mkin.h / 生数
+**必**：诸样例全过，方入下步
+
+### Step 3-7 编测试数据
+
+改 `{WORK_DIR}/mkin.h` 之 `test()` 函。
+
+### Step 3-8 生测试数据
 
 ```bash
 cd {WORK_DIR}
@@ -76,42 +96,38 @@ g++ -o mkdata mkdata.cpp -std=c++17
 ./mkdata
 ```
 
-### Step 3-8 验证标程
-
-编译并验证样例通过。
-
 ### Step 3-9 打包发布
 
-⚠️ **打包铁律：必须从 {WORK_DIR} 的父目录打包整个 {WORK_DIR} 目录。**
+⚠️ **打包铁律：必自 {WORK_DIR} 之父目录打包全 {WORK_DIR} 目录。**
 
 ```bash
-# ✅ 正确：打包整个 {WORK_DIR}/ 目录（解压后有 {WORK_DIR}/ 外壳）
+# ✅ 正：打包全 {WORK_DIR}/ 目录（解压后有 {WORK_DIR}/ 壳）
 rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
 zip -r {pid}_{title}.zip {WORK_DIR}
 
-# ❌ 错误：cd 进 {WORK_DIR} 再打包（文件会散落在根目录）
+# ❌ 误：cd 进 {WORK_DIR} 再打包（文件散根目录）
 # cd {WORK_DIR} && zip -r ../{pid}_{title}.zip .
-# ❌ 错误：在 {WORK_DIR} 目录内打包当前目录
+# ❌ 误：于 {WORK_DIR} 目录内打包当前目录
 # cd {WORK_DIR} && zip -r {pid}_{title}.zip *
 ```
 
-**验证打包结构：**
+**验打包构：**
 ```bash
 unzip -l {pid}_{title}.zip | head -6
-# 期望输出：
+# 望出：
 #   {WORK_DIR}/
 #   {WORK_DIR}/std.cpp
 #   {WORK_DIR}/problem_zh.md
 #   {WORK_DIR}/testdata/
 ```
 
-## 完成当前题目后
+## 成后
 
-清空思路，准备下一题！
+清思，备下题！
 
-- ❌ 禁止保留上一题的上下文
-- ✅ 每题独立读取题面信息
+- ❌ 禁留上题上下文
+- ✅ 每题独读题面信息
 
 ## 完成
 
-N 个 zip 文件已生成，任务完成！
+N 个 zip 文件已生，务成！
