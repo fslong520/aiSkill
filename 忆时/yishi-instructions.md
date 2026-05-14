@@ -10,6 +10,8 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 ```
 **所有命令均须设定 `YISHI_DATA_DIR`**，否则脚本会使用错误的数据路径。
 
+**凡读写文本文件，须用AI原生工具（read/write/edit/bash/grep），不得调用python脚本。**
+
 ## 一、记忆操作
 
 **每次对话，必做：**
