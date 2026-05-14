@@ -30,7 +30,7 @@ ADDIE五阶段备课：分析→设计→开发→实施→评价，产出讲义
 
 ## Keywords
 
-备课、信息学奥赛、NOI、CSP、GESP、教学设计、讲义生成、ADDIE
+备课、信息学奥赛、NOI、CSP、GESP、教学设计、讲义生成、ADDIE、问题驱动式教学、引导发现、讲练结合
 
 ## Strategy
 
@@ -46,24 +46,26 @@ ADDIE五阶段备课：分析→设计→开发→实施→评价，产出讲义
 - AVOID 讲义内容AI味太重，参考modules/去AI味指南.md
 - AVOID 例题格式不规范，参考references/例题模板规则.md
 - AVOID 使用cdn.jsdelivr.net，国内访问不了，用unpkg.com
+- AVOID **直接给出算法模板让学生填空或记忆**——必须引导学生自然推导出算法
+- AVOID 跳过基础练习（纸上模拟/手动推导），每个知识点必须有练习1起步
 
 ## ADDIE五阶段
 
-| 阶段 | 模块文档 | 做什么 |
-|------|---------|--------|
-| Analysis | modules/01-Analysis分析.md | 搞清楚"教谁、教什么" |
-| Design | modules/02-Design设计.md | 规划"怎么教" |
-| Development | modules/03-Development开发.md | 制作"教学材料" |
-| Implementation | modules/04-Implementation实施.md | 课堂执行 |
-| Evaluation | modules/05-Evaluation评价.md | 效果评估 |
+| 阶段           | 模块文档                         | 做什么               |
+| -------------- | -------------------------------- | -------------------- |
+| Analysis       | modules/01-Analysis分析.md       | 搞清楚"教谁、教什么" |
+| Design         | modules/02-Design设计.md         | 规划"怎么教"         |
+| Development    | modules/03-Development开发.md    | 制作"教学材料"       |
+| Implementation | modules/04-Implementation实施.md | 课堂执行             |
+| Evaluation     | modules/05-Evaluation评价.md     | 效果评估             |
 
 ## 级别对照
 
-| 级别 | 难度 | 目标 |
-|------|------|------|
-| 入门级 | 1-5 | CSP-J、GESP 1-4级 |
-| 提高级 | 5-8 | CSP-S、GESP 5-6级 |
-| NOI级 | 7-10 | NOI、省选 |
+| 级别   | 难度 | 目标              |
+| ------ | ---- | ----------------- |
+| 入门级 | 1-5  | CSP-J、GESP 1-4级 |
+| 提高级 | 5-8  | CSP-S、GESP 5-6级 |
+| NOI级  | 7-10 | NOI、省选         |
 
 ## 技术偏好
 
@@ -75,28 +77,28 @@ CDN首选：unpkg.com（避免cdn.jsdelivr.net国内访问不了）
 
 ### ADDIE 五阶段
 
-| 阶段 | 模块文档 | 做什么 |
-|------|---------|--------|
-| **1. Analysis 分析** | [modules/01-Analysis分析.md](./modules/01-Analysis分析.md) | 搞清楚"教谁、教什么" |
-| **2. Design 设计** | [modules/02-Design设计.md](./modules/02-Design设计.md) | 规划"怎么教" |
-| **3. Development 开发** | [modules/03-Development开发.md](./modules/03-Development开发.md) | 制作"教学材料" |
-| **4. Implementation 实施** | [modules/04-Implementation实施.md](./modules/04-Implementation实施.md) | 课堂执行 |
-| **5. Evaluation 评价** | [modules/05-Evaluation评价.md](./modules/05-Evaluation评价.md) | 效果评估与迭代 |
+| 阶段                       | 模块文档                                                               | 做什么               |
+| -------------------------- | ---------------------------------------------------------------------- | -------------------- |
+| **1. Analysis 分析**       | [modules/01-Analysis分析.md](./modules/01-Analysis分析.md)             | 搞清楚"教谁、教什么" |
+| **2. Design 设计**         | [modules/02-Design设计.md](./modules/02-Design设计.md)                 | 规划"怎么教"         |
+| **3. Development 开发**    | [modules/03-Development开发.md](./modules/03-Development开发.md)       | 制作"教学材料"       |
+| **4. Implementation 实施** | [modules/04-Implementation实施.md](./modules/04-Implementation实施.md) | 课堂执行             |
+| **5. Evaluation 评价**     | [modules/05-Evaluation评价.md](./modules/05-Evaluation评价.md)         | 效果评估与迭代       |
 
 ### 核心工具文档
 
-| 文档 | 用途 | 所属阶段 |
-|------|------|---------|
-| [modules/叙事设计.md](./modules/叙事设计.md) | 情绪曲线、植入-揭示、赌注阶梯 | Design |
-| [modules/去AI味指南.md](./modules/去AI味指南.md) | 10 条去 AI 味原则 | Development |
+| 文档                                             | 用途                          | 所属阶段    |
+| ------------------------------------------------ | ----------------------------- | ----------- |
+| [modules/叙事设计.md](./modules/叙事设计.md)     | 情绪曲线、植入-揭示、赌注阶梯 | Design      |
+| [modules/去AI味指南.md](./modules/去AI味指南.md) | 10 条去 AI 味原则             | Development |
 
 ### 资源文档
 
-| 文档 | 用途 |
-|------|------|
-| [references/备课规则.md](./references/备课规则.md) | 完整课程结构、级别对照、教学标准 |
-| [references/例题模板规则.md](./references/例题模板规则.md) | 例题精确格式要求 |
-| [assets/讲义ppt模板.md](./assets/讲义ppt模板.md) | Marp 讲义模板 |
+| 文档                                                       | 用途                             |
+| ---------------------------------------------------------- | -------------------------------- |
+| [references/备课规则.md](./references/备课规则.md)         | 完整课程结构、级别对照、教学标准 |
+| [references/例题模板规则.md](./references/例题模板规则.md) | 例题精确格式要求                 |
+| [assets/讲义ppt模板.md](./assets/讲义ppt模板.md)           | Marp 讲义模板                    |
 
 ---
 
@@ -126,11 +128,11 @@ CDN首选：unpkg.com（避免cdn.jsdelivr.net国内访问不了）
 
 ## 级别对照（速查）
 
-| 级别 | 难度 | 目标 |
-|------|------|------|
-| 入门级 | 1-5 | CSP-J、GESP 1-4 级 |
-| 提高级 | 5-8 | CSP-S、GESP 5-6 级 |
-| NOI 级 | 7-10 | NOI、省选 |
+| 级别   | 难度 | 目标               |
+| ------ | ---- | ------------------ |
+| 入门级 | 1-5  | CSP-J、GESP 1-4 级 |
+| 提高级 | 5-8  | CSP-S、GESP 5-6 级 |
+| NOI 级 | 7-10 | NOI、省选          |
 
 完整课程结构参见 → [references/备课规则.md](./references/备课规则.md)
 
@@ -140,11 +142,11 @@ CDN首选：unpkg.com（避免cdn.jsdelivr.net国内访问不了）
 
 ### CDN 源
 
-| 优先级 | 源 |
-|--------|-----|
-| 首选 | unpkg.com |
-| 备选 | fastly.jsdelivr.net、cdnjs.cloudflare.com |
-| 避免 | cdn.jsdelivr.net（国内访问不了）、bootcdn（太慢） |
+| 优先级 | 源                                                |
+| ------ | ------------------------------------------------- |
+| 首选   | unpkg.com                                         |
+| 备选   | fastly.jsdelivr.net、cdnjs.cloudflare.com         |
+| 避免   | cdn.jsdelivr.net（国内访问不了）、bootcdn（太慢） |
 
 ### 讲义文件处理
 
