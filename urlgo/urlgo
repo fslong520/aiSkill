@@ -107,6 +107,36 @@ def find_browser():
 
     return None, None
 
+
+# 各浏览器可能出现的实际进程名（有的发行版用 wrapper 脚本，实际二进制名不同）
+BROWSER_PROCESS_NAMES = {
+    "edge":   ["microsoft-edge", "microsoft-edge-stable", "msedge", "msedge-stable"],
+    "chrome": ["google-chrome", "google-chrome-stable", "chrome", "chromium"],
+    "chromium": ["chromium", "chromium-browser", "chrome"],
+}
+
+
+def check_browser_already_running():
+    """检查系统中是否已有浏览器进程在运行（但不一定开启了 CDP）
+
+    返回值: (bool, str) — (是否正在运行, 浏览器名称)
+    """
+    system = platform.system()
+    names = BROWSER_PROCESS_NAMES
+
+    for browser_type, bin_names in names.items():
+        for bin_name in bin_names:
+            if system == "Windows":
+                r = run_cmd(f"tasklist /FI \"IMAGENAME eq {bin_name}.exe\" 2>NUL")
+                if r.returncode == 0 and bin_name.lower() in r.stdout.lower():
+                    return True, browser_type
+            else:
+                r = run_cmd(f"pgrep -x {bin_name} 2>/dev/null")
+                if r.returncode == 0 and r.stdout.strip():
+                    return True, browser_type
+
+    return False, None
+
 def cmd_status():
     """检查 CDP 状态"""
     print(f"🔍 检查 CDP 端口 {CDP_PORT}...")
@@ -134,12 +164,29 @@ def cmd_start():
     """查找并启动浏览器"""
     print("🔍 查找可用浏览器...")
 
-    # 先检查是否已经开启
+    # 先检查是否已经开启（CDP 端口已通）
     if check_cdp():
         browser = get_browser_info()
         print(f"✅ CDP 已开启: {browser}")
         print("   如需重启，请先关闭浏览器")
         return
+
+    # CDP 未开，但浏览器可能已在运行（无 --remote-debugging-port 参数启动的）
+    running, bn = check_browser_already_running()
+    if running:
+        print(f"⚠️  检测到 {bn} 已在运行，但未开启 CDP 端口 {CDP_PORT}。")
+        print()
+        print(f"   请先关闭现有的 {bn} 浏览器，再运行 urlgo start。")
+        print(f"   urlgo 需要以 --remote-debugging-port={CDP_PORT} 参数启动浏览器。")
+        print()
+        print(f"   关闭方法：")
+        if platform.system() == "Windows":
+            print(f"     1. 任务管理器结束 {bn}.exe")
+            print(f"     2. 或运行: taskkill /F /IM {bn}.exe")
+        else:
+            print(f"     1. 右键浏览器图标退出")
+            print(f"     2. 或运行: pkill {bn}")
+        sys.exit(1)
 
     # 查找浏览器
     browser_type, browser_path = find_browser()
