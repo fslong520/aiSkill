@@ -247,8 +247,8 @@ def cmd_store(args):
         "keywords": args.keywords or "",
         "source": args.source or "manual",
         "source_session": args.session or "",
-        "frequency": "1",
-        "recall_count": "0",
+        "frequency": 1,
+        "recall_count": 0,
     }
 
     mem_id = str(uuid.uuid4())
@@ -364,7 +364,7 @@ def cmd_recall(args):
             old = mem_col.get(ids=[item["id"]])
             if old["metadatas"]:
                 m = old["metadatas"][0]
-                m["recall_count"] = m.get("recall_count", 0) + 1
+                m["recall_count"] = int(m.get("recall_count", 0)) + 1
                 m["updated_at"] = now.isoformat()
                 mem_col.update(ids=[item["id"]], metadatas=[m])
         except Exception:
@@ -465,7 +465,7 @@ def cmd_capsule(args):
             "type": "context", "emotion": "medium",
             "created_at": now.isoformat(), "created_date": now.strftime("%Y-%m-%d"),
             "updated_at": now.isoformat(), "keywords": args.keywords or "",
-            "frequency": "1", "recall_count": "0",
+            "frequency": 1, "recall_count": 0,
             "is_capsule": "true", "capsule_unlock_at": unlock_at,
         }
         cid = str(uuid.uuid4())
@@ -608,7 +608,7 @@ def cmd_import(args):
                 "created_date": mem.get("created_date", ""),
                 "updated_at": _now().isoformat(),
                 "keywords": mem.get("keywords", ""),
-                "frequency": "1", "recall_count": "0",
+                "frequency": 1, "recall_count": 0,
             }
             mid = mem.get("id", str(uuid.uuid4()))
             try:
@@ -632,7 +632,7 @@ def cmd_import(args):
             "updated_at": _now().isoformat(),
             "keywords": entry.get("keywords", ""),
             "source": f"imported_{fmt}",
-            "frequency": "1", "recall_count": "0",
+            "frequency": 1, "recall_count": 0,
         }
         mem_col.add(documents=[entry["content"]], metadatas=[metadata], ids=[str(uuid.uuid4())])
         count += 1
@@ -745,8 +745,8 @@ def cmd_recover(args):
         content = rec.get("content", "")
         meta = rec.get("metadata", {})
         # 确保元数据字段完整
-        meta.setdefault("frequency", "1")
-        meta.setdefault("recall_count", "0")
+        meta.setdefault("frequency", 1)
+        meta.setdefault("recall_count", 0)
         meta.setdefault("updated_at", now.isoformat())
         # 跳过已存在的（按 id 去重）
         try:
