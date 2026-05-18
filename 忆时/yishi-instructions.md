@@ -7,11 +7,8 @@
 SKILL_DIR=~/.config/opencode/skills/忆时
 YISHI=$SKILL_DIR/scripts/memory_core.py
 YISHI_DATA_DIR=$SKILL_DIR/data
-KB_PY=$SKILL_DIR/scripts/knowledge_base.py
 ```
 **所有命令均须设定 `YISHI_DATA_DIR`**，否则脚本会使用错误的数据路径。
-
-**知识库命令亦须设定 `YISHI_DATA_DIR`**，因其共用 data 目录。
 
 **凡读写文本文件，须用AI原生工具（read/write/edit/bash/grep），不得调用python脚本。**
 
@@ -20,8 +17,7 @@ KB_PY=$SKILL_DIR/scripts/knowledge_base.py
 ## 一、记忆操作
 
 **每次对话，必做：**
-- 对话启动时，若 kb_config.json 有注册目录，跑快速检查：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/knowledge_base.py status`
-- 用户发言后，先统一检索：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/knowledge_base.py search "关键词" --limit 5`
+- 用户发言后，先检索记忆：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "关键词" --limit 3 --expand`
 - 用户言"记住"、"记下来"、"保存"时，必存储：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字"`
 - 话题转换时，主动联想：是否有关联记忆可以涌现（记忆涌现）
 
@@ -93,39 +89,6 @@ KB_PY=$SKILL_DIR/scripts/knowledge_base.py
 | 对话转折话题 | 先 `recall` 新话题的关键词，再谈是否有关联 |
 | 疑似走偏 | 暂停，`recall` 原始目标比对进度 |
 | 对话结束 | 按"六、对话结束"流程，先检索旧忆，再择新增或更新 |
-| 用户提及某目录 | `knowledge_base.py index <目录>` 增量建索 |
-| 用户查找本地文件 | `knowledge_base.py find "关键词"` 或 `search "关键词"` |
-| 找到文件后 | `knowledge_base.py open <id>` 打开文件管理器 |
-| 目录索引完毕 | `knowledge_base.py annotate --pending --limit 10` 列出待标注文件，择要 AI 标注 |
-| 发现文件间关联 | `knowledge_base.py relate <源> <目标> --type ...` 建立关联 |
-
-## 七、知识库——本地文件索引与检索
-
-### 7.1 核心概念
-知识库（Knowledge Base）与记忆系统并存，以 SQLite 管文件清单，ChromaDB 管内容嵌入。仿 Everything 之速，以 `os.scandir` 直读目录，inotify 监听变更。
-
-**两层结构**：
-- **L0 · 快速索引**：文件名 + 路径 + 大小 + mtime + 规则粗标（即时生成）
-- **L1 · AI 标注**：用户提及后 AI 生成精准标签 + 摘要（延迟按需）
-
-### 7.2 分层索引自动升降
-- 目录注册后首提及 → L0 (扫描项目摘要)
-- 提及 2+ 次 → L1 (浅索引，一级文件)
-- 提及 5+ 次或频繁开发 → L2 (全索引 + 内容嵌入)
-- 6 个月未提及 → 降一级
-
-### 7.3 AI 标注流程
-1. `index` 命令 → 自动规则粗标（文件名+路径关键词）
-2. 用户提及某目录/主题 → `annotate --pending` 查看待标注文件
-3. AI 据文件名 + 内容预览 → 生成精准 ai_tags + ai_summary
-4. `annotate --file <id> --tags "..." --summary "..."` 写入
-5. 标注后，`search` 命令之语义匹配精度大增
-
-### 7.4 统一搜索
-`search "关键词"` 命令双路并发 —— SQLite 查文件 + ChromaDB 查记忆，融合排序后输出，结果标注 `[文件]` 或 `[记忆]` 以区分来源。
-
-### 7.5 项目识别
-若目录含 `.git / package.json / CMakeLists.txt` 等标志文件，以 `--project` 模式索引，读取 README 生成项目摘要，不逐个索引代码文件（除非升至 L2）。
 
 ## 六、对话结束——自我回顾与记忆归档
 
