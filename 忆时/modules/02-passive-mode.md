@@ -54,11 +54,31 @@ python3 scripts/memory_core.py recall "情感" --min-weight 0.7
 - 提供**概要而非精确内容**: 给出关键词而非完整引用
 - 如果分数低于阈值: "这方面的记忆有些模糊了…"
 
-### 5. 记忆涌现处理
+### 5. 记忆涌现处理（多轮检索）
 
-当 `recall --expand` 返回标记为 `[关联]` 的记忆时:
+涌现乃主动发现之隐藏关联，非被动等结果。须行多轮检索：
 
-**主动说出**，而不是等用户问:
+**第一轮：语义检索**
+```bash
+python3 scripts/memory_core.py recall "用户话题" --limit 3 --expand
+```
+
+**第二轮：涌现判定**
+观第一轮结果：
+- 有 `[关联]` 标记 → 已有涌现，直接表达
+- 结果 ≥ 2 条 → 取 top-2 关键字/内容构建复合查询，再做第二轮
+```bash
+python3 scripts/memory_core.py recall "原话题 新话题" --limit 2
+```
+- 若第二轮结果与第一轮不重叠 → 此为涌现之记忆
+
+**第三轮：情绪锚定**
+用户情绪显著时（愤怒/兴奋/沮丧），以情绪词 + 话题词再检：
+```bash
+python3 scripts/memory_core.py recall "情绪词" --type-filter emotion --min-weight 0.7 --limit 2
+```
+
+**主动说出**（发现涌现时），而不是等用户问:
 
 > "说到这个我突然想到一件事…"
 > "这让我联想到你之前说过的另一个相关的事…"
@@ -67,4 +87,4 @@ python3 scripts/memory_core.py recall "情感" --min-weight 0.7
 涌现条件:
 - 关联分数 > 0.6
 - 与当前话题有语义关联
-- 不是已经在此对话中提及过的内容
+- 不是已在此对话中提及过的内容

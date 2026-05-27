@@ -258,6 +258,43 @@ def cmd_store(args):
     # 自动备份到 JSONL（与 data/ 独立，不怕误删）
     _append_backup(mem_id, args.content, metadata)
 
+    # 自动建语义关联：找相似记忆，写入 relationships 集合
+    try:
+        rel_col = get_collection(client, "relationships")
+        similar = mem_col.query(query_texts=[args.content], n_results=6)
+        if similar["ids"] and similar["ids"][0]:
+            merged_kw = set(k.strip() for k in (metadata.get("keywords", "").split(",")) if k.strip())
+            for j in range(len(similar["ids"][0])):
+                sid = similar["ids"][0][j]
+                if sid == mem_id:
+                    continue
+                sdist = similar["distances"][0][j] if similar["distances"] else 1.0
+                ssem = 1.0 - sdist
+                if ssem > 0.50:
+                    rel_col.add(
+                        documents=[f"{mem_id}->{sid}"],
+                        metadatas=[{"source": mem_id, "target": sid, "score": round(ssem, 3)}],
+                        ids=[str(uuid.uuid4())],
+                    )
+                    # 跨记忆融合关键词，增强检索覆盖
+                    try:
+                        tgt = mem_col.get(ids=[sid])
+                        if tgt["metadatas"]:
+                            tk = tgt["metadatas"][0].get("keywords", "")
+                            for kw in tk.split(","):
+                                kw = kw.strip()
+                                if kw:
+                                    merged_kw.add(kw)
+                    except Exception:
+                        pass
+            if merged_kw:
+                new_kw = ",".join(sorted(merged_kw))
+                metadata["keywords"] = new_kw
+                mem_col.update(ids=[mem_id], metadatas=[metadata])
+            _update_meta_total(client, "total_relationships", 1)
+    except Exception:
+        pass
+
     print(f"记忆已存储")
     print(f"  ID: {mem_id}")
     print(f"  类型: {mem_type}  情绪: {emotion}")
@@ -321,38 +358,97 @@ def cmd_recall(args):
             "frequency": freq, "recall_count": recall_count, "is_expanded": False,
         })
 
-    # 联想扩散
+    # === 联想扩散（两阶段），统一用真实语义值计分 ===
+    def _compute_score(semantic, em_w, freq, recall_count, created):
+        freq_boost = min(math.log2(freq + 1) * 0.1, 0.2) + min(math.log2(recall_count + 1) * 0.05, 0.15)
+        days_ago = (now - created).total_seconds() / 86400.0
+        recency = math.exp(-math.log(2) * days_ago / RECALL_DECAY_DAYS)
+        return 0.40 * semantic + 0.15 * em_w + 0.20 * recency + 0.25 * (0.6 + freq_boost)
+
     if args.expand and scored:
         expanded = set(s["id"] for s in scored)
-        for sid in [s["id"] for s in scored[:3]]:
+
+        # 阶段一：关系链扩散（relationships 集合，按 metadata 精确查找）
+        top_ids = [s["id"] for s in scored[:3]]
+        for sid in top_ids:
             try:
-                rel_results = rel_col.query(query_texts=[sid], n_results=5)
-                if rel_results["ids"] and rel_results["ids"][0]:
-                    for rid in rel_results["ids"][0]:
-                        if rid in expanded:
+                for rel in [rel_col.get(where={"source": sid}), rel_col.get(where={"target": sid})]:
+                    if not rel["ids"]:
+                        continue
+                    for j in range(len(rel["ids"])):
+                        rm = rel["metadatas"][j] if rel["metadatas"] else {}
+                        partner = rm.get("target") if rm.get("source") == sid else rm.get("source")
+                        if not partner or partner in expanded:
                             continue
-                        expanded.add(rid)
-                        try:
-                            rel_doc = mem_col.get(ids=[rid])
-                            if rel_doc["documents"]:
-                                rm = rel_doc["metadatas"][0] if rel_doc["metadatas"] else {}
-                                scored.append({
-                                    "id": rid, "content": rel_doc["documents"][0],
-                                    "score": 0.40, "semantic": 0.50,
-                                    "emotion": rm.get("emotion", "medium"),
-                                    "emotion_weight": float(rm.get("emotion_weight", 0.5)),
-                                    "type": rm.get("type", "context"),
-                                    "created_at": rm.get("created_at", ""),
-                                    "created_date": rm.get("created_date", ""),
-                                    "keywords": rm.get("keywords", ""),
-                                    "is_capsule": rm.get("is_capsule", "false") == "true",
-                                    "capsule_unlock_at": rm.get("capsule_unlock_at", ""),
-                                    "frequency": int(rm.get("frequency", 1)),
-                                    "recall_count": int(rm.get("recall_count", 0)),
-                                    "is_expanded": True,
-                                })
-                        except Exception:
-                            pass
+                        expanded.add(partner)
+                        pdoc = mem_col.get(ids=[partner])
+                        if pdoc["documents"]:
+                            pm = pdoc["metadatas"][0] if pdoc["metadatas"] else {}
+                            rsem = float(rm.get("score", 0.40)) * 0.7
+                            rew = float(pm.get("emotion_weight", 0.5))
+                            rf = int(pm.get("frequency", 1))
+                            rr = int(pm.get("recall_count", 0))
+                            rc = datetime.fromisoformat(pm.get("created_at", now.isoformat()))
+                            scored.append({
+                                "id": partner, "content": pdoc["documents"][0],
+                                "score": round(_compute_score(rsem, rew, rf, rr, rc), 3),
+                                "semantic": round(rsem, 3),
+                                "emotion": pm.get("emotion", "medium"),
+                                "emotion_weight": rew,
+                                "type": pm.get("type", "context"),
+                                "created_at": pm.get("created_at", ""),
+                                "created_date": pm.get("created_date", ""),
+                                "keywords": pm.get("keywords", ""),
+                                "is_capsule": pm.get("is_capsule", "false") == "true",
+                                "capsule_unlock_at": pm.get("capsule_unlock_at", ""),
+                                "frequency": rf,
+                                "recall_count": rr,
+                                "is_expanded": True,
+                            })
+            except Exception:
+                pass
+
+        # 阶段二：语义二次检索——取 top-2 结果之内容/关键字作新查询
+        extra_queries = []
+        for s in scored[:2]:
+            if s.get("keywords"):
+                extra_queries.append(s["keywords"])
+            extra_queries.append(s["content"][:150])
+        for eq in extra_queries:
+            if not eq.strip():
+                continue
+            try:
+                extra = mem_col.query(query_texts=[eq], n_results=4)
+                if extra["ids"] and extra["ids"][0]:
+                    for j in range(len(extra["ids"][0])):
+                        eid = extra["ids"][0][j]
+                        if eid in expanded:
+                            continue
+                        expanded.add(eid)
+                        em = extra["metadatas"][0][j] if extra["metadatas"] else {}
+                        edist = extra["distances"][0][j] if extra["distances"] else 1.0
+                        esem = (1.0 - edist) * 0.7
+                        eew = float(em.get("emotion_weight", 0.5))
+                        ef = int(em.get("frequency", 1))
+                        er = int(em.get("recall_count", 0))
+                        ec = datetime.fromisoformat(em.get("created_at", now.isoformat()))
+                        scored.append({
+                            "id": eid,
+                            "content": extra["documents"][0][j] if extra["documents"] else "",
+                            "score": round(_compute_score(esem, eew, ef, er, ec), 3),
+                            "semantic": round(esem, 3),
+                            "emotion": em.get("emotion", "medium"),
+                            "emotion_weight": eew,
+                            "type": em.get("type", "context"),
+                            "created_at": em.get("created_at", ""),
+                            "created_date": em.get("created_date", ""),
+                            "keywords": em.get("keywords", ""),
+                            "is_capsule": em.get("is_capsule", "false") == "true",
+                            "capsule_unlock_at": em.get("capsule_unlock_at", ""),
+                            "frequency": ef,
+                            "recall_count": er,
+                            "is_expanded": True,
+                        })
             except Exception:
                 pass
 
