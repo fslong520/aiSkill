@@ -18,8 +18,9 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 
 **每次对话，必做：**
 - 用户发言后，先检索记忆：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "关键词" --limit 3 --expand`
-- 用户言"记住"、"记下来"、"保存"时，必存储：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字"`
-- 话题转换时，主动联想：是否有关联记忆可以涌现（记忆涌现）
+- 自行判断是否存储：用户言"记住"、"记下来"、"保存"时必存；此外，若用户透露新偏好、做出关键决定、交付重要上下文，或情绪显著波动——凡值得将来回顾者——亦主动存储。命令：`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字"`
+- 用户发言后，主动联想：是否有关联记忆可以涌现（记忆涌现）
+- **每次对话启始，先检索当前项目/文件夹相关记忆**：取工作目录之末尾目录名（即项目名），`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "项目名" --limit 5 --expand`。若项目无关，则取其父目录名再试。如此，过去涉及该项目之决策、偏好、任务皆可浮现。
 
 **类型**：task / decision / preference / emotion / time / context
 **情绪**：extreme / high / medium / low
@@ -88,7 +89,9 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 | 用户交付长文 | 提取metadata，按索引思维存储 |
 | 对话转折话题 | 先 `recall` 新话题的关键词，再谈是否有关联 |
 | 疑似走偏 | 暂停，`recall` 原始目标比对进度 |
+| 对话开始 | 检索当前项目/文件夹相关记忆（见一） |
 | 对话结束 | 按"六、对话结束"流程，先检索旧忆，再择新增或更新 |
+| 记忆自动梳理 | 按"七、记忆自动梳理"流程，每七日沉淀一次 |
 
 ## 六、对话结束——自我回顾与记忆归档
 
@@ -123,3 +126,48 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 - 勿冗长。一条记忆三五句话足矣。
 - 存时以 `--type` 和 `--emotion` 精确标注，以便将来检索。
 - 宁少勿滥：无关紧要的日常琐事不必存。
+
+## 七、记忆自动梳理
+
+**每七日一梳理，沉淀精华，去芜存菁。** 此乃对抗"窗口即牢笼"之根本策略——将散落各对话之碎片，聚为结构化知识。
+
+### 7.1 追踪梳理时间
+
+以特殊记忆追踪末次梳理时间：
+```bash
+YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+  recall "记忆梳理" --type-filter time --limit 1 --min-weight 0.1
+```
+- 若无结果，或末次梳理距今超过 7 日，则触发梳理流程。
+- 梳理毕，以 `--type time --emotion medium --keywords "记忆梳理,consolidation"` 存储新时间戳：
+  ```
+  YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+    store "上次记忆梳理时间: YYYY-MM-DD" --type time --emotion medium --keywords "记忆梳理,consolidation"
+  ```
+
+### 7.2 梳理流程
+
+1. **导出所有记忆**
+   ```bash
+   YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+     export --format timeline --output /tmp/yishi_export.md
+   ```
+2. **AI 分析导出内容**——以 AI 原生工具读 `/tmp/yishi_export.md`，提取：
+   - 高频主题、重复偏好、常见决策模式
+   - 用户之习惯、工具偏好、工作流
+   - 长期任务之进度、阻滞点
+3. **沉淀为结构化记忆**：每一条主题存为一条记忆，示例：
+   ```bash
+   YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+     store "主题摘要" --type 类型 --emotion medium --keywords "主题关键词,consolidated"
+   ```
+   其中 `keywords` 须含 `consolidated` 标签，以示此条乃梳理产物。
+4. **清理临时文件**：`rm /tmp/yishi_export.md`
+
+### 7.3 梳理原则
+
+- 宁精勿杂：一条梳理结果应覆盖一类模式/主题，而非罗列琐碎。
+- 追加之，非替代之：梳理不删除原始记忆。原始碎片保留，梳理结果作为上层索引。
+- 频率>7日可跳：若用户对话稀疏，7日内无新记忆，则不必空转。
+- 情绪高之记忆优先：梳理时，优先关注 `extreme` / `high` 情绪之条目，此乃用户最在意之事。
+- 对比旧梳理：检索已有 `--keywords "consolidated"` 之记忆，比对新增内容，避免重复沉淀。
