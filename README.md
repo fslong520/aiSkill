@@ -46,18 +46,13 @@ OpenCode 之技能集，凡五十有余，置于 `~/.config/opencode/skills/`。
 ├── pdf/                      # PDF文件处理
 ├── pptx/                     # 演示文稿处理
 ├── file_reader/              # 文本文件阅读
-├── browser_cdp/              # 浏览器CDP连接
-├── browser_visible/          # 浏览器可见模式
 ├── urlgo/                    # 浏览器控制CLI
 ├── news/                     # 新闻检索
 ├── himalaya/                 # 邮件管理CLI
 ├── cron/                     # 定时任务管理
-├── channel_message/          # 渠道消息推送
-├── chat_with_agent/          # 多Agent对话
 ├── multi_agent_collaboration/# Agent协作
 ├── make_plan/                # 外部规划请求
 ├── guidance/                 # QwenPaw安装配置
-├── QA_source_index/          # 文档路径索引
 ├── dingtalk_channel/         # 钉钉渠道接入
 ├── cosprompt/                # AI绘图提示词
 ├── stocktourch/              # 个股分析报告
