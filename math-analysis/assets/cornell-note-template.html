@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <style>
+    :root {
+      --bg: #e7edf1;
+      --surface: #f7fafb;
+      --surface-2: #eef3f5;
+      --accent: #7f9bab;
+      --accent-2: #516d7c;
+      --ink: #2d3840;
+      --muted: #68757d;
+      --line: rgba(45,56,64,.16);
+      --note: #b97962;
+      --shadow: 0 18px 50px rgba(45,56,64,.10);
+    }
+    [data-theme="yellow"] { --bg:#f5f0df; --surface:#fffaf0; --surface-2:#f2ead6; --accent:#bca66a; --accent-2:#7c6b35; --ink:#3f3a2f; --muted:#746c5b; --line:rgba(63,58,47,.16); }
+    [data-theme="green"] { --bg:#e8eee5; --surface:#f7faf4; --surface-2:#edf4e9; --accent:#7f9a83; --accent-2:#526f57; --ink:#303a32; --muted:#657166; --line:rgba(48,58,50,.16); }
+    [data-theme="blue"] { --bg:#e7edf1; --surface:#f7fafb; --surface-2:#eef3f5; --accent:#7f9bab; --accent-2:#516d7c; --ink:#2d3840; --muted:#68757d; --line:rgba(45,56,64,.16); }
+    [data-theme="purple"] { --bg:#eee8f1; --surface:#fbf8fc; --surface-2:#f2edf4; --accent:#9a88a5; --accent-2:#6b5b75; --ink:#3c3440; --muted:#716878; --line:rgba(60,52,64,.16); }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; line-height:1.68; }
+    button { font:inherit; }
+    .page { width:min(1180px, calc(100vw - 32px)); margin:0 auto; padding:28px 0 40px; }
+    .topbar { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:18px; }
+    h1 { margin:0; font-size:clamp(28px,4vw,48px); line-height:1.12; letter-spacing:0; }
+    h2 { margin:0 0 12px; font-size:20px; line-height:1.35; letter-spacing:0; }
+    h3 { margin:14px 0 8px; font-size:17px; letter-spacing:0; }
+    p { margin:8px 0; }
+    .meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; color:var(--muted); }
+    .tag { border:1px solid var(--line); background:rgba(255,255,255,.42); padding:4px 10px; border-radius:999px; font-size:13px; }
+    .tools { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; min-width:220px; }
+    .tool-btn { border:1px solid var(--line); color:var(--ink); background:var(--surface); border-radius:8px; padding:8px 11px; cursor:pointer; box-shadow:0 5px 16px rgba(0,0,0,.04); }
+    .tool-btn.active { background:var(--accent); color:white; border-color:transparent; }
+    .floating-pen { position:fixed; z-index:20; display:none; align-items:center; gap:6px; border:1px solid var(--line); border-radius:999px; background:color-mix(in srgb, var(--surface) 94%, white); box-shadow:0 14px 36px rgba(45,56,64,.18); padding:6px; }
+    .floating-pen.show { display:flex; }
+    .pen-label { min-width:32px; height:32px; border:0; border-radius:999px; background:var(--accent); color:white; cursor:default; font-weight:700; }
+    .pen-color, .pen-action { min-width:32px; height:32px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink); cursor:pointer; padding:0 9px; }
+    .pen-color { width:32px; padding:0; }
+    .pen-color.yellow { background:#eadb7a; }
+    .pen-color.green { background:#abcaa0; }
+    .pen-color.blue { background:#9ec3df; }
+    .pen-action.undo { border-color:rgba(185,121,98,.38); color:var(--note); font-weight:700; }
+    .pen-action:disabled { opacity:.45; cursor:not-allowed; }
+    .layout { display:grid; grid-template-columns:285px minmax(0,1fr); gap:18px; align-items:start; }
+    .cue, .main, .summary { background:var(--surface); border:1px solid var(--line); border-radius:8px; box-shadow:var(--shadow); }
+    .cue { position:sticky; top:16px; padding:16px; }
+    .cue-card { border-top:1px solid var(--line); padding:12px 0; }
+    .cue-card:first-of-type { border-top:0; }
+    .cue-card strong { display:block; margin-bottom:4px; color:var(--accent-2); }
+    .main { overflow:hidden; }
+    .note { padding:20px; border-top:1px solid var(--line); }
+    .note:first-child { border-top:0; }
+    .problem-stage { position:relative; overflow:hidden; border:1px solid var(--line); border-radius:8px; background:var(--surface-2); min-height:220px; padding:18px; user-select:text; }
+    .problem-image { display:block; max-width:100%; height:auto; border-radius:6px; }
+    .problem-text { white-space:pre-wrap; font-size:18px; }
+    .study-hl { border-radius:4px; padding:0 2px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+    .study-hl-yellow { background:linear-gradient(transparent 44%, rgba(234,219,122,.72) 44%); }
+    .study-hl-green { background:linear-gradient(transparent 44%, rgba(171,202,160,.72) 44%); }
+    .study-hl-blue { background:linear-gradient(transparent 44%, rgba(158,195,223,.76) 44%); }
+    .study-comment-mark { border-bottom:2px solid var(--note); background:rgba(185,121,98,.10); border-radius:4px; padding:0 2px; cursor:pointer; }
+    .comment-panel { margin:10px 20px 0; display:grid; gap:8px; }
+    .comment-item { border:1px solid var(--line); border-left:4px solid var(--note); background:rgba(255,255,255,.48); border-radius:8px; padding:9px 11px; cursor:pointer; text-align:left; }
+    .comment-item strong { color:var(--note); margin-right:6px; }
+    .steps { display:grid; gap:10px; margin:12px 0 0; }
+    .step { border-left:4px solid var(--accent); background:rgba(255,255,255,.45); border-radius:8px; padding:10px 12px; }
+    .math { font-family:"SF Mono",Menlo,Consolas,monospace; white-space:pre-wrap; background:rgba(0,0,0,.04); border-radius:6px; padding:10px 12px; overflow-x:auto; }
+    .diagram { margin:12px 0 2px; border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,.40); padding:12px; }
+    .diagram-title { margin:0 0 8px; color:var(--accent-2); font-weight:700; }
+    .diagram svg { display:block; width:100%; max-width:640px; height:auto; margin:auto; overflow:visible; }
+    .diagram text { fill:var(--ink); font-size:13px; font-family:"SF Mono",Menlo,Consolas,monospace; }
+    .axis { stroke:var(--ink); stroke-width:1.6; }
+    .guide { stroke:var(--muted); stroke-width:1.2; stroke-dasharray:5 5; opacity:.8; }
+    .curve { fill:none; stroke:var(--accent-2); stroke-width:3; }
+    .focus { stroke:var(--note); fill:none; stroke-width:5; stroke-linecap:round; }
+    .soft-fill { fill:var(--accent); opacity:.18; }
+    .dot { fill:var(--surface); stroke:var(--ink); stroke-width:2; }
+    .dot-on { fill:var(--note); stroke:var(--note); stroke-width:2; }
+    .tick { stroke:var(--ink); stroke-width:1.4; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+    .mini { border:1px solid var(--line); border-radius:8px; background:rgba(255,255,255,.38); padding:12px; }
+    .summary { margin-top:18px; padding:18px 20px; }
+    @media (max-width:840px) { .topbar{display:block;} .tools{justify-content:flex-start; margin-top:14px;} .layout{grid-template-columns:1fr;} .cue{position:static;} .grid-3{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body data-theme="{{THEME}}">
+  <main class="page">
+    <section class="topbar">
+      <div id="study-title">
+        <h1>{{TITLE}}</h1>
+        <div class="meta">
+          <span class="tag">{{TEXTBOOK}}</span>
+          <span class="tag">{{GRADE}}</span>
+          <span class="tag">{{CHAPTER}}</span>
+          <span class="tag">{{KNOWLEDGE_POINT}}</span>
+        </div>
+      </div>
+      <div class="tools" aria-label="页面工具">
+        <button class="tool-btn" data-theme-btn="yellow" type="button">黄</button>
+        <button class="tool-btn" data-theme-btn="green" type="button">绿</button>
+        <button class="tool-btn" data-theme-btn="blue" type="button">蓝</button>
+        <button class="tool-btn" data-theme-btn="purple" type="button">紫</button>
+      </div>
+    </section>
+
+    <section class="layout" id="study-layout">
+      <aside class="cue">
+        <h2>线索栏</h2>
+        {{CUE_CARDS}}
+      </aside>
+
+      <section class="main">
+        <article class="note">
+          <h2>题目</h2>
+          <div class="problem-stage" id="problem-stage">
+            {{PROBLEM_CONTENT}}
+          </div>
+        </article>
+
+        {{MAIN_NOTES}}
+      </section>
+    </section>
+
+    <section class="comment-panel" id="comment-panel"></section>
+
+    <div class="floating-pen" id="floating-pen" aria-label="标注工具">
+      <button class="pen-label" type="button" aria-label="笔">笔</button>
+      <button class="pen-color yellow" data-highlight="yellow" type="button" aria-label="黄笔"></button>
+      <button class="pen-color green" data-highlight="green" type="button" aria-label="绿笔"></button>
+      <button class="pen-color blue" data-highlight="blue" type="button" aria-label="蓝笔"></button>
+      <button class="pen-action" id="add-comment" type="button">批注</button>
+      <button class="pen-action undo" id="undo-note" type="button">撤销</button>
+    </div>
+
+    <section class="summary" id="study-summary">
+      <h2>最后记一句</h2>
+      {{FINAL_SUMMARY}}
+    </section>
+  </main>
+
+  <script>
+    const body = document.body;
+    const themeButtons = [...document.querySelectorAll("[data-theme-btn]")];
+    const floatingPen = document.getElementById("floating-pen");
+    const undoButton = document.getElementById("undo-note");
+    const studyAreas = [
+      document.getElementById("study-title"),
+      document.getElementById("study-layout"),
+      document.getElementById("study-summary")
+    ].filter(Boolean);
+    const commentPanel = document.getElementById("comment-panel");
+    const storageKey = "math-note-study-areas-v2:" + location.pathname;
+    const initialSnapshot = snapshot();
+    let activeRange = null;
+    let activeMark = null;
+
+    const storedTheme = localStorage.getItem("math-note-theme");
+    if (storedTheme) body.dataset.theme = storedTheme;
+
+    const storedHtml = localStorage.getItem(storageKey);
+    if (storedHtml) {
+      try { applySnapshot(JSON.parse(storedHtml)); } catch { localStorage.removeItem(storageKey); }
+    }
+
+    function syncThemeButtons() {
+      themeButtons.forEach((btn) => btn.classList.toggle("active", btn.dataset.themeBtn === body.dataset.theme));
+    }
+    themeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        body.dataset.theme = btn.dataset.themeBtn;
+        localStorage.setItem("math-note-theme", btn.dataset.themeBtn);
+        syncThemeButtons();
+      });
+    });
+    syncThemeButtons();
+
+    function snapshot() { return studyAreas.map((area) => area.innerHTML); }
+    function applySnapshot(values) {
+      values.forEach((html, index) => {
+        if (studyAreas[index] && typeof html === "string") studyAreas[index].innerHTML = html;
+      });
+    }
+    function saveState() {
+      localStorage.setItem(storageKey, JSON.stringify(snapshot()));
+      renderComments();
+    }
+    function selectedRange() {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return null;
+      const range = selection.getRangeAt(0);
+      if (!studyAreas.some((area) => area.contains(range.commonAncestorContainer))) return null;
+      return { selection, range };
+    }
+    function closestMark(node) {
+      const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+      return element ? element.closest(".study-hl, .study-comment-mark") : null;
+    }
+    function showPen(rect) {
+      const width = floatingPen.offsetWidth || 290;
+      const left = Math.min(Math.max(rect.left + rect.width / 2 - width / 2, 12), window.innerWidth - width - 12);
+      const top = Math.max(rect.top - 54, 12);
+      floatingPen.style.left = left + "px";
+      floatingPen.style.top = top + "px";
+      floatingPen.classList.add("show");
+      undoButton.disabled = !activeMark;
+    }
+    function hidePen() { floatingPen.classList.remove("show"); }
+    function clearPenState() {
+      activeRange = null;
+      activeMark = null;
+      hidePen();
+    }
+    function cacheSelection() {
+      const current = selectedRange();
+      if (!current) return false;
+      activeRange = current.range.cloneRange();
+      activeMark = closestMark(current.range.commonAncestorContainer);
+      const rect = activeRange.getBoundingClientRect() || activeRange.getClientRects()[0];
+      if (!rect) return false;
+      showPen(rect);
+      return true;
+    }
+    function wrapActiveRange(className, dataset = {}) {
+      if (!activeRange) cacheSelection();
+      if (!activeRange) {
+        alert("先选中要标注的文字。");
+        return null;
+      }
+      const range = activeRange.cloneRange();
+      const span = document.createElement("span");
+      span.className = className;
+      Object.entries(dataset).forEach(([key, value]) => { span.dataset[key] = value; });
+      const content = range.extractContents();
+      span.appendChild(content);
+      range.insertNode(span);
+      window.getSelection().removeAllRanges();
+      activeRange = null;
+      activeMark = span;
+      saveState();
+      showPen(span.getBoundingClientRect());
+      return span;
+    }
+    function recolorActiveMark(color) {
+      if (!activeMark) return false;
+      activeMark.classList.remove("study-hl-yellow", "study-hl-green", "study-hl-blue");
+      activeMark.classList.add("study-hl", "study-hl-" + color);
+      saveState();
+      showPen(activeMark.getBoundingClientRect());
+      return true;
+    }
+    function addCommentToActiveMark(note) {
+      if (!activeMark) return false;
+      const id = activeMark.dataset.commentId || "comment-" + Date.now().toString(36);
+      activeMark.classList.add("study-comment-mark");
+      activeMark.dataset.note = note.trim();
+      activeMark.dataset.commentId = id;
+      if (!activeMark.id) activeMark.id = id;
+      saveState();
+      showPen(activeMark.getBoundingClientRect());
+      return true;
+    }
+    function unwrapMark(mark) {
+      const parent = mark.parentNode;
+      while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+      parent.removeChild(mark);
+      parent.normalize();
+    }
+    document.querySelectorAll("[data-highlight]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (!recolorActiveMark(btn.dataset.highlight)) {
+          wrapActiveRange("study-hl study-hl-" + btn.dataset.highlight);
+        }
+      });
+    });
+    document.getElementById("add-comment").addEventListener("click", () => {
+      const note = prompt("写一句自己的批注：", activeMark?.dataset?.note || "");
+      if (!note || !note.trim()) return;
+      if (addCommentToActiveMark(note)) return;
+      const id = "comment-" + Date.now().toString(36);
+      const mark = wrapActiveRange("study-comment-mark", { note: note.trim(), commentId: id });
+      if (mark) mark.id = id;
+    });
+    document.getElementById("undo-note").addEventListener("click", () => {
+      if (!activeMark) {
+        alert("先点一下要撤销的标注或批注。");
+        return;
+      }
+      const nextFocus = activeMark.parentElement;
+      unwrapMark(activeMark);
+      activeMark = null;
+      activeRange = null;
+      saveState();
+      if (nextFocus) nextFocus.scrollIntoView({ behavior: "smooth", block: "center" });
+      hidePen();
+    });
+    function renderComments() {
+      const marks = studyAreas.flatMap((area) => [...area.querySelectorAll(".study-comment-mark")]);
+      commentPanel.innerHTML = "";
+      marks.forEach((mark, index) => {
+        const item = document.createElement("button");
+        item.className = "comment-item";
+        item.type = "button";
+        item.innerHTML = "<strong>批注 " + (index + 1) + "</strong>" + mark.dataset.note;
+        item.addEventListener("click", () => {
+          activeMark = mark;
+          activeRange = null;
+          mark.scrollIntoView({ behavior: "smooth", block: "center" });
+          showPen(mark.getBoundingClientRect());
+          mark.animate([
+            { backgroundColor: "rgba(185, 121, 98, .30)" },
+            { backgroundColor: "rgba(185, 121, 98, .10)" }
+          ], { duration: 900 });
+        });
+        commentPanel.appendChild(item);
+      });
+    }
+    studyAreas.forEach((area) => {
+      area.addEventListener("click", (event) => {
+        const mark = event.target.closest(".study-comment-mark");
+        const anyMark = event.target.closest(".study-hl, .study-comment-mark");
+        if (anyMark) {
+          activeMark = anyMark;
+          activeRange = null;
+          showPen(anyMark.getBoundingClientRect());
+        } else if (!selectedRange()) {
+          clearPenState();
+        }
+        if (mark && mark.dataset.note) alert(mark.dataset.note);
+      });
+    });
+    document.addEventListener("selectionchange", () => {
+      setTimeout(() => {
+        if (!cacheSelection() && !activeMark) hidePen();
+      }, 0);
+    });
+    document.addEventListener("mousedown", (event) => {
+      if (!floatingPen.contains(event.target) && !studyAreas.some((area) => area.contains(event.target))) {
+        clearPenState();
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") clearPenState();
+    });
+    window.addEventListener("scroll", () => {
+      if (!selectedRange()) clearPenState();
+    }, { passive: true });
+
+    if (!storedHtml) localStorage.setItem(storageKey + ":initial", JSON.stringify(initialSnapshot));
+    renderComments();
+  </script>
+</body>
+</html>

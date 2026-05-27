@@ -1,0 +1,7 @@
+interface:
+  display_name: "数学分析"
+  short_description: "把数学错题讲成可荧光标注和批注的网页"
+  brand_color: "#7F9BAB"
+  default_prompt: "Use $数学分析 to turn this math wrong question into an interactive Cornell-note HTML page."
+policy:
+  allow_implicit_invocation: true
