@@ -39,7 +39,7 @@
       "comment": "外部调研 — mimo多模态可理解含图文档"
     },
     "multimodal-looker": {
-      "model": "opencode-go/deepseek-v4-flash",
+      "model": "opencode-go/mimo-v2.5",
       "comment": "多模态分析 — mimo原生支持图/视频/音频"
     }
   },
