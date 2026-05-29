@@ -1,0 +1,80 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "_strategy": "pro=关键推理 | fash=主力干活/1M上下文 | flash-free=免费轻量 | opencode/big-pickle=中等复杂度",
+  "agents": {
+    "Sisyphus - Ultraworker": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "主协调器 — 调度质量决定全局，必须pro"
+    },
+    "Hephaestus - Deep Agent": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "深度自主开发 — fash主力，1M上下文"
+    },
+    "oracle": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "难题调试/架构设计 — 推理质量优先"
+    },
+    "prometheus": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "任务规划 — big-pickle"
+    },
+    "Atlas - Plan Executor": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "按计划执行 — mimo性价比高"
+    },
+    "metis": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "预分析 — mimo推理够用，长上下文"
+    },
+    "momus": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "审查 — mimo coding能力不俗"
+    },
+    "explore": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "代码搜索 — mimo百万上下文可吞整个项目"
+    },
+    "librarian": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "外部调研 — mimo多模态可理解含图文档"
+    },
+    "multimodal-looker": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "多模态分析 — mimo原生支持图/视频/音频"
+    }
+  },
+  "categories": {
+    "quick": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "简单单文件 — flash-free免费"
+    },
+    "unspecified-low": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "低复杂度 — big-pickle"
+    },
+    "unspecified-high": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "中高复杂度 — fash主力"
+    },
+    "deep": {
+      "model": "opencode-go/deepseek-v4-flash",
+      "comment": "深度执行 — fash主力，用量最大"
+    },
+    "ultrabrain": {
+      "model": "opencode-go/deepseek-v4-pro",
+      "comment": "极难逻辑 — 必须pro"
+    },
+    "artistry": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "创意 — mimo多模态激发灵感"
+    },
+    "visual-engineering": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "前端/UI/UX — mimo多模态可看图评设计"
+    },
+    "writing": {
+      "model": "opencode-go/mimo-v2.5",
+      "comment": "文档 — mimo百万上下文长文稳定"
+    }
+  }
+}
