@@ -11,6 +11,7 @@ urlgo - 浏览器控制 CLI（CDP 协议）
   urlgo close <page_id>          # 关闭页面
   urlgo screenshot <page_id> <file.png>   # 截图
   urlgo snapshot <page_id>       # 读取页面内容（纯文本）
+  urlgo source <page_id>         # 获取页面 HTML 源码
   urlgo eval <page_id> "<js>"    # 执行 JS
   urlgo click <page_id> "<selector>"      # 点击
   urlgo type <page_id> "<selector>" "<text>"  # 输入
@@ -320,6 +321,17 @@ def cmd_snapshot(page_id):
     js = "document.body.innerText"
     cmd_eval(page_id, js)
 
+def cmd_source(page_id):
+    """获取页面 HTML 源码"""
+    result = ws_command(page_id, "Runtime.evaluate", {
+        "expression": "document.documentElement.outerHTML",
+        "returnByValue": True
+    })
+    if "result" in result and "result" in result["result"]:
+        value = result["result"]["result"].get("value")
+        if value is not None:
+            print(value)
+
 def cmd_eval(page_id, js):
     """执行 JS"""
     result = ws_command(page_id, "Runtime.evaluate", {"expression": js, "returnByValue": True})
@@ -364,6 +376,8 @@ if __name__ == "__main__":
         cmd_screenshot(sys.argv[2], sys.argv[3])
     elif cmd == "snapshot" and len(sys.argv) >= 3:
         cmd_snapshot(sys.argv[2])
+    elif cmd == "source" and len(sys.argv) >= 3:
+        cmd_source(sys.argv[2])
     elif cmd == "eval" and len(sys.argv) >= 4:
         cmd_eval(sys.argv[2], sys.argv[3])
     elif cmd == "click" and len(sys.argv) >= 4:

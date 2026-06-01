@@ -1,5 +1,6 @@
 ---
 name: GESP作业
+version: 1.1.1
 description: 为GESP等级考试生成作业卷子，包含选择/判断/编程题。知识点定制，答案随机分布防猜测。
 
 metadata:

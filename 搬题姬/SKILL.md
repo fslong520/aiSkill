@@ -1,5 +1,6 @@
 ---
 name: 搬题姬
+version: 1.8.2
 description: 从 OJ 平台搬运题目，生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据
 allowed-tools:
   - Read
