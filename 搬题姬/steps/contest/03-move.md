@@ -55,8 +55,12 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 pid: abc453a
 title: "中(英)"
 tag:
+  - "知识点标签1"
+  - "知识点标签2"
   - "GESP X级"
 ```
+
+⚠️ **tag 含 1~3 个知识点标签 + 1 个等级标签，禁只写 GESP 等级**
 
 写入 `{WORK_DIR}/problem.yaml`。
 
