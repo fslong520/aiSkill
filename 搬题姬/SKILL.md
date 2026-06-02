@@ -1,6 +1,6 @@
 ---
 name: 搬题姬
-version: 1.8.2
+version: 1.9.0
 description: 从 OJ 平台搬运题目，生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据
 allowed-tools:
   - Read
@@ -70,6 +70,7 @@ OJ题目、搬题、算法题搬运、AtCoder、Codeforces、GESP、测试点、
 - AVOID GESP等级乱判
 - AVOID 忘清理工作目录（`work_*`）
 - AVOID PID 格式错误（用小写 abc451a）
+- ⚠️ **AVOID tag 只写 GESP 等级：必含 1~3 个知识点标签 + 1 个等级标签，禁单标签敷衍**
 - ⚠️ **AVOID 自对话上下文记忆题面，必自文件读取**
 - ⚠️ **AVOID 生成数据时修改 mkdata.cpp，只许修改 mkin.h**
 - ⚠️ **AVOID 测试数据缺少特殊性质和 hack 数据**
