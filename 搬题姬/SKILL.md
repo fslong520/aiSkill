@@ -1,7 +1,7 @@
 ---
 name: 搬题姬
-version: 1.9.0
-description: 从 OJ 平台搬运题目，生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据
+version: 2.0.0
+description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
   - Write
@@ -11,18 +11,23 @@ allowed-tools:
 
 metadata:
   slug: ojimport
-  trigger: OJ题目、搬题、算法题搬运、AtCoder、Codeforces、GESP、题目导入、测试点、生成数据、测试数据
+  trigger: OJ题目、搬题、算法题搬运、搬运题目、搬道题、搬一下、AtCoder、Codeforces、GESP、题目导入、测试点、生成数据、测试数据
 ---
 
 ## Keywords
 
-OJ题目、搬题、算法题搬运、AtCoder、Codeforces、GESP、测试点、测试数据
+OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一下、AtCoder、Codeforces、GESP、测试点、测试数据
 
 ## Summary
 
 自OJ搬题，生标准化题包（题面+标程+数据）；或依用户所供，仅生测试数据（.in/.out）。
 
 ## Strategy
+
+### 参考文档
+
+生成测试数据前，先读 **`references/testdata-design.md`**，按题目类型选取边界清单与 Hack 策略。
+所有步骤文件（`07-testdata.md`、`11-testdata-only.md`）中的测试数据细节均引用该文档。
 
 ### 单题搬运
 
