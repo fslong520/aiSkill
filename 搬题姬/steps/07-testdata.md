@@ -11,22 +11,26 @@
 勿碰 {WORK_DIR}/mkdata.cpp（乃框架，毋须改）
 ```
 
-## 测试数据要求
+## 测试数据分布
 
-生 25 组测试数据，覆以下类型（**无分组，每点独立计分**）：
+生 25 组测试数据，分布方案详见 **`references/testdata-design.md` → 一、数据分布框架**。
 
-| 用例编号 | 类型 | 说明 |
-|---------|------|------|
-| 1-2 | 样例数据 | 直复制题样例 |
-| 3-8 | 小规模 + 特性 | 验基本功 |
-| 9-11 | Hack 数据 | 针常见错法 |
-| 12-20 | 中大规模 | 验效率 |
-| 21-25 | 随机回归 | 覆诸情形 |
+## 边界清单与 Hack 设计
 
-**改 `test()` 后，必同更：**
-1. `mkin.h` 顶 `SUBTASKS[]` 数组（仅作注标记用）
-2. `{WORK_DIR}/testdata/config.yaml` 毋须更新（OJ 自文件名推断）
-3. 25 组测点总分 100（每点约 4 分）
+按题目类型选取对应边界。详见 **`references/testdata-design.md`**：
+
+| 章节 | 内容 |
+|------|------|
+| 二、题型感知边界清单 | 按数组/图论/树/字符串/DP/数学分类的边界列表 |
+| 三、Hack 数据设计 | 各类常见错误的 Hack 数据模式 |
+| 四、各规模数据生成建议 | case 3-20 的规模与构造建议 |
+
+**设计步骤：**
+1. 辨题目类型（数组/图论/树/字符串/DP/数学/构造）
+2. 自 `references/testdata-design.md` 对应章节挑拣边界
+3. 将边界写入 `mkin.h` 的 `test()` 函数
+
+## test() 模板
 
 ```cpp
 void test(int case_num, ofstream& fout) {
@@ -34,10 +38,10 @@ void test(int case_num, ofstream& fout) {
     // Subtask 0: 样例数据（直接复制题目样例）— case 1-2
     // ============================================================
     if (case_num == 1) {
-        // TODO: 样例1 - 从题面复制
+        // 样例1 - 从题面逐字复制
     }
     else if (case_num == 2) {
-        // TODO: 样例2 - 从题面复制（或自行构造简单验证）
+        // 样例2 - 从题面逐字复制
     }
 
     // ============================================================
@@ -51,26 +55,26 @@ void test(int case_num, ofstream& fout) {
     // Subtask 1(续): 特殊性质数据 — case 6-8
     // ============================================================
     else if (case_num == 6) {
-        // 单调性（递增/递减）
+        // 据 references/testdata-design.md 选性质1
     }
     else if (case_num == 7) {
-        // 所有值相同
+        // 据 references/testdata-design.md 选性质2
     }
     else if (case_num == 8) {
-        // 特殊数据结构（如全0、全1等）
+        // 据 references/testdata-design.md 选性质3
     }
 
     // ============================================================
     // Subtask 2: Hack 数据（针对常见错误写法）— case 9-11
     // ============================================================
     else if (case_num == 9) {
-        // Hack: 整数溢出（int → 需用 long long）
+        // 见 references/testdata-design.md → 三、Hack 数据设计
     }
     else if (case_num == 10) {
-        // Hack: 边界漏判（N=1, N=max）
+        // 见 references/testdata-design.md → 三、Hack 数据设计
     }
     else if (case_num == 11) {
-        // Hack: 特殊输入使错误算法失败
+        // 见 references/testdata-design.md → 三、Hack 数据设计
     }
 
     // ============================================================
@@ -96,41 +100,11 @@ void test(int case_num, ofstream& fout) {
 }
 ```
 
-## 特殊性质数据例
+## 改 test() 后必同更
 
-据题不同，特性或含：
-
-| 性质 | 说明 | 针之错 |
-|------|------|-----------|
-| 单调性 | 输入有序（递增/递减） | 错排序法 |
-| 值皆同 | 数组诸元相等 | 未理重复值 |
-| 二分图质 | 特定图结构 | 错图法 |
-| 素数密 | 大量素数 | 错素数判 |
-| 极值 | 极大/极小可能值 | 溢出 |
-
-## Hack 数据设计
-
-针常见错法设计数据：
-
-| 常见错 | Hack 数据征 |
-|---------|--------------|
-| int 溢出 | 用近限大数 |
-| 边界漏判 | N=0, N=1, N=max 等 |
-| 精度误 | 需精算小数 |
-| 超时 | 迫 O(n²) 法超时 |
-| 错贪心 | 使贪心策败数据 |
-
-## 配置文件
-
-`{WORK_DIR}/testdata/config.yaml` 用最简格式（OJ 自文件名 `1.in`~`25.in` 推测试点）：
-
-```yaml
-type: default
-time: 1s
-memory: 256m
-```
-
-> **说明**：不写 `subtasks` 或 `cases`，OJ 据文件名（`1.in`, `1.out`, ...）自识 25 测点，每点独立计分，总分均摊。
+1. `mkin.h` 顶 `SUBTASKS[]` 数组（仅作注标记用）
+2. `{WORK_DIR}/testdata/config.yaml` 格式见 **`references/testdata-design.md` → 五、config.yaml 格式**
+3. 25 组测点总分持 100
 
 ## 编译运行
 
@@ -139,13 +113,6 @@ cd {WORK_DIR}
 g++ -o mkdata mkdata.cpp -std=c++17
 ./mkdata
 ```
-
-## 大样例处
-
-| 大小 | 措 |
-|------|------|
-| < 500 字节 | `read_file` 读 |
-| ≥ 500 字节 | 禁 `read_file`，用 shell 验 |
 
 ## 验证
 
