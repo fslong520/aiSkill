@@ -67,6 +67,23 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 4. 读 steps/11-testdata-only.md → **实现标程 + 生测试数据 + 打包 testdata.zip + 交付**
 5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、全局打包（08-package.md）
 
+### 生成测试点
+
+用户已有完整题面，只需要测试数据（.in/.out + config.yaml）。
+
+**触发词**：用户说"生成测试点"、"出测试数据"、"想测试数据"、"写测试数据"等表示只要测试数据不要题面时。
+
+**流程：**
+
+1. 读取 steps/00-detect-url.md → 检测输入类型
+2. 初始化：`cp -r question work`
+3. 获取题面信息：
+   - URL：urlgo/BrowserUse/WebFetch 访问并解析
+   - 文件：读取 steps/09-from-file.md 提取题面（仅内部参考，不生成正式 problem_zh.md）
+   - 文本：读取 steps/10-from-text.md 从文本提取题面
+4. 读取 steps/11-testdata-only.md → **实现标程 + 生成测试数据 + 打包 testdata.zip + 交付**
+5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、全局打包（08-package.md）
+
 ## AVOID
 
 - AVOID 不读步骤文档即执行
