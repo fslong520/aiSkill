@@ -61,7 +61,7 @@
       "comment": "深度执行 — fash主力，用量最大"
     },
     "ultrabrain": {
-      "model": "opencode-go/deepseek-v4-pro",
+      "model": "opencode-go/qwen3.7-plus",
       "comment": "极难逻辑 — 必须pro"
     },
     "artistry": {
