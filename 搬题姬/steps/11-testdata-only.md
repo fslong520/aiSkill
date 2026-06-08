@@ -43,20 +43,7 @@
 
 编 `{WORK_DIR}/mkin.h` 之 `test()` 函，覆 25 组。
 
-**分组方案（5 子任，总 100）：**
-
-| Subtask | 用例编号 | 类 | 分值 |
-|---------|---------|------|------|
-| 0 | 1-2 | 样例 | 10 |
-| 1 | 3-8 | 小规模 + 特性 | 20 |
-| 2 | 9-11 | Hack 数据 | 15 |
-| 3 | 12-20 | 中大规模 | 30 |
-| 4 | 21-25 | 随机复测 | 25 |
-
-**⚠️ 改 `test()` 分组时同更三处：**
-1. `mkin.h` 顶 `SUBTASKS[]` 数组
-2. `{WORK_DIR}/testdata/config.yaml` 中 `subtasks[].cases` 列表
-3. 总分持 100
+**分布方案、边界清单、Hack 设计、config.yaml 格式详见 `references/testdata-design.md`。**
 
 #### 3a. 样例数据（case 1-2）
 
@@ -86,150 +73,25 @@ else if (case_num >= 3 && case_num <= 5) {
 }
 ```
 
-#### 3c. 特性质数据（case 6-8）
+#### 3c. 特殊性质数据（case 6-8）
 
-针题数据特性设计：
-
-| 性质 | 说明 | 针之错 |
-|------|------|-----------|
-| 单调性 | 入有序（递增/递减） | 排序/二分实现误 |
-| 全同 | 诸值等 | 重复值理遗 |
-| 极值集 | 大量极值（如全 0/1） | 特殊支未覆 |
-| 素数密 | 大量素数 | 筛法写误 |
-| 特定图构 | 链/菊/全图 | 图法边界 |
-
-每特性一用例。
-
-```cpp
-else if (case_num == 6) {
-    // 特性1：单调递
-    int N = 100;
-    fout << N << endl;
-    for (int i = 1; i <= N; i++) fout << i << " \n"[i==N];
-}
-else if (case_num == 7) {
-    // 特性2：诸值同
-    int N = 1000;
-    fout << N << endl;
-    for (int i = 1; i <= N; i++) fout << 5 << " \n"[i==N];
-}
-else if (case_num == 8) {
-    // 特性3：据题自定义
-}
-```
+自 **`references/testdata-design.md` → 二、题型感知边界清单**，按题目类型选 3 个边界性质，每性质一用例。
 
 #### 3d. Hack 数据（case 9-11）
 
-针常见错法精准下毒：
-
-| 常见错 | Hack 数据征 |
-|---------|--------------|
-| int 溢出 | 用近 `2^31-1` 或 `2^63-1` 大数 |
-| 边界漏判 | N=1, N=max, a[i]=0 等极边 |
-| 精度误 | 需 `double` 非 `float` 小数，或浮点比较 |
-| 超时炸 | 迫错复杂度（O(n²)）超时 |
-| 错贪心 | 构使贪心策得非优解数据 |
-| 模数阱 | 负取模、未取模致溢 |
-
-```cpp
-else if (case_num == 9) {
-    // Hack 1: int 溢出（两近 2^31-1 大数相加）
-    fout << 2 << endl;
-    fout << "2147483647 2147483647" << endl;
-}
-else if (case_num == 10) {
-    // Hack 2: 最小边界
-    fout << 1 << endl;
-    fout << 0 << endl;
-}
-else if (case_num == 11) {
-    // Hack 3: 最大边界 / 使错法超时
-    int N = 200000;
-    fout << N << endl;
-    for (int i = N; i >= 1; i--) fout << i << " \n"[i==1];
-}
-```
+自 **`references/testdata-design.md` → 三、Hack 数据设计** 选 3 种不同错误类型，针对性构造。
 
 #### 3e. 中大规数据（case 12-20）
 
-| 用例 | 规模 | 的 |
-|------|------|------|
-| 12-15 | N = 100 ~ 10000 | 中规，验效 |
-| 16-18 | N 近上限 80% | 大压测 |
-| 19-20 | N = 上限值 | 极压测 |
-
-```cpp
-else if (case_num >= 12 && case_num <= 15) {
-    int N = rand() % 1000 + 100;
-    // 随机数据
-}
-else if (case_num >= 16 && case_num <= 20) {
-    int N = 200000;  // 或题上限
-    // 近极数据
-}
-```
+见 **`references/testdata-design.md` → 四、各规模数据生成建议**。
 
 #### 3f. 随机复测（case 21-25）
 
-诸类数混搭，覆不复景：
-
-```cpp
-else {
-    int N = rand() % 100000 + 1;
-    // 自由随机
-}
-```
+诸类数混搭，覆不复景。
 
 ### 4. 配 {WORK_DIR}/testdata/config.yaml
 
-写入 HydroOJ 格 subtask 配。**用例表必与 mkin.h 之 SUBTASKS[] 一一应。**
-
-```yaml
-type: default
-time: 1s
-memory: 512m
-
-subtasks:
-  - score: 10
-    id: 0
-    cases:
-      - input: 1.in
-        output: 1.out
-      - input: 2.in
-        output: 2.out
-
-  - score: 20
-    id: 1
-    cases:
-      - input: 3.in
-        output: 3.out
-      # ... 至 8
-
-  - score: 15
-    id: 2
-    cases:
-      - input: 9.in
-        output: 9.out
-      - input: 10.in
-        output: 10.out
-      - input: 11.in
-        output: 11.out
-
-  - score: 30
-    id: 3
-    cases:
-      - input: 12.in
-        output: 12.out
-      # ... 至 20
-
-  - score: 25
-    id: 4
-    cases:
-      - input: 21.in
-        output: 21.out
-      # ... 至 25
-```
-
+格式见 **`references/testdata-design.md` → 五、config.yaml 格式**。
 **时/内存限**自用户供题信息取。若用户未供，主动问。
 
 ### 5. 编译运行
