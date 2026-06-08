@@ -51,6 +51,11 @@ tag:
 测试数据之分组（HydroOJ subtask）在 `{WORK_DIR}/testdata/config.yaml` 中配，
 详见 **Step 07-testdata.md → 配置文件（HydroOJ subtask 格式）**。
 
+## 测试数据分组配置
+
+测试数据的分组（HydroOJ subtask）在 `testdata/config.yaml` 中配置，
+详见 **Step 07-testdata.md → 配置文件（HydroOJ subtask 格式）**。
+
 ## 下一步
 
 成 → `06-std.md`

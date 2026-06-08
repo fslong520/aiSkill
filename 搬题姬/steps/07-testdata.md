@@ -106,7 +106,7 @@ void test(int case_num, ofstream& fout) {
 2. `{WORK_DIR}/testdata/config.yaml` 格式见 **`references/testdata-design.md` → 五、config.yaml 格式**
 3. 25 组测点总分持 100
 
-## 编译运行
+## 配置文件（HydroOJ subtask 格式）
 
 ```bash
 cd {WORK_DIR}
@@ -114,6 +114,12 @@ g++ -o mkdata mkdata.cpp -std=c++17
 ./mkdata
 ```
 
+## 大样例处理
+
+| 大小 | 处理 |
+|------|------|
+| < 500 字节 | `read_file` 读取 |
+| ≥ 500 字节 | 禁止 `read_file`，用 shell 验证 |
 ## 验证
 
 生数后必验：
