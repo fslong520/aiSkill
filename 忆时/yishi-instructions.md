@@ -23,25 +23,54 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 
 **同时检查记忆梳理状态**（见七）。
 
-### 1.2 用户发言后——多轮涌现检索
-用户发言后，**不可止于一次检索**。须行以下流程：
+### 1.2 用户发言后——强涌现检索（每言必检）
+
+**每一条用户消息，不论内容，皆须触发涌现检索。** 此非可选，乃强制流程。
+
+**第零轮（并行触发）：**
+收到用户消息后，立即以 background 任务发起语义检索，与分析用户意图并行执行：
+`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言核心关键词" --limit 5 --expand`
+
+检索结果须在本次回复结束前收集并体现。
 
 **第一轮：语义检索**
-`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言关键词" --limit 3 --expand`
+`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言关键词" --limit 5 --expand`
 
-**第二轮：涌现判定**
+**第二轮：涌现判定（强制）**
 观第一轮结果：
 - 若有 `[关联]` 标记项 → 已现涌现，直接表达："说到此，忆起一事……"
 - 若结果 ≥ 2 条 → 取 top-2 之关键字/内容，构建复合查询，做第二轮涌现检索：
-  `YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "原关键词 新关键词" --limit 2`
+  `YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "原关键词 新关键词" --limit 3`
 - 若第二轮结果与第一轮不重叠 → 此乃涌现之记忆，主动提及
+- **仅1条亦须审视**：哪怕是单条，若语义沾边，即应表达关联——降低涌现门槛
 
-**第三轮：情绪锚定**
-若用户情绪显著（愤怒、兴奋、沮丧），以情绪词 + 话题词再检一次：
-`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "情绪词" --type-filter emotion --min-weight 0.7 --limit 2`
+**第三轮：情绪锚定（强制）**
+每轮都查情绪锚定，而非仅"情绪显著时"。以情绪倾向词 + 话题词检索：
+`YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪倾向" --type-filter emotion --min-weight 0.5 --limit 2`
 
-### 1.3 主动存储
-用户言"记住"、"记下来"、"保存"时必存；此外，若用户透露新偏好、做出关键决定、交付重要上下文，或情绪显著波动——凡值得将来回顾者——亦主动存储。命令：
+**涌现表达原则：**
+- 宁可多提，不可漏提。涌现之记忆即使不完全吻合，亦值得抛出供用户确认。
+- 表达须简洁，三五句话内。例："说起X，忆及之前你提过Y……可有参考价值？"
+
+### 1.3 主动存储——激进策略
+
+用户言"记住"、"记下来"、"保存"时必存；此外，凡值得将来回顾者，皆主动存储。
+
+**触发场景扩展（不限于对话结束）：**
+- 旧有触发：用户透露新偏好、做出关键决定、交付重要上下文、情绪显著波动
+- **新增触发——每次完成任务后：**
+  - 标记 todo 为 `completed` 之时
+  - 收 delegation 结果并验证通过之时
+  - 完成一轮修改变更之后
+  - 给用户输出实质结果（代码/文档/分析）之后
+- **凡以上任一场景，皆停顿自问：** "此次产出/发现/决策中，有无值得将来回顾者？"
+
+**判定原则：**
+- 有 → 提取 2-3 关键词，检索旧忆后再决定新增还是更新
+- 无 → 静默跳过，无需告知
+- 宁多勿少：反正本地存储，激进胜过保守
+
+**存储命令：**
 `YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字"`
 
 **类型**：task / decision / preference / emotion / time / context
@@ -113,7 +142,7 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 3. 原文可附于记忆内容中，但索引须轻量可扫
 
 ### 4.4 记忆涌现
-话题转换时，莫拘泥于当前窗口。主动检索是否有关联记忆，说出"说到这个，我突然想起……"。此乃忆时之"情绪锚定"与"语义关联"所擅。
+不论话题转换与否，**每言必检**。莫等话题转折才想起查记忆——用户每句话都有可能是钥匙。涌现之记忆即使不完全吻合，亦值得抛出供用户确认。此乃忆时之"强涌现检索"与"情绪锚定"所擅。
 
 ### 4.5 避免"假性完成"
 当经历多次上下文压缩（compaction）后，需自查：是否过早宣告任务完成？对照忆时中的原始任务清单核查进度，而非凭感觉断言"完成了"。
@@ -133,6 +162,7 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 | 对话开始 | 检索当前项目/文件夹相关记忆（见一） |
 | 对话结束 | 按"六、对话结束"流程，先检索旧忆，再择新增或更新 |
 | 记忆自动梳理 | 对话启始先召回上次梳理时间告知用户，过期7日则触发沉淀 |
+| 完成任务（todo完成/修改变更/输出结果） | 停顿自问"有无值得记忆？"，有则检索旧忆后store或update |
 
 ## 六、对话结束——自我回顾与记忆归档
 
@@ -166,7 +196,7 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 ### 6.5 重要提醒
 - 勿冗长。一条记忆三五句话足矣。
 - 存时以 `--type` 和 `--emotion` 精确标注，以便将来检索。
-- 宁少勿滥：无关紧要的日常琐事不必存。
+- 宁多勿少：反正本地存储，激进胜过保守。凡犹豫不决时，存之。
 
 ## 七、记忆自动梳理
 
