@@ -259,11 +259,11 @@ def cmd_store(args):
     _append_backup(mem_id, args.content, metadata)
 
     # 自动建语义关联：找相似记忆，写入 relationships 集合
+    # 关键词各自保留，不做跨记忆融合（避免关键词雪球式膨胀）
     try:
         rel_col = get_collection(client, "relationships")
         similar = mem_col.query(query_texts=[args.content], n_results=6)
         if similar["ids"] and similar["ids"][0]:
-            merged_kw = set(k.strip() for k in (metadata.get("keywords", "").split(",")) if k.strip())
             for j in range(len(similar["ids"][0])):
                 sid = similar["ids"][0][j]
                 if sid == mem_id:
@@ -276,21 +276,6 @@ def cmd_store(args):
                         metadatas=[{"source": mem_id, "target": sid, "score": round(ssem, 3)}],
                         ids=[str(uuid.uuid4())],
                     )
-                    # 跨记忆融合关键词，增强检索覆盖
-                    try:
-                        tgt = mem_col.get(ids=[sid])
-                        if tgt["metadatas"]:
-                            tk = tgt["metadatas"][0].get("keywords", "")
-                            for kw in tk.split(","):
-                                kw = kw.strip()
-                                if kw:
-                                    merged_kw.add(kw)
-                    except Exception:
-                        pass
-            if merged_kw:
-                new_kw = ",".join(sorted(merged_kw))
-                metadata["keywords"] = new_kw
-                mem_col.update(ids=[mem_id], metadatas=[metadata])
             _update_meta_total(client, "total_relationships", 1)
     except Exception:
         pass
@@ -467,19 +452,35 @@ def cmd_recall(args):
             pass
 
     emoji_map = {"extreme": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
-    print(f"检索到 {len(scored)} 条相关记忆 (查询: '{query}')\n")
-    print("=" * 60)
+    type_emoji = {"task": "📋", "decision": "⚖️", "preference": "⭐", "emotion": "💜", "time": "⏰", "context": "📌", "imported": "📥"}
+
+    total = len(scored)
+    print(f"\n  记忆检索 ── 查询「{query}」 命中 {total} 条\n")
+
     for idx, item in enumerate(scored, 1):
         e_emoji = emoji_map.get(item["emotion"], "⚪")
-        capsule_tag = " [CAPSULE]" if item["is_capsule"] else ""
-        assoc_tag = " [关联]" if item.get("is_expanded") else ""
-        print(f"\n#{idx} {e_emoji} [{item['type'].upper()}]{capsule_tag}{assoc_tag}")
-        print(f"   得分: {item['score']} | 语义: {item['semantic']} | 情绪: {item['emotion']}")
-        print(f"   日期: {item['created_date']} | 被检索: {item['recall_count']}次")
-        if item["keywords"]:
-            print(f"   关键字: {item['keywords']}")
-        print(f"   内容: {item['content']}")
-    print(f"\n{'='*60}")
+        t_emoji = type_emoji.get(item.get("type", ""), "📄")
+        capsule_tag = " 🔒" if item["is_capsule"] else ""
+        assoc_tag = " ⟡关联" if item.get("is_expanded") else ""
+        type_label = item['type'].upper()
+        score_pct = int(item.get("score", 0) * 100)
+
+        print(f"  {idx}. {e_emoji} {type_label}{capsule_tag}{assoc_tag}  ──  {item['created_date']}  被检索{item['recall_count']}次  匹配{score_pct}%")
+
+        kw = item.get("keywords", "")
+        if kw:
+            kw_list = [k.strip() for k in kw.split(",") if k.strip()]
+            if len(kw_list) > 6:
+                kw_display = "、".join(kw_list[:6]) + f" 等{len(kw_list)}个"
+            else:
+                kw_display = "、".join(kw_list)
+            print(f"     │ 🏷️ {kw_display}")
+
+        content = item['content'].replace('\n', ' ').strip()
+        if len(content) > 100:
+            content = content[:100] + "…"
+        print(f"     │ 📝 {content}")
+        print()
 
 
 # ========== update ==========
