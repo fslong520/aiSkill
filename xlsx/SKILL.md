@@ -75,6 +75,38 @@ Unless otherwise stated by the user or existing template
 
 A user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.
 
+## Design Principles
+
+Spreadsheets must be auditable. The reader should understand every number's origin.
+
+### Layout Principles
+
+- **Left-to-right, top-to-bottom**: Inputs → calculations → outputs. A spreadsheet that jumps back and forth confuses.
+- **Headers always**: Every column/row region needs a header. Never assume the reader knows what column D contains.
+- **One table per sheet**: Mixing unrelated data on one sheet causes formula errors and confusion.
+- **Summary → Detail**: First sheet = executive summary / dashboard. Subsequent sheets = supporting calculations.
+
+### Formula Hygiene
+
+- **Assumptions in one place**: Growth rates, tax rates, discount rates — all in a named Assumptions sheet or region. Never scattered.
+- **Named ranges for complex logic**: `=NPV(discount_rate, cash_flows)` is readable; `=NPV('Inputs'!$B$5, 'Sheet2'!C10:C20)` is not.
+- **No magic numbers**: Every hardcoded number must have a comment or source reference.
+
+### Color Coding
+
+(Applied automatically when financial model is detected, per Requirements for Outputs above.)
+
+### Content-to-Structure Mapping
+
+| Data Type | Recommended Structure | Why |
+|---|---|---|
+| Time series (monthly/quarterly/annual) | Columns = time periods, Rows = metrics | Standard financial layout, easy formula fill |
+| Lookup/reference data | Dedicated sheet with named table | Prevents errors from manual lookup formulas |
+| Scenario comparison | Side-by-side columns (Base / Upside / Downside) | Visual diff at a glance |
+| Supporting calculation | Dedicated sheet, output summary sheet | Keeps main sheet clean |
+| Data input form | Structured table (not raw range) | Table auto-expands with new rows |
+| Dashboard | PivotTable + charts on first sheet | Reader sees the answer first |
+
 ## Prerequisites
 
 - **openpyxl**: Excel file creation and editing
@@ -276,6 +308,43 @@ The script returns JSON with error details:
 }
 ```
 
+## QA (Required)
+
+**Assume there are problems. Your job is to find them.**
+
+Your first spreadsheet is almost never correct. Approach QA as a bug hunt, not a confirmation step. If you found zero issues on first inspection, check harder.
+
+### The Three-Pass QA
+
+1. **Structural pass**: Are the columns/rows labeled? Does the layout make sense? Any orphaned data?
+2. **Formula pass**: Run `scripts/recalc.py`. Fix all `#REF!`, `#DIV/0!`, `#VALUE!`, `#NAME?` errors before delivery.
+3. **Content pass**: Spot-check 3-5 sample values manually. Do the computed results make sense? Try a known input → expected output.
+
+### Pre-Delivery Checklist
+
+- [ ] Formulas recalculated via `scripts/recalc.py` — zero errors
+- [ ] All assumptions pulled to separate cells (no magic numbers)
+- [ ] Headers present on every column and row region
+- [ ] Color coding follows financial model conventions (if applicable)
+- [ ] Number formats consistent (currency, percentage, decimal places)
+- [ ] Sheet names are meaningful (not "Sheet1", "Sheet2")
+- [ ] Print area set if the sheet is meant to be printed
+- [ ] Frozen panes on header row for scrollable sheets
+- [ ] All zeros display as "-" (not "0" or "$0")
+- [ ] Units specified in column headers
+
+### Verification Loop
+
+1. Generate spreadsheet
+2. Run `scripts/recalc.py` — fix errors
+3. Spot-check 3-5 values manually
+4. Check structural layout
+5. Fix issues
+6. Recalculate and re-verify
+7. Repeat until clean
+
+**Do not declare success until you've completed at least one fix-and-verify cycle.**
+
 ## Best Practices
 
 ### Library Selection
@@ -304,3 +373,29 @@ The script returns JSON with error details:
 - Add comments to cells with complex formulas or important assumptions
 - Document data sources for hardcoded values
 - Include notes for key calculations and model sections
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Correct Approach |
+|---------|-----------------|
+| Hardcoding values instead of formulas | Always use `=SUM(...)`, `=A1*B1` — let Excel calculate |
+| Forgetting `data_only=True` on read | Use `load_workbook(file, data_only=True)` to read cached values |
+| Saving after `data_only=True` read | Opens with `data_only=True` but never saves back — formulas lost |
+| 0-index vs 1-index confusion | openpyxl: row 1, col 1 = A1; pandas: row 0 = Excel row 2 |
+| Missing `header=None` on pandas read | `pd.read_excel(..., header=None)` when file has no header row |
+| Empty cells in formula ranges | Wrap with `IFERROR(value, 0)` or `IF(ISBLANK(cell), 0, formula)` |
+| Wrong column reference in wide sheets | Column 64 = BL, not BK. Double-check far-right columns. |
+| Cross-sheet reference format | Correct: `'Sheet Name'!A1`. Single quotes if sheet name contains spaces. |
+
+## Known Issues
+
+| Issue | Workaround / Note |
+|---|---|
+| **No formula auto-calc in openpyxl** | openpyxl stores formulas as strings. Run `scripts/recalc.py` to evaluate. |
+| **Chart data must exist before creation** | Create data range first, then reference it in the chart. Cannot add series after chart creation. |
+| **Conditional formatting not evaluated** | openpyxl can write CF rules but not evaluate them. Open in Excel/LibreOffice to verify. |
+| **Large file performance** | Files >50MB slow down. Use `write_only=True` for creation, `read_only=True` for reads. |
+| **Data validation lists break on recalc** | Run validation check after recalc — references can shift. |
+| **Merged cells cause formula issues** | Avoid merged cells in calculation regions. Use "Center Across Selection" instead. |

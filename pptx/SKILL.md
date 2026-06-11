@@ -139,6 +139,21 @@ Choose colors that match your topic — don't default to generic blue. Use these
 - 0.3-0.5" between content blocks
 - Leave breathing room—don't fill every inch
 
+### Content-to-Layout Mapping
+
+| Content Type | Recommended Layout | Why |
+|---|---|---|
+| Executive summary / thesis | Full-slide title + subtitle (no body) | Punchy opener that sets the tone |
+| 3-5 key points | Icon + text rows (icon circles, bold header, description) | Scannable, visual rhythm |
+| 6+ key points | 2-column grid (icon + text blocks) | Space-efficient without making each item tiny |
+| Time series data | Chart slide (line/bar, large numbers callout) | Visual trend recognition |
+| Comparison (A vs B) | Split column (left vs right) or before/after layout | Side-by-side highlights differences |
+| Process flow | Numbered steps with arrows between | Directional flow is intuitive |
+| Data-heavy slide | Minimal header + one large chart + 1-2 stat callouts | Chart is the hero, not bullets |
+| Team / people intro | Photo + name + role card (2x2 or 3 grid) | Personal connection via faces |
+| Quote / testimonial | Centered pull-quote format (large italic, subtle background) | Emphasis through whitespace |
+| Call to action / closing | Bold statement + next step (full-slide impact) | Reader remembers the last thing they see |
+
 ### Avoid (Common Mistakes)
 
 - **Don't repeat the same layout** — vary columns, cards, and callouts across slides
@@ -208,6 +223,19 @@ Read and analyze these images:
 Report ALL issues found, including minor ones.
 ```
 
+### Pre-Delivery Checklist
+
+- [ ] All slides have a visual element (image, chart, icon, or shape) — no text-only slides
+- [ ] Logos appear on correct brand-consistent slides
+- [ ] Source citations present on data charts
+- [ ] No placeholder text (Lorem ipsum, "Click to add title", etc.)
+- [ ] Slide numbers present (if >5 slides)
+- [ ] Consistent color palette throughout — no stray default-blue slides
+- [ ] Typography consistent (same header/body font pair on every slide)
+- [ ] No accent lines under titles
+- [ ] Text boxes have appropriate padding (`margin: 0` or sufficient clearance)
+- [ ] High contrast on all text and icons against backgrounds
+
 ### Verification Loop
 
 1. Generate slides → Convert to images → Inspect
@@ -236,4 +264,32 @@ To re-render specific slides after fixes:
 ```bash
 pdftoppm -jpeg -r 150 -f N -l N output.pdf slide-fixed
 ```
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Correct Approach |
+|---------|-----------------|
+| Text cut off at edge | Add `margin: 0` to text box; leave 0.5" slide margin |
+| Text overflowing shape boundary | Increase text box height or reduce font by 2pt |
+| Title accent line (AI hallmark) | Use whitespace or background color instead of decorative lines |
+| Low-contrast text/icons | Always check foreground vs background — use contrasting circle for icons on dark |
+| One-off layout repeated across all slides | Vary columns, cards, and callouts — monotony loses audience |
+| Default blue color scheme | Pick a topic-specific palette before starting |
+| Centered body text | Left-align paragraphs and lists; center only titles |
+| Placeholder remnants | Always `grep -iE "xxxx|lorem|ipsum"` before declaring done |
+| Mixed font pairings | Pick one header/body pair and apply consistently across all slides |
+| Forgetting `pptxgenjs.md` layout prop overrides | See `pptxgenjs.md` — `x`, `y`, `w`, `h` override auto-layout |
+
+## Known Issues
+
+| Issue | Workaround / Note |
+|---|---|
+| **pptxgenjs no visual preview** | Must convert to images via soffice → pdftoppm. No runtime render. |
+| **No Unicode emoji support in pptxgenjs** | Use image of the emoji, or a simple shape/icon instead. |
+| **Text box auto-resize differs from PowerPoint** | Set explicit `h` and `margin: 0` on pptxgenjs text objects. |
+| **Chart data must exist before pptxgenjs chart creation** | Cannot add data series after chart is instantiated — plan all series upfront. |
+| **Template editing requires XML knowledge** | See `editing.md` — unpack, manipulate slide XML, repack pipeline. |
+| **Image aspect ratio distortion** | Always specify both `w` and `h` matching original aspect ratio; pptxgenjs does not auto-constrain. |
 
