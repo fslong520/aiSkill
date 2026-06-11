@@ -25,6 +25,43 @@ metadata:
 
 A .docx file is a ZIP archive containing XML files.
 
+## Design Principles
+
+Professional documents need clear structure and consistent formatting.
+
+### Typography
+
+Choose a readable body font (Calibri, Cambria, Georgia, Times New Roman). Keep body at 11-12pt. Headings should step up: H1=16-18pt bold, H2=14pt bold, H3=12pt bold.
+
+### Spacing
+
+Use paragraph spacing (`spaceBefore`/`spaceAfter`) instead of empty paragraphs. Line spacing of 1.15x-1.5x for body text.
+
+### Page Setup
+
+Always set margins explicitly. US Letter default: 12240 x 15840 twips, margins=1440 (1 inch).
+
+### Table Design
+
+Alternate row shading for readability. Header row with contrasting background. Consistent cell padding.
+
+### Color Usage
+
+Use color sparingly in documents — accent color for headings or table headers, not rainbow formatting.
+
+### Content-to-Element Mapping
+
+| Content Type | Recommended Element | Why |
+|---|---|---|
+| Sequential items | Bulleted list | Scanning is faster than inline commas |
+| Step-by-step process | Numbered list | Numbers communicate order |
+| Comparative data | Table with header row | Columns enable side-by-side comparison |
+| Key definition | Hanging indent paragraph | Offset term from definition |
+| Legal/contract clause | Numbered list with bookmarks | Cross-referencing |
+| Citation/reference | Footnote or endnote | Keeps body text clean |
+| Pull quote / callout | Paragraph with border + shading | Visual distinction from body |
+| Multi-section layout | Section breaks with columns | Column control per section |
+
 ## Quick Reference
 
 | Task | Approach |
@@ -359,6 +396,70 @@ Validates with auto-repair, condenses XML, and creates DOCX. Use `--validate fal
 
 ---
 
+## QA (Required)
+
+**Assume there are problems. Your job is to find them.**
+
+Your first document is almost never correct. Approach QA as a bug hunt, not a confirmation step. If you found zero issues on first inspection, you weren't looking hard enough.
+
+### Content QA
+
+```bash
+# Full text extraction
+pandoc --track-changes=all document.docx -o /tmp/output.md
+cat /tmp/output.md
+```
+
+Check for missing content, typos, wrong order.
+
+When editing templates, check for leftover placeholder text:
+
+```bash
+pandoc document.docx -o /tmp/output.md
+grep -iE "xxxx|lorem|ipsum|placeholder" /tmp/output.md || echo "No placeholders found"
+```
+
+### Structure QA
+
+```bash
+# Extract and inspect heading hierarchy
+python scripts/office/unpack.py document.docx /tmp/unpacked/
+grep -oP 'w:pStyle w:val="Heading\d"' /tmp/unpacked/word/document.xml | sort | uniq -c
+```
+
+Check for: skipped heading levels (e.g., H1 → H3), empty paragraphs, orphaned content.
+
+### Validation
+
+```bash
+python scripts/office/validate.py document.docx
+```
+
+### Pre-Delivery Checklist
+
+- [ ] Metadata set (title, author)
+- [ ] Page numbers present
+- [ ] Heading hierarchy is correct (no skipped levels, e.g., H1 → H3)
+- [ ] No empty paragraphs used as spacing (use `spaceBefore`/`spaceAfter` instead)
+- [ ] All images have alt text
+- [ ] Tables have header rows
+- [ ] TOC present if document has 3+ headings
+- [ ] Document validates with `validate.py`
+- [ ] No placeholder text remaining
+
+### Verification Loop
+
+1. Generate document
+2. Run content QA + structure QA + validation
+3. List issues found (if none found, look again more critically)
+4. Fix issues
+5. Re-verify — one fix often creates another problem
+6. Repeat until a full pass reveals no new issues
+
+**Do not declare success until you've completed at least one fix-and-verify cycle.**
+
+---
+
 ## XML Reference
 
 ### Schema Compliance
@@ -485,3 +586,31 @@ After running `comment.py` (see Step 2), add markers to document.xml. For replie
   </wp:inline>
 </w:drawing>
 ```
+
+---
+
+## Common Pitfalls
+
+| Pitfall | Correct Approach |
+|---------|-----------------|
+| Using `\n` for newlines | Use separate `<w:p>` paragraphs |
+| Using unicode bullets (`•`) | Use `LevelFormat.BULLET` with numbering config |
+| PageBreak outside Paragraph | `PageBreak` must be inside a `Paragraph` |
+| ImageRun missing `type` | Always specify `type: "png"`, `"jpg"`, etc. |
+| Table width with `WidthType.PERCENTAGE` | Always use `WidthType.DXA` — percentages break in Google Docs |
+| Missing cell margins | Add `margins: { top: 80, bottom: 80, left: 120, right: 120 }` |
+| `ShadingType.SOLID` instead of CLEAR | Always use `ShadingType.CLEAR` to prevent black backgrounds |
+| TOC with custom paragraph styles | TOC requires `HeadingLevel` only — no custom styles |
+| Forgetting `outlineLevel` on headings | `outlineLevel: 0` for H1, `1` for H2 — required for TOC |
+| Setting table-level padding | OfficeCLI produces invalid XML; use cell-level padding |
+
+## Known Issues
+
+| Issue | Workaround / Note |
+|---|---|
+| **No visual preview** | Unlike pptx, docx has no built-in rendering. Use `pandoc` for text verification. User must open in Word for visual check. |
+| **Chart series cannot be added after creation** | docx-js: include all series at creation. For editing XML, delete and recreate the chart. |
+| **`\mathcal` in equations** | Produces invalid OMML. Use `\mathit` or plain italic letters instead. |
+| **Tracked changes creation requires raw XML** | `comment.py` handles comment boilerplate. For insertions/deletions, edit `document.xml` directly. |
+| **Tab stops may require raw XML** | Insert `<w:tabs>` in paragraph properties via direct XML editing. |
+| **Internal hyperlinks not supported by docx-js** | Use raw XML: `<w:hyperlink w:anchor="bookmarkName">` in `document.xml`. |

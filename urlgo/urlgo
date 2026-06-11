@@ -34,7 +34,7 @@ CDP_URL = f"http://localhost:{CDP_PORT}"
 # 浏览器配置
 BROWSERS = {
     "Linux": {
-        "edge": ["microsoft-edge", "microsoft-edge-stable"],
+        "edge": ["microsoft-edge", "microsoft-edge-stable", "/opt/microsoft/msedge/msedge"],
         "chrome": ["google-chrome", "google-chrome-stable"],
         "chromium": ["chromium", "chromium-browser"],
     },
