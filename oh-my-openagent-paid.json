@@ -6,17 +6,17 @@
     "Sisyphus - Ultraworker": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "主协调器 — mimo主力，多模态更方便"
+      "comment": "主协调器 — mimo主力，多模态"
     },
     "Hephaestus - Deep Agent": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "深度开发 — mimo主力，多模态更方便"
+      "comment": "深度开发 — mimo主力"
     },
     "oracle": {
       "model": "opencode-go/deepseek-v4-pro",
       "fallback_models": ["opencode-go/deepseek-v4-flash", "opencode-go/mimo-v2.5"],
-      "comment": "极难调试/架构 — deepseek pro保推理质量"
+      "comment": "极难调试/架构 — deepseek pro"
     },
     "prometheus": {
       "model": "opencode-go/mimo-v2.5",
@@ -31,7 +31,7 @@
     "metis": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "预分析 — mimo主力，长上下文"
+      "comment": "预分析 — mimo主力"
     },
     "momus": {
       "model": "opencode-go/mimo-v2.5",
@@ -39,9 +39,9 @@
       "comment": "审查 — mimo主力"
     },
     "explore": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "fallback_models": ["opencode-go/mimo-v2.5", "opencode-go/mimo-v2.5-pro"],
-      "comment": "代码搜索 — 免费轻量，无免费mimo暂用deepseek"
+      "model": "opencode-go/mimo-v2.5",
+      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
+      "comment": "代码搜索 — mimo百万上下文可吞整个项目"
     },
     "librarian": {
       "model": "opencode-go/mimo-v2.5",
@@ -56,14 +56,14 @@
   },
   "categories": {
     "quick": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "fallback_models": ["opencode-go/mimo-v2.5", "opencode-go/mimo-v2.5-pro"],
-      "comment": "简单单文件 — 免费轻量"
+      "model": "opencode-go/mimo-v2.5",
+      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
+      "comment": "简单单文件 — mimo主力"
     },
     "unspecified-low": {
-      "model": "opencode/deepseek-v4-flash-free",
-      "fallback_models": ["opencode-go/mimo-v2.5", "opencode-go/mimo-v2.5-pro"],
-      "comment": "低复杂度 — 免费轻量"
+      "model": "opencode-go/mimo-v2.5",
+      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
+      "comment": "低复杂度 — mimo主力"
     },
     "unspecified-high": {
       "model": "opencode-go/mimo-v2.5",
@@ -73,27 +73,27 @@
     "deep": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "深度执行 — mimo主力，用量最大"
+      "comment": "深度执行 — mimo主力"
     },
     "ultrabrain": {
       "model": "opencode-go/deepseek-v4-pro",
       "fallback_models": ["opencode-go/deepseek-v4-flash", "opencode-go/mimo-v2.5"],
-      "comment": "极难逻辑 — deepseek pro保推理质量"
+      "comment": "极难逻辑 — deepseek pro"
     },
     "artistry": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "创意解题 — mimo多模态激发灵感"
+      "comment": "创意解题 — mimo多模态"
     },
     "visual-engineering": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "前端/UI/UX — mimo多模态可看图评设计"
+      "comment": "前端/UI/UX — mimo多模态"
     },
     "writing": {
       "model": "opencode-go/mimo-v2.5",
       "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/deepseek-v4-pro"],
-      "comment": "文档撰写 — mimo百万上下文长文稳定"
+      "comment": "文档撰写 — mimo长上下文"
     }
   }
 }
