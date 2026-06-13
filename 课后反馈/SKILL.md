@@ -72,67 +72,36 @@ metadata:
 
 ### Step 2: 打开OJ状态页面
 
-**必须使用urlgo打开页面（使用用户提供的OJ地址）：**
-
 ```bash
-# 调用urlgo技能
 skill name="urlgo" user_message="start"
 skill name="urlgo" user_message="open url=${用户提供的OJ地址}/status"
 ```
 
 ### Step 3: 筛选学生提交
 
-**使用urlgo执行JS筛选学生：**
-
+**逐字符输入触发Vue响应：**
 ```bash
-# 调用urlgo技能执行JS
-skill name="urlgo" user_message="exec_js js=JSON.stringify({rows: window._vxe_table_component?.getData()?.length})"
-```
-
-**使用urlgo筛选学生（逐字符输入触发Vue响应）：**
-
-```bash
-# 调用urlgo技能获取筛选输入框
-skill name="urlgo" user_message="exec_js js=document.querySelector('input[placeholder=\"请输入作者\"]')?.className"
-```
-
-**逐字符输入筛选条件：**
-```bash
-# 调用urlgo技能对每个字符执行input事件（将 ${用户名} 替换为实际用户名）
 skill name="urlgo" user_message="exec_js js=const input = document.querySelector('input[placeholder=\"请输入作者\"]'); input.focus(); const text = '${用户名}'; for(let c of text) { input.value += c; input.dispatchEvent(new Event('input', {bubbles: true)); }"
 ```
 
 ### Step 4: 获取提交记录
 
-**从页面表格中提取数据：**
-
 ```bash
-# 调用urlgo技能获取提交记录
 skill name="urlgo" user_message="exec_js js=const rows = document.querySelectorAll('.vxe-body--row'); const data = []; rows.forEach(row => { const cells = row.querySelectorAll('.vxe-body--column'); if(cells.length > 0) { data.push({ submitId: cells[0]?.textContent?.trim(), problem: cells[1]?.textContent?.trim(), user: cells[3]?.textContent?.trim(), status: cells[4]?.textContent?.trim(), time: cells[7]?.textContent?.trim() }); } }); JSON.stringify(data);"
 ```
 
-**⚠️ 重要：submitId必须从页面获取，不要自行构造！**
+**⚠️ submitId必须从页面获取，不要自行构造！**
 
 ### Step 5: 查看学生代码
 
-**使用urlgo点击进入提交详情：**
-
 ```bash
-# 调用urlgo技能找到提交ID对应的链接
+# 找提交链接
 skill name="urlgo" user_message="exec_js js=const links = document.querySelectorAll('a[href*=\"submission-detail\"]'); Array.from(links).map(l => l.href);"
-```
 
-**使用urlgo打开提交详情页面：**
-
-```bash
-# 调用urlgo技能使用从页面获取的真实链接
+# 打开提交详情（用页面获取的真实链接）
 skill name="urlgo" user_message="open url=从上面获取的真实链接"
-```
 
-**使用urlgo获取代码内容：**
-
-```bash
-# 调用urlgo技能获取代码
+# 获取代码
 skill name="urlgo" user_message="exec_js js=document.querySelector('pre')?.textContent || document.querySelector('code')?.textContent || '代码未找到';"
 ```
 
@@ -187,45 +156,24 @@ skill name="urlgo" user_message="exec_js js=document.querySelector('pre')?.textC
 
 | 错误 | 正确做法 |
 |------|---------|
-| 自行拼接submission-detail/submitId | 从页面表格中获取submitId，使用urlgo点击进入 |
-| 用curl访问OJ API | 使用urlgo操作网页，Vue SPA的API需要登录态 |
-| 不看代码就写评价 | 必须用urlgo查看每个学生的实际代码 |
-| 只看第一页 | 使用urlgo翻页直到超出时间范围 |
-| 评价泛泛而谈 | 基于实际代码分析，指出具体优点和问题 |
-| 知识点部分放学生代码 | 知识点只讲知识点，不出现学生代码对比 |
-| 知识点部分掺杂评价 | "四位同学都正确实现了"这种话不能出现在知识点部分 |
-
----
-
-## urlgo命令参考
-
-```bash
-# 启动浏览器
-skill name="urlgo" user_message="start"
-
-# 打开页面
-skill name="urlgo" user_message="open url=URL"
-
-# 执行JS
-skill name="urlgo" user_message="exec_js js=JS代码"
-
-# 截图
-skill name="urlgo" user_message="screenshot"
-
-# 关闭浏览器
-skill name="urlgo" user_message="stop"
-```
+| 自行拼接submission-detail/submitId | 从页面表格获取submitId，urlgo点击进入 |
+| 用curl访问OJ API | urlgo操作网页，Vue SPA需登录态 |
+| 不看代码就写评价 | urlgo查看每个学生的实际代码 |
+| 只看第一页 | urlgo翻页直到超出时间范围 |
+| 评价泛泛而谈 | 基于实际代码分析，指出具体优缺点 |
+| 知识点部分放学生代码 | 知识点只讲知识点 |
+| 知识点部分掺杂评价 | 不出现"四位同学都正确实现了"这类话 |
 
 ---
 
 ## 质量检查
 
-- [ ] 使用urlgo打开OJ状态页面
-- [ ] 使用urlgo筛选学生提交记录
-- [ ] 使用urlgo点击进入每条提交详情
-- [ ] 使用urlgo查看学生实际代码
+- [ ] urlgo打开OJ状态页面
+- [ ] urlgo筛选学生提交记录
+- [ ] urlgo点击进入每条提交详情
+- [ ] urlgo查看学生实际代码
 - [ ] 重点知识只讲知识点，不掺杂评价
 - [ ] 重点知识不出现学生代码对比
-- [ ] 上课情况基于实际代码分析，指出具体优缺点
+- [ ] 上课情况基于实际代码分析
 - [ ] 评价简洁（每个学生一两句话）
 - [ ] 禁止自行拼接任何URL地址
