@@ -5,12 +5,12 @@
   "agents": {
     "Sisyphus - Ultraworker": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "主协调器 — mimo主力，多模态"
     },
     "Hephaestus - Deep Agent": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "深度开发 — mimo主力"
     },
     "oracle": {
@@ -20,59 +20,59 @@
     },
     "prometheus": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "任务规划 — mimo主力"
     },
     "Atlas - Plan Executor": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "按计划执行 — mimo主力"
     },
     "metis": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "预分析 — mimo主力"
     },
     "momus": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "审查 — mimo主力"
     },
     "explore": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "代码搜索 — mimo百万上下文可吞整个项目"
     },
     "librarian": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "外部调研 — mimo多模态可理解含图文档"
     },
     "multimodal-looker": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "多模态分析 — mimo原生支持图/视频/音频"
     }
   },
   "categories": {
     "quick": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "简单单文件 — mimo主力"
     },
     "unspecified-low": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "低复杂度 — mimo主力"
     },
     "unspecified-high": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "中高复杂度 — mimo主力"
     },
     "deep": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "深度执行 — mimo主力"
     },
     "ultrabrain": {
@@ -82,17 +82,17 @@
     },
     "artistry": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "创意解题 — mimo多模态"
     },
     "visual-engineering": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "前端/UI/UX — mimo多模态"
     },
     "writing": {
       "model": "opencode-go/mimo-v2.5",
-      "fallback_models": ["opencode-go/mimo-v2.5-pro", "opencode-go/minimax-m3"],
+      "fallback_models": ["opencode-go/minimax-m3", "opencode-go/minimax-m3"],
       "comment": "文档撰写 — mimo长上下文"
     }
   }
