@@ -122,8 +122,44 @@ metadata:
 - 格式：Markdown
 - 代码块用 ```cpp
 - 数学用 LaTeX（`$` 行内，`$$` 行间）
+- **图表用 Mermaid**（流程图、步骤图、验证图等，见下方规范）
 - 有标程必须逐关键行精讲
 - 每题必须包含复杂度分析
+
+### Mermaid 图表规范
+
+**必须使用 Mermaid 的场景：**
+
+| 场景 | 图表类型 | 示例 |
+|------|---------|------|
+| 算法主流程 | flowchart TD | 从输入到输出的完整流程 |
+| 构造/转换过程 | flowchart LR | A → B → C → D 的步骤链 |
+| 思维分支/决策 | flowchart TD | 条件判断、路径选择 |
+| 样例验证 | table | 逐行验证（不用 flowchart，太冗长） |
+
+**禁止使用的图表：**
+
+- ❌ pie chart（渲染效果差，数据不可读）
+- ❌ 复杂的 subgraph 嵌套（保持扁平）
+- ❌ 超过 8 个节点的单链 flowchart（拆分或用 table）
+
+**Mermaid 写法要点：**
+
+```mermaid
+flowchart LR
+    A["步骤1: 描述"] --> B["步骤2: 描述"]
+    B --> C{"判断条件"}
+    C -->|是| D["结果1"]
+    C -->|否| E["结果2"]
+    
+    style A fill:#e3f2fd
+    style D fill:#c8e6c9
+    style E fill:#ffcdd2
+```
+
+- 节点文字用引号包裹，支持 `<br/>` 换行
+- 用 `style` 给关键节点着色（起点蓝、终点绿、判断橙、错误红）
+- 子图（subgraph）仅在逻辑分组明确时使用，否则保持扁平
 
 ## AVOID
 
