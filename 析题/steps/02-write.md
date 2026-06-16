@@ -126,6 +126,68 @@ x + y = 2 + 1 = 3，3 ÷ 2 = 1 余 1
 - 若用户没给标程 → 自己写实现，或引用已知解法
 - 关键行加注：不写 `// 循环` 这种废话，要写 `// 为什么这里要倒序遍历`
 
+## Mermaid 图表使用指南
+
+### 何时用 Mermaid
+
+| 内容 | 用 Mermaid | 用 Table |
+|------|-----------|----------|
+| 算法主流程 | ✅ flowchart TD | — |
+| 构造/转换步骤 | ✅ flowchart LR | — |
+| 思维分支 | ✅ flowchart TD | — |
+| 复杂度对比 | — | ✅ 表格更清晰 |
+| 样例验证 | — | ✅ 表格更清晰 |
+| 公式推导 | — | ✅ 文字+公式 |
+
+### Mermaid 模板库
+
+**模板 1：算法主流程**
+```mermaid
+flowchart TD
+    Start([开始]) --> Input["输入"]
+    Input --> Step1["步骤1"]
+    Step1 --> Step2["步骤2"]
+    Step2 --> Output["输出"]
+    Output --> End([结束])
+```
+
+**模板 2：构造步骤链**
+```mermaid
+flowchart LR
+    A["输入"] --> B["处理1"] --> C["处理2"] --> D["输出"]
+```
+
+**模板 3：决策分支**
+```mermaid
+flowchart TD
+    A{"条件判断"} -->|是| B["路径1"]
+    A -->|否| C["路径2"]
+```
+
+**模板 4：代码执行推演**
+```mermaid
+flowchart TD
+    subgraph "执行过程"
+    A["初始状态"] --> B["第1轮"] --> C["第2轮"] --> D["最终结果"]
+    end
+```
+
+### 样式规范
+
+- 起点：`style Start fill:#ff9800,color:white`
+- 终点：`style End fill:#ff9800,color:white`
+- 正常步骤：`style A fill:#e3f2fd`
+- 判断节点：`style B fill:#fff3e0`
+- 成功结果：`style C fill:#c8e6c9`
+- 失败结果：`style D fill:#ffcdd2`
+
+### 禁忌
+
+- ❌ 不用 pie chart（渲染效果差）
+- ❌ 不用超过 8 节点的单链（改用 table 或拆分）
+- ❌ 不用多层嵌套 subgraph（保持扁平）
+- ❌ 不在 flowchart 里放长文本（用 table）
+
 ## 自我检查
 
 写完后对照以下清单（非必须逐条，但需心里有数）：
