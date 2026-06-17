@@ -54,6 +54,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 ```yaml
 pid: abc453a
 title: "中(英)"
+score: 1200
 tag:
   - "知识点标签1"
   - "知识点标签2"
@@ -61,6 +62,7 @@ tag:
 ```
 
 ⚠️ **tag 含 1~3 个知识点标签 + 1 个等级标签，禁只写 GESP 等级**
+⚠️ **score 按 03-gesp.md「第三步：定分」规则计算，比赛原分数直接采用**
 
 写入 `{WORK_DIR}/problem.yaml`。
 
