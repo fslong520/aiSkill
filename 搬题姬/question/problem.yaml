@@ -1,6 +1,6 @@
 pid: null
 title: "题目名称"
-score: 1200
+score:  # AI 按 03-gesp.md「第六步：定分」规则估算，800~3500
 tag:
   - "知识点1"
   - "知识点2"
