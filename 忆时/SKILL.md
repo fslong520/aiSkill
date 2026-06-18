@@ -223,6 +223,35 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/
 - 宁可多提，不可漏提。涌现之记忆即使不完全吻合，亦值得抛出供用户确认。
 - 表达须简洁，三五句话内。例："说起X，忆及之前你提过Y……可有参考价值？"
 
+### 检索升级（穷尽模式）
+
+当涌现检索产出不足时，不可就此罢休，需逐级加码：
+
+| 级数 | 触发条件 | 行动 |
+|------|----------|------|
+| L0 | 首次出现的话题 | 标准四轮检索，正常表达 |
+| L1 | 同一话题重复出现（2次+） | `--limit 8` + 跨类型搜索，另取近义词再检索一轮 |
+| L2 | 检索为空 | 换2-3组不同角度关键词，逐组重试 |
+| L3 | 检索仅1条 | 以该条关键词做二次扩散检索 |
+| L4 | 用户情绪强烈 | 情绪锚定权重提升至 `--min-weight 0.7`，重点搜emotion类型 |
+
+**穷尽铁律：** 检索结果为空，不意味着无关联记忆。两轮搜索无果方可放行，不可一次空就跳过。
+
+**命令示例（深度检索）：**
+```bash
+# L1 加深：扩大limit + 跨类型
+YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户话题关键词" --limit 8 --expand
+
+# L2 换角度：近义词/同义表达
+YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "近义词" --limit 5 --expand
+
+# L3 扩散检索：以命中条的关键词延伸
+YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "已有结果的关键词 新角度" --limit 5 --expand
+
+# L4 情绪锚定强搜索
+YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪词" --type-filter emotion --min-weight 0.7 --limit 3
+```
+
 ### 主动存储——激进策略
 
 用户言"记住"、"记下来"、"保存"时必存；此外，凡值得将来回顾者，皆主动存储。
@@ -338,7 +367,7 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/
 
 ## 对话归档
 
-**每次对话行将结束（用户言"好"、"就这些"、"下次见"，或你判对话近尾声），须执行以下流程：**
+**每次对话行将结束（用户言"好"、"就这些"、"下次见"，或你判对话近尾声），必须执行以下流程。不得因"赶时间"跳过此步。**
 
 ### 梳理对话要点
 快速回顾本次对话之关键信息：
