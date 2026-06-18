@@ -80,6 +80,7 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 
 ```
 /忆时                                → 整理当前会话，提取要点记入记忆
+/忆时 <内容>                          → store（首词不识则默认存储，等同于"记住"）
 /忆时 记住 <内容>                     → store（默认类型 task，情绪 medium）
 /忆时 记住 <内容> --type <类型>        → store（指定类型）
 /忆时 记住 <内容> --emotion <情绪>     → store（指定情绪）
@@ -434,11 +435,17 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/
 
 动作与参数之间以空格分隔。参数中若含空格，则后续所有内容视为值。可选 `--type` `--emotion` `--limit` `--解锁日` 等具名参数。
 
+**解析规则：**
+1. 首词为已知动作词 → 按动作映射执行
+2. 首词不识但有内容 → **默认 store**，整句视为待存内容
+3. 仅有 `/忆时` 无后续 → 会话整理
+
 **解析示例：**
 
 | 用户输入 | 动作 | 内容/参数 |
 |----------|------|----------|
 | `/忆时`（无后续内容） | **会话整理** | 自动提取当前会话要点记入记忆 |
+| `/忆时 我喜欢吃玉米` | **默认 store** | 首词"我"不识 → 内容="我喜欢吃玉米" |
 | `/忆时 记住 我今天想吃红烧肉` | 记住 | 内容="我今天想吃红烧肉" |
 | `/忆时 记住 用户爱喝美式 --type preference --emotion high` | 记住 | 内容="用户爱喝美式", type=preference, emotion=high |
 | `/忆时 查找 Python 项目` | 查找 | 关键词="Python 项目" |
