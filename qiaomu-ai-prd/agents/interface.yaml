@@ -1,0 +1,24 @@
+interface:
+  display_name: "Qiaomu AI PRD"
+  short_description: "Turn one-line product ideas into AI-implementable PRDs with speed-read cards, constraint layers, modules, data models, architecture, metrics, and acceptance scripts."
+  default_prompt: "Use $qiaomu-ai-prd to turn my product idea into a Chinese-first, AI-implementable PRD. Include an AI 速读卡, all 11 required chapters, best-default product decisions, 硬约束/推荐默认/发挥空间, 超预期机会, realistic ASCII diagrams, concrete metrics, commented data models, honest known unknowns, and 验收剧本 for implementation verification."
+compatibility:
+  canonical_format: "agent-skills"
+  adapter_targets:
+    - "openai"
+    - "claude"
+    - "generic"
+  activation:
+    mode: "manual"
+    paths: []
+  execution:
+    context: "inline"
+    shell: "bash"
+  trust:
+    source_tier: "local"
+    remote_inline_execution: "forbid"
+    remote_metadata_policy: "allow-metadata-only"
+  degradation:
+    openai: "generates structured PRDs from available product context"
+    claude: "generates AI-readable product requirement documents with the same chapter contract"
+    generic: "uses the PRD methodology and self-checks against required sections"

@@ -1,0 +1,43 @@
+{
+  "name": "qiaomu-ai-prd",
+  "version": "0.2.0",
+  "owner": "Qiaomu",
+  "updated_at": "2026-06-12",
+  "status": "local",
+  "maturity_tier": "production-lite",
+  "lifecycle_stage": "skill",
+  "context_budget_tier": "medium",
+  "review_cadence": "monthly",
+  "target_platforms": [
+    "openai",
+    "claude",
+    "generic",
+    "agent-skills-compatible"
+  ],
+  "outputs": [
+    "ai-implementable-prd",
+    "product-overview",
+    "competitor-differentiation",
+    "ascii-layout",
+    "module-design",
+    "data-model",
+    "technical-architecture",
+    "interaction-spec",
+    "export-system",
+    "development-priorities",
+    "performance-metrics",
+    "developer-handoff",
+    "ai-speed-read-card",
+    "constraint-layering",
+    "overdelivery-opportunities",
+    "acceptance-scripts",
+    "replaceable-technology-principles",
+    "fact-strategy",
+    "prd-lint"
+  ],
+  "copyright": "Copyright (c) 向阳乔木",
+  "contacts": {
+    "x": "https://x.com/vista8",
+    "github": "https://github.com/joeseesun/"
+  }
+}
