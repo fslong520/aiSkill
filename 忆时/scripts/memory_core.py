@@ -131,6 +131,50 @@ def _install_model():
                         shutil.move(fp, CHROMA_MODEL_DIR)
         return os.path.exists(CHROMA_MODEL_ONNX)
 
+    # 尝试从 Gitee（国内镜像）下载模型文件
+    import urllib.request
+    model_files = [
+        "config.json",
+        "model.onnx",
+        "special_tokens_map.json",
+        "tokenizer_config.json",
+        "tokenizer.json",
+        "vocab.txt",
+    ]
+    gitee_base = "https://gitee.com/hf-models/all-MiniLM-L6-v2-onnx/raw/main"
+    hf_base = "https://hf-mirror.com/sentence-transformers/all-MiniLM-L6-v2/resolve/main"
+
+    os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
+    all_ok = True
+    for fname in model_files:
+        dst = os.path.join(CHROMA_MODEL_DIR, fname)
+        if os.path.exists(dst) and os.path.getsize(dst) > 100:
+            continue
+
+        # 先试 Gitee，不行再换 hf-mirror
+        urls = [
+            f"{gitee_base}/{fname}",
+            f"{hf_base}/{fname}",
+        ]
+        downloaded = False
+        for url in urls:
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "yishi/1.0"})
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    data = resp.read()
+                if len(data) < 50 and b"violation" in data.lower():
+                    continue  # Gitee 451 拦截，换下一个源
+                with open(dst, "wb") as f:
+                    f.write(data)
+                downloaded = True
+                break
+            except Exception:
+                continue
+        if not downloaded:
+            all_ok = False
+
+    if all_ok and os.path.exists(CHROMA_MODEL_ONNX):
+        return True
     return False
 
 
