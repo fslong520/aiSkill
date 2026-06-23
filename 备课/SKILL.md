@@ -17,7 +17,7 @@ metadata:
   slug: prepkit
   trigger: 信息学奥赛备课、C++编程教学、算法竞赛培训、教学材料生成、备课、NOI备课、CSP备课
   source: 基于 ADDIE 教学设计模型、信息学竞赛教学大纲和青少年认知发展理论
-  version: 2.0 (模块化重构)
+  version: 2.1 (新增插图设计指南)
 ---
 
 # 备课技能
@@ -73,6 +73,8 @@ metadata:
 - AVOID 每课千篇一律——不同内容用不同结构，AI 的创造力在于此
 - AVOID AI味太重——参考 modules/去AI味指南.md 逐条检查
 - AVOID 用 cdn.jsdelivr.net——国内访问不了，用 unpkg.com
+- AVOID 纯文字讲义/PPT 无配图——14岁学生需要视觉辅助理解抽象概念
+- AVOID 插图风格不统一——同一系列课件应锁定一种画风（卡通/扁平/信息图）
 
 ## 角色体系
 
