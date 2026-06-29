@@ -128,14 +128,19 @@ g++ mkdata.cpp -o mkdata -std=c++17
 
 ### 7. 打包
 
-将测数与标程打为 zip，置 testdata 目录：
+将测试数据打为 zip，置 testdata 目录：
 
 ```bash
-cd {WORK_DIR}
-zip testdata/testdata.zip testdata/*.in testdata/*.out testdata/config.yaml std.cpp
+cd {WORK_DIR}/testdata
+zip testdata.zip *.in *.out config.yaml
 ```
 
-生文件：`{WORK_DIR}/testdata/testdata.zip`（含 .in/.out/config.yaml/std.cpp）
+⚠️ **关键**：
+- `.in`、`.out`、`config.yaml` 须在 zip **根目录**，不可有子目录前缀
+- **不**打包 `std.cpp`、`mkin.h`、`mkdata.cpp` 等源码文件
+- HydroOJ 只认根目录下的 `1.in` / `1.out` / … / `config.yaml`
+
+生文件：`{WORK_DIR}/testdata/testdata.zip`（仅含 .in/.out/config.yaml）
 
 ### 8. 交付
 
