@@ -1,6 +1,6 @@
 ---
 name: 搬题姬
-version: 2.0.0
+version: 2.4.1
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
@@ -24,6 +24,12 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 
 ## Strategy
 
+### 基路径
+
+自动检测用户桌面路径（支持 Linux/macOS/Windows），工作目录创建于桌面。
+步骤中 `{WORK_DIR}` 即 `{BASE_DIR}/work_{PID}_{标题简写}`，其中 `{BASE_DIR}` 为 `detect_desktop()` 检测结果。
+检测逻辑见 `steps/01-init.md`。
+
 ### 参考文档
 
 生成测试数据前，先读 **`references/testdata-design.md`**，按题目类型选取边界清单与 Hack 策略。
@@ -32,7 +38,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 ### 单题搬运
 
 1. 读 steps/00-detect-url.md → 辨类型
-2. 初始化：`cp -r question work_{PID}_{标题简写}`（详 01-init.md）
+2. 初始化：`BASE_DIR=$(detect_desktop); cp -r question $BASE_DIR/work_{PID}_{标题简写}`（详 01-init.md）
 3. 取题面：按来源
    - URL：urlgo 访问 → snapshot → 解析（urlgo不可用时用 BrowserUse/WebFetch）
    - 文件：读 steps/09-from-file.md → 自本地文件取题面
@@ -42,13 +48,14 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 6. 读 steps/05-config.md → 写配置
 7. 实现标程 std.cpp
 8. 读 steps/07-testdata.md → 生数据（⚠️ 只改 mkin.h，勿动 mkdata.cpp）
-9. 打包：`zip -r {PID}_{标题简写}.zip work_{PID}_{标题简写}`
+9. 打包：`zip -r $BASE_DIR/{PID}_{标题简写}.zip $BASE_DIR/work_{PID}_{标题简写}`
 
 ### ⚠️ 比赛搬运（必先创题面汇总文件）
 
 1. 读 steps/contest/01-list.md → 创题面汇总文件 `{contest_id}.md`
 2. 读 steps/contest/02-problem.md → **逐题译之，追加写入汇总文件**
 3. 读 steps/contest/03-move.md → **自文件读题面**，逐题生完整题包
+4. **打包合集**：所有题目 zip 打包到同一 `{contest_id}.zip` 内，不散包
 
 ### 生成测试点
 
@@ -59,7 +66,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 **流程：**
 
 1. 读 steps/00-detect-url.md → 辨输入类型
-2. 初始化：`cp -r question work_{PID}_{标题简写}`（详 01-init.md）
+2. 初始化：`BASE_DIR=$(detect_desktop); cp -r question $BASE_DIR/work_{PID}_{标题简写}`（详 01-init.md）
 3. 取题面信息：
    - URL：urlgo/BrowserUse/WebFetch 访问并解析
    - 文件：读 steps/09-from-file.md 取题面（仅内部参考，不生正式 problem_zh.md）
@@ -76,7 +83,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 **流程：**
 
 1. 读取 steps/00-detect-url.md → 检测输入类型
-2. 初始化：`cp -r question work`
+2. 初始化：`BASE_DIR=$(detect_desktop); cp -r question $BASE_DIR/work`
 3. 获取题面信息：
    - URL：urlgo/BrowserUse/WebFetch 访问并解析
    - 文件：读取 steps/09-from-file.md 提取题面（仅内部参考，不生成正式 problem_zh.md）
