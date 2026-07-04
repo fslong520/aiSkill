@@ -112,6 +112,18 @@ metadata:
 - 用真实细节（具体食物名/地名/日期）增强代入感
 - 样例说明延续故事语言，而非干巴巴的公式推导
 
+**练习/作业标题格式**：
+- 练习标题用 `<a>` 标签包裹，直链 OJ 提交页
+  ```markdown
+  #### <a href="https://fslong.iok.la/problem/PXXXX" target="_blank">练习N —— 标题（知识点）</a>
+  ```
+- 链接统一用 `fslong.iok.la/problem/` 域名
+- 标题本身可点击跳转提交，无需额外"点我提交"按钮
+
+**OJ 链接惯例**：
+- 每道练习末尾附 `###### <a href="https://fslong.iok.la/problem/XXXX" target="_blank">点我提交评测</a>`
+- 标题链接与末尾链接可并存（方便随手点标题跳转）
+
 ## ADDIE五阶段
 
 | 阶段           | 模块文档                         | 做什么               |
