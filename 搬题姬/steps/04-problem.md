@@ -73,8 +73,9 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 
 > **注**：若 PID 为 null（原创题），径用标题简写：
 > ```bash
-> mv work work_{标题简写}
-> # {WORK_DIR} = work_{标题简写}
+> BASE_DIR=$(detect_desktop)
+> mv $BASE_DIR/work $BASE_DIR/work_{标题简写}
+> # {WORK_DIR} = $BASE_DIR/work_{标题简写}
 > ```
 
 ## 下一步

@@ -29,13 +29,14 @@ read_file abc453.md         # 读内容
 
 ### Step 3-2 环境初始化
 
-工作目录名：`work_{PID}`
+工作目录：`{BASE_DIR}/work_{PID}`
 PID 可自题明确（如 `abc453` 赛中 A 题 → `abc453a`）。
 
 ```bash
-rm -rf work_{PID}
-cp -r question work_{PID}
-# {WORK_DIR} = work_{PID}
+BASE_DIR=$(detect_desktop)
+rm -rf $BASE_DIR/work_{PID}
+cp -r question $BASE_DIR/work_{PID}
+# {WORK_DIR} = $BASE_DIR/work_{PID}
 ```
 
 ### Step 3-3 生题面
@@ -134,6 +135,29 @@ unzip -l {pid}_{title}.zip | head -6
 - ❌ 禁留上题上下文
 - ✅ 每题独读题面信息
 
+### Step 3-10 打包合集
+
+⚠️ **所有题目逐题搬完后，打包成比赛合集，不散包交付。**
+
+```bash
+# 回到桌面基目录，将所有 work_* 汇总到同一 zip
+BASE_DIR=$(detect_desktop)
+cd $BASE_DIR
+zip -r {contest_id}.zip work_*/
+# 例：$BASE_DIR/abc453.zip 内含 work_abc453a_题A/ work_abc453b_题B/ ...
+```
+
+**验合集：**
+```bash
+unzip -l $BASE_DIR/{contest_id}.zip | head -20
+# 应见各题目录均在 zip 根下
+```
+
+**清理单题 zip（可选）：**
+```bash
+rm -f work_*/*.zip
+```
+
 ## 完成
 
-N 个 zip 文件已生，务成！
+1 个合集 zip 文件已生，务成！

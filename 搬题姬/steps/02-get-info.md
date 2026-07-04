@@ -39,8 +39,9 @@
 ### 如果当前目录是 `work`（即初始化时PID未知）：
 
 ```bash
-mv work work_{PID}
-# {WORK_DIR} = work_{PID}
+BASE_DIR=$(detect_desktop)
+mv $BASE_DIR/work $BASE_DIR/work_{PID}
+# {WORK_DIR} = $BASE_DIR/work_{PID}
 ```
 
 ### 如果当前目录已经是 `work_{PID}`（即初始化时已用PID）：
