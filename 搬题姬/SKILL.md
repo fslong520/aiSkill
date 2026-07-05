@@ -1,6 +1,6 @@
 ---
 name: 搬题姬
-version: 2.4.1
+version: 2.5.0
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
@@ -48,13 +48,14 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 6. 读 steps/05-config.md → 写配置
 7. 实现标程 std.cpp
 8. 读 steps/07-testdata.md → 生数据（⚠️ 只改 mkin.h，勿动 mkdata.cpp）
-9. 打包：`zip -r $BASE_DIR/{PID}_{标题简写}.zip $BASE_DIR/work_{PID}_{标题简写}`
+9. 读 steps/08-audit.md → 审计（文件完整性、模板一致、GESP等级、分值的复核）
+10. 打包：`zip -r $BASE_DIR/{PID}_{标题简写}.zip $BASE_DIR/work_{PID}_{标题简写}`（审计未过不打包）
 
 ### ⚠️ 比赛搬运（必先创题面汇总文件）
 
 1. 读 steps/contest/01-list.md → 创题面汇总文件 `{contest_id}.md`
 2. 读 steps/contest/02-problem.md → **逐题译之，追加写入汇总文件**
-3. 读 steps/contest/03-move.md → **自文件读题面**，逐题生完整题包
+3. 读 steps/contest/03-move.md → **自文件读题面**，逐题生完整题包（含审计）
 4. **打包合集**：所有题目 zip 打包到同一 `{contest_id}.zip` 内，不散包
 
 ### 生成测试点
@@ -72,7 +73,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
    - 文件：读 steps/09-from-file.md 取题面（仅内部参考，不生正式 problem_zh.md）
    - 文本：读 steps/10-from-text.md 自文本取题面
 4. 读 steps/11-testdata-only.md → **实现标程 + 生测试数据 + 打包 testdata.zip + 交付**
-5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、全局打包（08-package.md）
+5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、审计（08-audit.md）、全局打包（09-package.md）
 
 ### 生成测试点
 
@@ -89,12 +90,13 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
    - 文件：读取 steps/09-from-file.md 提取题面（仅内部参考，不生成正式 problem_zh.md）
    - 文本：读取 steps/10-from-text.md 从文本提取题面
 4. 读取 steps/11-testdata-only.md → **实现标程 + 生成测试数据 + 打包 testdata.zip + 交付**
-5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、全局打包（08-package.md）
+5. **跳过**：题面格式化（04-problem.md）、GESP 定级（03-gesp.md）、配置写入（05-config.md）、审计（08-audit.md）、全局打包（09-package.md）
 
 ## AVOID
 
 - AVOID 不读步骤文档即执行
-- AVOID 不按模板格式
+- ⚠️ **AVOID 跳过审计（08-audit.md）：题包生成后必审计，未过不打包**
+- ⚠️ **AVOID 不按模板格式**
 - AVOID 测试数据只写样例
 - AVOID GESP等级乱判
 - AVOID 忘清理工作目录（`work_*`）
@@ -108,7 +110,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 - ⚠️ **AVOID 删除图片链接：题面中 `![](url)`、`<img>` 标签等所有图片语法必原样保留**
 - ⚠️ **AVOID 删除示意图：题面原有示意图、表格、公式必完整保留**
 - ⚠️ **生成测试点时 AVOID 生成 problem_zh.md、problem.yaml**
-- ⚠️ **生成测试点时 AVOID 全局打包（08-package.md 之整个工作目录 zip），只打包 testdata/ 下文件**
+- ⚠️ **生成测试点时 AVOID 全局打包（09-package.md 之整个工作目录 zip），只打包 testdata/ 下文件**
 - ⚠️ **生成测试点时 AVOID 跳过 std.cpp：无标程则 .out 不出**
 - ⚠️ **生成测试点时 AVOID 只写样例数据：25 组全覆盖（含 Hack）**
 - ⚠️ **生成测试点时 AVOID 交付前不验证：必查 .in 格式、.out 与样例一致、文件成对存在**
