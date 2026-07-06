@@ -24,12 +24,12 @@
 
 ### 无比赛信息
 
-单题搬运且无定来源：`pid: null`
+单题搬运且无定来源：`pid: "null"`
 
 ## 配置格式
 
 ```yaml
-pid: abc453a
+pid: "abc453a"
 title: "移除前导o(Trimo)"
 score:  # AI 按 03-gesp.md「第六步：定分」规则估算
 tag:
