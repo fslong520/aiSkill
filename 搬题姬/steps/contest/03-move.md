@@ -53,7 +53,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 ### Step 3-4 写配
 
 ```yaml
-pid: abc453a
+pid: "abc453a"
 title: "中(英)"
 score:  # AI 按 03-gesp.md「第六步：定分」规则估算，已知比赛分数直接采用
 tag:
