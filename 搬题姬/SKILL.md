@@ -1,6 +1,6 @@
 ---
 name: 搬题姬
-version: 2.5.0
+version: 2.5.3
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
