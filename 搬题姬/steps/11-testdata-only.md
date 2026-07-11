@@ -94,6 +94,12 @@ else if (case_num >= 3 && case_num <= 5) {
 格式见 **`references/testdata-design.md` → 五、config.yaml 格式**。
 **时/内存限**自用户供题信息取。若用户未供，主动问。
 
+### 4b. 追加测试点分布表
+
+写完 config.yaml 后，**必**于 `{WORK_DIR}/problem_zh.md` 的 `</div>` 前追加测试点分布表。
+
+格式详见 **`references/testdata-design.md` → 六、测试点分布表格式**。**此步不可跳过。**
+
 ### 5. 编译运行
 
 ```bash
@@ -124,6 +130,7 @@ g++ mkdata.cpp -o mkdata -std=c++17
 - [ ] 前 2 组数与样例题完全一致（用 `diff` 或 `read_file` 较）
 - [ ] 每组 .in 格合同题入格式述
 - [ ] {WORK_DIR}/testdata/config.yaml 之 subtask cases 表与实生文件一致
+- [ ] {WORK_DIR}/problem_zh.md 末尾含测试点分布表
 - [ ] `lsp_diagnostics` 查 mkin.h 无误
 
 ### 7. 打包
@@ -146,7 +153,8 @@ zip testdata.zip *.in *.out config.yaml
 
 告用户测数已生：
 - `{WORK_DIR}/testdata/` 目录：25 组 `.in` + 25 组 `.out` + `config.yaml`
-- `{WORK_DIR}/testdata/testdata.zip`：前诸文件打
+- `{WORK_DIR}/testdata/testdata.zip`：前诸文件打包
+- `{WORK_DIR}/problem_zh.md`：内含测试点分布表
 
 ## 与常流之别
 
@@ -159,3 +167,4 @@ zip testdata.zip *.in *.out config.yaml
 | mkdata + 运 | 行 | **行** |
 | 打包 zip | 打全 {WORK_DIR}/ | **只打 testdata/ 为 testdata.zip** |
 | {WORK_DIR}/testdata/config.yaml | 写 | **写** |
+| 追加测试点分布表至 problem_zh.md | 做 | **做**（内参 problem_zh.md 也追加） |
