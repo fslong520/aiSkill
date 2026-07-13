@@ -31,6 +31,9 @@ import platform
 CDP_PORT = 9022
 CDP_URL = f"http://localhost:{CDP_PORT}"
 
+# 专用浏览器账户目录，与 Default/ 同级
+URLGO_DATA_DIR = os.path.expanduser("~/.config/microsoft-edge/urlgo")
+
 # 浏览器配置
 BROWSERS = {
     "Linux": {
@@ -158,8 +161,7 @@ def cmd_status():
         print(f"❌ CDP 未开启")
         print()
         print("启动方式:")
-        print("  1. 运行: urlgo start")
-        print("  2. 手动启动: microsoft-edge --remote-debugging-port=9022 &")
+        print("  运行: urlgo start")
 
 def cmd_start():
     """查找并启动浏览器"""
@@ -210,7 +212,8 @@ def cmd_start():
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         proc = subprocess.Popen(
-            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run"],
+            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run",
+             f"--user-data-dir={URLGO_DATA_DIR}"],
             startupinfo=startupinfo,
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS,
             stdout=subprocess.DEVNULL,
@@ -219,7 +222,8 @@ def cmd_start():
     else:
         # Unix 上使用 start_new_session 脱离进程组
         proc = subprocess.Popen(
-            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run"],
+            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run",
+             f"--user-data-dir={URLGO_DATA_DIR}"],
             start_new_session=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -229,7 +233,7 @@ def cmd_start():
 
     # 等待启动
     import time
-    for i in range(10):
+    for i in range(30):
         time.sleep(0.5)
         if check_cdp():
             print(f"✅ 浏览器已启动 (CDP 端口 {CDP_PORT})")
