@@ -1,0 +1,14 @@
+[Unit]
+Description=Blaze Fan — Smart Auto Fan Control
+Documentation=https://github.com/nbfc-linux/nbfc-linux
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/blaze-fan.sh
+Restart=always
+RestartSec=10
+CPUQuota=10%
+
+[Install]
+WantedBy=multi-user.target
