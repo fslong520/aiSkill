@@ -1,1 +1,0 @@
-./mechrevo_fan.o

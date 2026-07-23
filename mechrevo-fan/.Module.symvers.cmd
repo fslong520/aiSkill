@@ -1,1 +1,0 @@
-savedcmd_Module.symvers :=  /usr/lib/modules/7.1.3-1-MANJARO/build/scripts/mod/modpost -M    -a    -N  -o Module.symvers -n -T modules.order -i /usr/lib/modules/7.1.3-1-MANJARO/build/Module.symvers -e 
