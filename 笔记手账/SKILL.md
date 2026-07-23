@@ -1,6 +1,6 @@
 ---
 name: 笔记手账
-version: 1.5.0
+version: 1.5.1
 description: 笔记手账风格教育知识卡片Prompt生成器。输入知识点，输出瘦金体优雅简洁的手写体结构化Prompt，支持5套风格主题。
 allowed-tools:
   - Read
@@ -272,11 +272,15 @@ metadata:
 ### 步骤1：理解需求
 
 确认以下信息（如用户已提供则跳过）：
-- 知识点主题？（如：栈和队列、二叉树遍历、排序算法）
+- 封面页标题？（如："STL容器：C++的工具箱"，必填）
+- 封面副标题？（如："CSP-J初赛必会知识点"，可选）
+- 知识点主题？（如：栈和队列、二叉树遍历、排序算法，用于知识页标题）
 - 用途？（知识卡片 / 打卡海报 / 讲解配图）
 - 页数？（单页 / 多页系列）
 - 风格主题？（经典 / 科幻 / 活力手账 / 青绿新生 / 蔚蓝格调）
 - 特殊要求？（需包含代码？需对比？需图解？）
+
+**标题为必填项**，其余可省略由AI自动补全。用户未提供标题时，须主动询问不可跳过。
 
 ### 步骤2：内容规划
 
@@ -410,20 +414,20 @@ metadata:
 
 ## Prompt模板（可直接复制）
 
-以下模板以**经典风格（瘦金体）**示范。使用时将 **[风格字体]** 替换为所选风格的对应字体（见「风格体系」各风格的"字体"行）。
+以下模板以**经典风格（瘦金体）**示范。使用时将 **[风格字体]** 替换为所选风格的对应字体，将 **[用户标题]** / **[用户副标题]** 替换为步骤1中用户提供的内容。
 
 ### 封面页模板
 
 ```
 Clean, elegant cover page in notebook scrapbook style. Cream paper with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN [风格字体] STYLE. Minimalist and refined.
 
-Top: blue tag "60天一起打卡！" on left, yellow sticky note "每天进步一点点！" on right.
-Title "STL容器：C++的工具箱" in bold navy blue [风格字体], centered, with thin yellow underline.
-Subtitle "CSP-J初赛必会知识点" in green [风格字体], centered.
+Top: blue tag "[打卡标签]" on left, yellow sticky note "[便利贴文字]" on right.
+Title "[用户标题]" in bold navy blue [风格字体], centered, with thin yellow underline.
+Subtitle "[用户副标题]" in green [风格字体], centered.
 
 Center: "每日知识卡 + 配套练习" in blue rounded box with calendar icon.
 
-Bottom: Three mini preview cards (vector, stack, set) as simple hand-drawn icons. Small decorative stars in corners.
+Bottom: Three mini preview icons related to the topic. Small decorative stars in corners.
 
 ELEGANT RULES:
 - Generous whitespace, centered composition
@@ -440,7 +444,7 @@ Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
 Clean, elegant knowledge page in notebook scrapbook style. Cream paper with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist with generous whitespace.
 
 Top: blue tag on left, yellow sticky note "Day XX 第X页" on right.
-Title "Day XX | [主题]" in bold green [风格字体], centered, LARGE FONT.
+Title "Day XX | [用户标题]" in bold green [风格字体], centered, LARGE FONT.
 
 Section 1: Orange header "一、[小节名]" in [风格字体], MEDIUM FONT. White card below with subtle shadow. Blue hand-drawn icon. Bullet points in [风格字体] with SMALL FONT, key terms underlined in orange.
 
@@ -472,12 +476,12 @@ Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
 ```
 Clean, elegant practice page in notebook scrapbook style. Cream paper with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist layout with generous whitespace.
 
-Top: blue tag "CSP-J初赛60天打卡" on left, yellow sticky note "Day XX 第X页" on right.
+Top: blue tag "[用户标题]" on left, yellow sticky note "Day XX 第X页" on right.
 Title "Day XX | 配套练习" in bold green [风格字体], centered, LARGE FONT, with thin yellow underline.
 
 Small tip box: lightbulb icon + "建议先独立完成，再看答案解析。" in orange, centered, minimal border, SMALL FONT.
 
-Topic "STL容器 (10题)" in navy blue, centered, MEDIUM FONT.
+Topic "[用户标题] (N题)" in navy blue, centered, MEDIUM FONT.
 
 TWO COLUMNS, equal width, clean vertical separation:
 
@@ -523,7 +527,7 @@ Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
 ```
 Clean, elegant answer page in notebook scrapbook style. Cream paper with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist with generous whitespace.
 
-Top: blue tag "CSP-J初赛60天打卡" on left, yellow sticky note "Day XX 第X页" on right.
+Top: blue tag "[用户标题]" on left, yellow sticky note "Day XX 第X页" on right.
 Title "Day XX | 答案解析" in bold green [风格字体], centered, LARGE FONT, with thin yellow underline.
 
 TWO COLUMNS, equal width, clean vertical separation:
@@ -536,7 +540,7 @@ Left column (Questions 1-5):
 
   Example:
   ✓ ① C
-  解析：vector支持随机访问，时间复杂度O(1)。list只能顺序访问，stack和queue不支持下标访问。
+  解析：[简要解释]
   ─────────────────────────────────
 
 Right column (Questions 6-10):
@@ -597,6 +601,7 @@ Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
 **更新日期**: 2026-07-24
 
 **变更记录**：
+- 2026-07-24: v1.5.1 封面标题改为用户输入而非写死，步骤1新增封面标题/副标题为必填询问项，模板中死字标题全部替换为[用户标题]占位符
 - 2026-07-24: v1.5.0 配色主题全面升级为风格体系：赛博朋克→科幻风格（配色与视觉元素重设），各风格新增视觉特征/字体/装饰元素/背景质感/氛围描述。字体不再固定瘦金体，各风格配独立字体（经典瘦金体/科幻硬朗黑体/活力圆体/青绿行楷/蔚蓝宋体）。配色速查表改为风格速查表含字体列，全篇引用更新。
 - 2026-07-23: v1.4.0 新增四套风格：赛博朋克、活力手账、青绿新生、蔚蓝格调
 - 2026-07-23: v1.3.0 优化字号层级，正文字体偏小，标题突出
