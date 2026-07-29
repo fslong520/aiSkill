@@ -118,29 +118,13 @@ g++ -o mkdata mkdata.cpp -std=c++17
 
 **审计不通过不得打包！** 发现问题则修正后重审。
 
-### Step 3-10 打包发布
+### Step 3-10 清理工作目录
 
-⚠️ **打包铁律：必自 {WORK_DIR} 之父目录打包全 {WORK_DIR} 目录。**
+⚠️ **比赛搬运时不生成单题 zip**——合集 zip 会统一打包，单题 zip 冗余且可能嵌套致导入失败。
 
 ```bash
-# ✅ 正：打包全 {WORK_DIR}/ 目录（解压后有 {WORK_DIR}/ 壳）
-rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe
-zip -r {pid}_{title}.zip {WORK_DIR}
-
-# ❌ 误：cd 进 {WORK_DIR} 再打包（文件散根目录）
-# cd {WORK_DIR} && zip -r ../{pid}_{title}.zip .
-# ❌ 误：于 {WORK_DIR} 目录内打包当前目录
-# cd {WORK_DIR} && zip -r {pid}_{title}.zip *
-```
-
-**验打包构：**
-```bash
-unzip -l {pid}_{title}.zip | head -6
-# 望出：
-#   {WORK_DIR}/
-#   {WORK_DIR}/std.cpp
-#   {WORK_DIR}/problem_zh.md
-#   {WORK_DIR}/testdata/
+# 仅清理可执行文件，不打包
+rm -f {WORK_DIR}/std {WORK_DIR}/mkdata {WORK_DIR}/*.exe {WORK_DIR}/*.zip
 ```
 
 ## 成后
@@ -153,11 +137,13 @@ unzip -l {pid}_{title}.zip | head -6
 ### Step 3-11 打包合集
 
 ⚠️ **所有题目逐题搬完后，打包成比赛合集，不散包交付。**
+⚠️ **合集内不嵌套单题 zip**——Step 3-10 已清理之。
 
 ```bash
 # 回到桌面基目录，将所有 work_* 汇总到同一 zip
 BASE_DIR=$(detect_desktop)
 cd $BASE_DIR
+rm -f work_*/*.zip      # 确保无嵌套 zip
 zip -r {contest_id}.zip work_*/
 # 例：$BASE_DIR/abc453.zip 内含 work_abc453a_题A/ work_abc453b_题B/ ...
 ```
@@ -165,12 +151,8 @@ zip -r {contest_id}.zip work_*/
 **验合集：**
 ```bash
 unzip -l $BASE_DIR/{contest_id}.zip | head -20
-# 应见各题目录均在 zip 根下
-```
-
-**清理单题 zip（可选）：**
-```bash
-rm -f work_*/*.zip
+# 应无 .zip 嵌套条目
+# 应见各题目录均在 zip 根下（无 work_ 前缀更佳）
 ```
 
 ## 完成
