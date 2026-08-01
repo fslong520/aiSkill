@@ -1,6 +1,5 @@
 #include <iostream>
 #include <algorithm>
-#include <cstring>
 using namespace std;
 
 // 全局数组——大小按题面数据范围来定

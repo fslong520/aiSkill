@@ -9,7 +9,6 @@
 ```cpp
 #include <iostream>
 #include <algorithm>
-#include <cstring>
 using namespace std;
 
 // 全局数组——大小按题面数据范围来定
@@ -35,8 +34,12 @@ int main()
 3. `#include <bits/stdc++.h>` 尽量少用，优先逐一声明所需头文件
 4. **STL 容器（vector / map / set 等）尽量少用**——优先用全局数组（`int dp[105][105]` 而非 `vector<vector<int>>`），确有必要时可用
 5. ⚠️ **禁 `memcpy` / `memset`**——数组拷贝用 `vector` 赋值（`auto prev = dp`），初始化用 `fill`
-5. ⚠️ **禁动态内存分配**——`new`/`malloc`/`vector.resize()` 均不可
-6. 时复杂度满足时限
+6. ⚠️ **禁动态内存分配**——`new`/`malloc`/`vector.resize()` 均不可
+7. ⚠️ **字符串用 `std::string`，禁用 `char[]`**——读入用 `cin >> s` 或 `getline`，输出用 `s.c_str()`（如需）
+   - ❌ `char s[105]; scanf("%s", s);`
+   - ✅ `string s; cin >> s;`
+8. ⚠️ **不引入 `<cstring>` / `<string.h>`**——禁 `char[]`、`memcpy`、`memset`。初始化用 `fill`，拷贝用赋值
+9. 时复杂度满足时限
 
 ## ⚠️ 铁律：写后即验（生数据前）
 
