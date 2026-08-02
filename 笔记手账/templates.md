@@ -124,7 +124,7 @@
 [title]: "[主标题]" in BOLD [主题标题色] [风格字体], centered, thin 柠檬黄 underline
 [subtitle]: "[副标题]" in [主题副标题色] [风格字体], centered
 [layout]: centered composition, generous whitespace, clean and refined, perfectly aligned
-[decorations]: 墨蓝 tag top-left, 柠檬黄 sticky note top-right, small stars in corners only
+[decorations]: 墨蓝 tag top-left, 柠檬黄 sticky note top-right, small 暖金/柠檬黄 stars in corners, 暖金 page-footer icon
 [icons]: minimal hand-drawn preview icons at bottom
 [aspect_ratio]: 3:4
 ```
@@ -138,10 +138,10 @@
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
 [title]: "Day XX | [主题]" in BOLD [主题标题色] [风格字体], centered
 [sections]:
-  - 墨蓝 header "一、[小节名]" in [风格字体] + white card with subtle shadow + 黛蓝 icon + [风格字体] bullet points
+  - 墨蓝 header "一、[小节名]" in [风格字体] + white card with subtle shadow, 双色条 (黛蓝 main + 暖金 thin) + 黛蓝 icon + [风格字体] bullet points
   - repeat structure
 [special_sections]: 高频易错点 (lightbulb, 暖金) + 一句话记忆 (target, 青碧), side by side at bottom
-[decorations]: minimal, only small stars in corners
+[decorations]: small 暖金/柠檬黄 stars in corners, thin 暖金 separators between sections, 暖金 page-footer icon
 [aspect_ratio]: 3:4
 ```
 
@@ -160,7 +160,7 @@
   right: ⑥-⑩ questions
   each question: number + text + 2x2 option grid (A B / C D) in [风格字体]
 [footer]: "做完后再看下一张解析图。" with 青碧 arrow, centered
-[decorations]: minimal, only corner stars
+[decorations]: small 暖金/柠檬黄 stars in corners, 暖金 page-footer icon
 [aspect_ratio]: 3:4
 ```
 
@@ -177,7 +177,7 @@
   right: answers 6-10
   each answer: 青碧 checkmark + number + letter + explanation in [风格字体]
 [footer]: "易错题回顾" section in 暖金 box
-[decorations]: minimal, only corner stars
+[decorations]: small 暖金/柠檬黄 stars in corners, thin 暖金 separators between answers, 暖金 page-footer icon
 [aspect_ratio]: 3:4
 ```
 
@@ -198,11 +198,11 @@ Subtitle "[用户副标题]" in BOLD 黛蓝(#3E5C76) [风格字体], centered.
 
 Center: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded box with calendar icon, perfectly centered, 暖金(#E8A33D) border.
 
-Bottom: Three mini preview icons related to the topic, evenly spaced. A few small stars in the corners only, nothing else.
+Bottom: Three mini preview icons related to the topic, evenly spaced. A few small warm-gold/lemon stars in the corners. Warm-gold small icon (pencil) at bottom-right.
 
 ELEGANT RULES:
 - Perfectly aligned, straight elements, no tilting
-- Minimal decoration, generous whitespace
+- Refined decoration (tags, sticky notes, stars, warm-gold page-footer icon), generous whitespace
 - Palette: 墨蓝 #26355D main, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 cool accents, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
 - Typography hierarchy: title > subtitle > info
 - [风格字体]: font style matching the chosen theme (AI selects best available system font)
@@ -218,15 +218,17 @@ Clean, elegant knowledge page in notebook scrapbook style. Warm cream paper (#FF
 Top: 墨蓝 tag straight on left, 柠檬黄 sticky note "Day XX 第X页" straight on right.
 Title "Day XX | [用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with straight 柠檬黄 underline.
 
-Section 1: 墨蓝 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT, straight. White card below with subtle shadow and 黛蓝(#3E5C76) top color bar. 黛蓝 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms in 柠檬黄 with fluorescent highlighter stroke.
+Section 1: 墨蓝 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT, straight. White card below with subtle shadow and 双色条 (黛蓝(#3E5C76) main bar + thin 暖金(#E8A33D) accent line). 黛蓝 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms in 柠檬黄 with fluorescent highlighter stroke.
 
-Section 2: Same structure, 雾蓝(#A9BFD9) top color bar.
+Section 2: Same structure, 雾蓝(#A9BFD9) main bar + thin 暖金 accent line.
 
-[Repeat for more sections]
+[Repeat for more sections, thin 暖金 separator lines between sections]
 
 Bottom: Two boxes side by side, same height, aligned:
   Left: "高频易错点" with lightbulb icon, 暖金(#E8A33D) border, SMALL FONT, 柠檬黄 highlighter on key words
   Right: "一句话记忆" with target icon, 青碧(#00CEC9) border, SMALL FONT, 柠檬黄 highlight background
+
+Page footer: small 暖金 book icon at bottom-right corner.
 
 FONT SIZE HIERARCHY:
 - Title: LARGE (main focus)
@@ -236,9 +238,9 @@ FONT SIZE HIERARCHY:
 
 ELEGANT RULES:
 - Perfectly aligned, straight headers and cards, no tilting
-- Minimal decoration, generous whitespace
-- Palette: 墨蓝 #26355D headers, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 accents, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
-- Cards have subtle shadows and colored top bars, not heavy borders
+- Refined decoration (tags, sticky notes, stars, 暖金 separators, page-footer icon), generous whitespace
+- Palette: 墨蓝 #26355D headers, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 card bars, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
+- Cards have subtle shadows and 双色条 top bars (main color + thin 暖金 line), not heavy borders
 - [风格字体]: font matching the chosen style's character
 
 Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
@@ -279,7 +281,7 @@ Right column:
 
   [Continue for 5 questions]
 
-Bottom: "做完后再看下一张解析图。" with small 青碧(#00CEC9) arrow, centered, SMALL FONT.
+Bottom: "做完后再看下一张解析图。" with small 青碧(#00CEC9) arrow, centered, SMALL FONT. Warm-gold small icon (pencil) at bottom-right.
 
 FONT SIZE HIERARCHY:
 - Title: LARGE
@@ -288,7 +290,7 @@ FONT SIZE HIERARCHY:
 
 ELEGANT RULES:
 - Precise alignment, clean grid, equal spacing
-- No decoration beyond corner stars, generous whitespace
+- Refined decoration: corner stars, warm-gold page-footer icon, thin 暖金 separator between topic and questions; generous whitespace
 - Palette: 墨蓝 #26355D question circles, 青碧 #00CEC9 arrow, 暖金 #E8A33D tip, warm cream background
 - [风格字体]: font matching the chosen style's character
 
@@ -319,7 +321,7 @@ Left column (Questions 1-5):
 Right column (Questions 6-10):
   Same structure, numbers continue
 
-Bottom: "易错题回顾" section in 暖金(#E8A33D) box with lightbulb icon, listing commonly mistaken questions and key points.
+Bottom: "易错题回顾" section in 暖金(#E8A33D) box with lightbulb icon, listing commonly mistaken questions and key points. Warm-gold small icon (book) at bottom-right.
 
 FONT SIZE HIERARCHY:
 - Title: LARGE
@@ -330,8 +332,8 @@ FONT SIZE HIERARCHY:
 ELEGANT RULES:
 - Each answer clearly marked with 青碧 checkmark
 - Explanations concise but complete
-- Thin separators between answers
-- No decoration beyond corner stars, generous whitespace
+- Thin 暖金 separators between answers
+- Refined decoration: corner stars, warm-gold page-footer icon; generous whitespace
 - Palette: 墨蓝 #26355D answer letters, 青碧 #00CEC9 checkmarks, 暖金 #E8A33D box, warm cream background
 - [风格字体]: font matching the chosen style's character
 
@@ -340,5 +342,5 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 
 ---
 
-**文档版本**: 3.1
+**文档版本**: 3.2
 **最后更新**: 2026-08-02

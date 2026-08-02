@@ -7,7 +7,7 @@ A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFF
 
 Title "栈和队列：数据结构的两大基础" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J必备知识点" in 黛蓝(#3E5C76).
 
-墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 柠檬黄 and 黛蓝 star symbols ☆ in corners only.
+墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
 Section 1: 墨蓝 header "一、栈（Stack）". White rounded card below with light shadow, 黛蓝 top color bar. Stack icon in 黛蓝. Bullet points: "后进先出（LIFO）" in bold 墨蓝, "像叠盘子：最后放的最先拿" , "push压入、pop弹出、top取顶".
 
@@ -42,7 +42,7 @@ Section 4: 墨蓝 header "四、层序遍历". White rounded card below with lig
 
 一句话记忆 box: Target icon, 青碧(#00CEC9) border, "前根左右，中左根右，后左右根，层序用队列", 柠檬黄 highlight background.
 
-Decorative elements: a few corner stars ☆ only, open book at bottom, pencil accent. Nothing else.
+Decorative elements: corner stars ☆, open book at bottom, warm-gold pencil accent at bottom-right.
 
 Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect ratio 3:4.
 ```
@@ -54,7 +54,7 @@ A educational comparison card in notebook scrapbook style. Warm cream paper (#FF
 
 Title "排序算法大比拼：谁最快？" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J高频考点" in 黛蓝(#3E5C76).
 
-墨蓝 header tag in top-left corner reading "算法专题", straight. 柠檬黄 sticky note in top-right with handwritten text "排序是必考题！", straight. A few 柠檬黄 and 黛蓝 star symbols ☆ in corners only.
+墨蓝 header tag in top-left corner reading "算法专题", straight. 柠檬黄 sticky note in top-right with handwritten text "排序是必考题！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
 Section 1: 墨蓝 header "一、冒泡排序". White rounded card below with light shadow, 黛蓝 top color bar. Bubble icon in 黛蓝. "相邻比较交换，每轮冒出最大值" with complexity O(n²) in 暖金(#E8A33D).
 
@@ -68,7 +68,7 @@ Section 4: 墨蓝 header "四、快速排序". White rounded card below with lig
 
 一句话记忆 box: Target icon, 青碧 border, "冒泡选择O(n²)，快排平均O(n log n)", 柠檬黄 highlight background.
 
-Decorative elements: a few corner stars ☆ only, open book at bottom, pencil accent. Nothing else.
+Decorative elements: corner stars ☆, open book at bottom, warm-gold pencil accent at bottom-right.
 
 Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect ratio 3:4.
 ```
@@ -80,7 +80,7 @@ A educational daily check-in cover page in notebook scrapbook style. Warm cream 
 
 Title "CSP-J初赛 60天打卡" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "Day 01 | 计算机系统基础" in 黛蓝(#3E5C76).
 
-墨蓝 header tag in top-left corner reading "60天一起打卡！", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 柠檬黄 and 黛蓝 star symbols ☆ in corners only.
+墨蓝 header tag in top-left corner reading "60天一起打卡！", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
 Middle area: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded rectangle with calendar icon, 暖金(#E8A33D) border.
 
@@ -101,7 +101,7 @@ A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFF
 
 Title "STL容器：C++的工具箱" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J必会容器" in 黛蓝(#3E5C76).
 
-墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "容器是重点！", straight. A few 柠檬黄 and 黛蓝 star symbols ☆ in corners only.
+墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "容器是重点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
 Section 1: 墨蓝 header "一、vector 动态数组". White rounded card below with light shadow, 黛蓝 top color bar. Array icon in 黛蓝. "连续存储，随机访问O(1)，尾部增删O(1)" with常用操作: push_back, pop_back, size.
 
@@ -115,7 +115,7 @@ Section 4: 墨蓝 header "四、set 集合". White rounded card below with light
 
 一句话记忆 box: Target icon, 青碧(#00CEC9) border, "vector数组，stack栈，queue队列，set集合", 柠檬黄 highlight background.
 
-Decorative elements: a few corner stars ☆ only, open book at bottom, pencil accent. Nothing else.
+Decorative elements: corner stars ☆, open book at bottom, warm-gold pencil accent at bottom-right.
 
 Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect ratio 3:4.
 ```
