@@ -1,6 +1,6 @@
 ---
 name: 笔记手账
-version: 1.8.0
+version: 1.9.4
 description: 笔记手账风格教育知识卡片Prompt生成器。输入知识点，输出优雅简洁的手写体结构化Prompt，支持8套风格主题（含二次元/动漫风格、少女粉风格、我的世界像素风等）。字体自动匹配系统可用字体。
 allowed-tools:
   - Read
@@ -34,10 +34,10 @@ metadata:
 |------|------|
 | **基底** | 米白/宣纸色纸张底纹，轻微纤维纹理，撕纸毛边，活页孔，螺旋装订 |
 | **风格** | 经典风格（默认）：复古学院风，温润雅致，墨朱赭绿和谐共处。另有科幻/活力手账/青绿新生/蔚蓝格调/二次元/动漫/少女粉/我的世界像素风 |
-| **字体** | 各风格字体方向见「风格体系」，AI自动匹配系统可用字体 |
-| **装饰** | 和纸胶带、回形针、手绘细线、星点⋆、小箭头→、半透明便利贴、小叶片🍃、朱红圆形编号 |
-| **布局** | 留白充裕，呼吸感强，对齐精确，信息层级分明 |
-| **质感** | 手绘感与精致感平衡，温润不粗糙 |
+| **字体** | 各风格字体方向见「风格体系」，AI自动匹配系统可用字体。**一律加粗渲染（BOLD），笔画饱满丰腴、优雅流畅，禁用细瘦字重** |
+| **装饰** | 手绘箭头↗、涂鸦圈、微倾斜便利贴、波浪高亮划痕、错落小星⋆、回形针、和纸胶带、朱红圆形编号、小叶片🍃——灵动摇曳，错落有致 |
+| **布局** | 留白充裕，呼吸感强；标题/标签/便利贴微倾斜错落，动感而不乱；信息层级分明 |
+| **质感** | 手绘感与精致感平衡，温润不粗糙，灵动不呆板 |
 
 ### 风格体系
 
@@ -49,9 +49,9 @@ metadata:
 
 #### 经典风格（默认）
 
-**视觉特征**：复古学院风，温润雅致。取法传统文人笔墨与现代手账美学之交融——不追求艳丽夺目，而以和谐温润为要。墨色为主，朱赭点睛，青绿为辅，如一幅淡彩工笔。
-**字体**：**瘦金体风格**——笔画瘦劲，锋芒分明，纤细有力，典雅劲健。AI自动匹配系统瘦金体或近瘦金手写字体。字号层级分明，标题大气，正文收敛。
-**装饰元素**：和纸胶带（细条纹/素色/波点）、回形针📎、手绘细线、三点星⋆、小箭头→、半透明便利贴📝、小叶片🍃、朱红圆形编号①。装饰克制而有致，每页点缀二三处，不多不少。
+**视觉特征**：复古学院风，温润雅致而灵动醒目。取法传统文人笔墨与现代手账美学之交融——墨色为主，朱赭点睛，青绿为辅。标题大字带手绘色块，重点以荧光笔划痕高亮，装饰错落倾斜，张弛有度。
+**字体**：**加粗手写钢笔体风格**——钢笔笔触流畅自然，字形舒展端庄，介于楷书端正与行书随性之间，优雅利落不卡通。AI自动匹配系统钢笔手写字体或近钢笔手写字体，**一律加粗渲染（BOLD），笔锋分明，忌细弱无力、忌卡通圆胖**。字号层级分明，标题大气，正文收敛。
+**装饰元素**：手绘箭头↗、涂鸦圈⭕、微倾斜便利贴（旋转 2~5°）、波浪高亮划痕、错落小星⋆、回形针📎、和纸胶带、小叶片🍃、朱红圆形编号①。装饰灵动摇曳、错落有致，每页点缀三四处，醒目而不杂乱。
 **背景质感**：宣纸米色底纹，极轻微纤维感，无重肌理。撕纸边缘自然柔和，活页孔细线框。留白开阔，不染杂色。
 **氛围**：安静、专注、书卷气。不争不抢，内容为王。
 
@@ -203,22 +203,22 @@ metadata:
 
 | 元素       | 描述                                                 |
 | ---------- | ---------------------------------------------------- |
-| **主标题** | 风格对应字体，风格主色，字号大，最醒目               |
-| **副标题** | 风格对应字体，风格副色，字号中等                     |
-| **正文**   | 风格对应字体，深灰色，**字号偏小**                   |
+| **主标题** | 风格对应字体，风格主色，**加粗（BOLD）**，字号大，最醒目 |
+| **副标题** | 风格对应字体，风格副色，**加粗（BOLD）**，字号中等 |
+| **正文**   | 风格对应字体，深灰色，**加粗（BOLD）**，**字号偏小** |
 | **重点**   | 风格对应字体加粗，风格强调色，加粗下划线，字号同正文 |
-| **便利贴** | 风格对应字体，便利贴色上手写，字号小                 |
-| **标签**   | 风格对应字体，标签色上白色手写，字号小               |
-| **选项**   | 风格对应字体，A/B/C/D选项，**字号偏小**              |
+| **便利贴** | 风格对应字体，便利贴色上手写，**加粗（BOLD）**，字号小 |
+| **标签**   | 风格对应字体，标签色上白色手写，**加粗（BOLD）**，字号小 |
+| **选项**   | 风格对应字体，A/B/C/D选项，**加粗（BOLD）**，**字号偏小** |
 
 ### 内容模块
 
 | 模块           | 用途       | 样式                                             |
 | -------------- | ---------- | ------------------------------------------------ |
-| **标题区**     | 主题名称   | 风格对应字体 + 主题色下划线                            |
-| **分区卡片**   | 知识点讲解 | 白色/浅色卡片 + 主题色编号标签                   |
-| **高频易错点** | 常见错误   | 手绘灯泡涂鸦 + 橙色手绘虚线框                    |
-| **一句话记忆** | 核心口诀   | 手绘靶心涂鸦 + 绿色手绘边框                      |
+| **标题区**     | 主题名称   | 风格对应字体加粗 + 主题色手绘色块/波浪下划线，醒目吸睛 |
+| **分区卡片**   | 知识点讲解 | 白色/浅色卡片 + 主题色顶部条/角标 + 错落编号标签 |
+| **高频易错点** | 常见错误   | 手绘灯泡涂鸦 + 橙色手绘虚线框 + 荧光笔高亮重点 |
+| **一句话记忆** | 核心口诀   | 手绘靶心涂鸦 + 绿色手绘边框 + 黄色高亮底色 |
 | **学习计划**   | 任务清单   | 手绘螺旋笔记本 + 手绘复选框                      |
 | **练习题页**   | 配套练习   | 双栏布局 + 绿色手绘编号圆圈 + 提示框             |
 | **答案解析页** | 答案与解析 | 双栏布局 + 绿色对勾 + 简要解析                   |
@@ -390,12 +390,12 @@ metadata:
 
 | 维度                 | 内容                                          |
 | -------------------- | --------------------------------------------- |
-| **section_header**   | 橙色马克笔手写标签，**中等字号**              |
-| **content_card**     | 白色卡片，轻微阴影，无重边框                  |
-| **icon_style**       | 手绘简笔画，深蓝/绿色                         |
-| **text_hierarchy**   | 标题大 → 正文小 → 重点小，层级清晰            |
-| **body_text**        | 铅笔手写，**字号偏小**，细线                  |
-| **special_sections** | 高频易错点 + 一句话记忆，底部并列，**小字号** |
+| **section_header**   | 朱红马克笔手写标签 + 微倾斜，**中等字号**，加粗              |
+| **content_card**     | 白色卡片，轻微阴影，顶部主题色细条/角标                  |
+| **icon_style**       | 手绘简笔画，鸦青/青绿，灵动涂鸦感                         |
+| **text_hierarchy**   | 标题大而醒目 → 正文小 → 重点荧光笔高亮，层级清晰            |
+| **body_text**        | 手写钢笔体，**加粗（BOLD）**，**字号偏小**，粗线                  |
+| **special_sections** | 高频易错点（朱红荧光笔高亮）+ 一句话记忆（赭黄高亮底），底部并列，**小字号** |
 
 #### 练习题页维度
 
@@ -419,7 +419,7 @@ metadata:
 [style]: elegant [风格字体] calligraphy notebook, torn paper edge, hole punches, minimal decoration
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper texture, subtle shadow
-[title]: "[主标题]" in [主题标题色] [风格字体], centered, thin 赭黄 underline
+[title]: "[主标题]" in BOLD [主题标题色] [风格字体], centered, thin 赭黄 underline
 [subtitle]: "[副标题]" in [主题副标题色] [风格字体], centered
 [layout]: centered composition, generous whitespace, clean and refined
 [decorations]: 鸦青 tag top-left, 赭黄 sticky note top-right, small stars in corners only
@@ -434,7 +434,7 @@ metadata:
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 鸦青 tag left, 赭黄 sticky note right
-[title]: "Day XX | [主题]" in [主题标题色] [风格字体], centered
+[title]: "Day XX | [主题]" in BOLD [主题标题色] [风格字体], centered
 [sections]:
   - 朱红 header "一、[小节名]" in [风格字体] + white card with subtle shadow + 鸦青 icon + [风格字体] bullet points
   - repeat structure
@@ -488,11 +488,11 @@ metadata:
 ### 封面页模板
 
 ```
-Clean, elegant cover page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN [风格字体] STYLE. Minimalist and refined.
+Clean, elegant cover page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist and refined.
 
 Top: 鸦青 tag "[打卡标签]" on left, 赭黄 sticky note "[便利贴文字]" on right.
-Title "[用户标题]" in bold 墨黑 [风格字体], centered, with thin 赭黄 underline.
-Subtitle "[用户副标题]" in 青绿 [风格字体], centered.
+Title "[用户标题]" in EXTRA BOLD 墨黑 [风格字体], centered, with thin 赭黄 underline.
+Subtitle "[用户副标题]" in BOLD 青绿 [风格字体], centered.
 
 Center: "每日知识卡 + 配套练习" in 鸦青 rounded box with calendar icon.
 
@@ -510,12 +510,12 @@ Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
 ### 知识页模板
 
 ```
-Clean, elegant knowledge page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist with generous whitespace.
+Clean, elegant knowledge page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist with generous whitespace.
 
 Top: 鸦青 tag on left, 赭黄 sticky note "Day XX 第X页" on right.
-Title "Day XX | [用户标题]" in bold 青绿 [风格字体], centered, LARGE FONT.
+Title "Day XX | [用户标题]" in EXTRA BOLD 青绿 [风格字体], centered, LARGE FONT.
 
-Section 1: 朱红 header "一、[小节名]" in [风格字体], MEDIUM FONT. White card below with subtle shadow. 鸦青 hand-drawn icon. Bullet points in [风格字体] with SMALL FONT, key terms underlined in 朱红.
+Section 1: 朱红 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT. White card below with subtle shadow. 鸦青 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms underlined in 朱红.
 
 Section 2: Same structure, 青绿 header.
 
@@ -543,10 +543,10 @@ Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
 ### 练习题页模板
 
 ```
-Clean, elegant practice page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist layout with generous whitespace.
+Clean, elegant practice page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist layout with generous whitespace.
 
 Top: 鸦青 tag "[用户标题]" on left, 赭黄 sticky note "Day XX 第X页" on right.
-Title "Day XX | 配套练习" in bold 青绿 [风格字体], centered, LARGE FONT, with thin 赭黄 underline.
+Title "Day XX | 配套练习" in EXTRA BOLD 青绿 [风格字体], centered, LARGE FONT, with thin 赭黄 underline.
 
 Small tip box: lightbulb icon + "建议先独立完成，再看答案解析。" in 朱红, centered, minimal border, SMALL FONT.
 
@@ -594,10 +594,10 @@ Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
 ### 答案解析页模板
 
 ```
-Clean, elegant answer page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN [风格字体] STYLE. Minimalist with generous whitespace.
+Clean, elegant answer page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist with generous whitespace.
 
 Top: 鸦青 tag "[用户标题]" on left, 赭黄 sticky note "Day XX 第X页" on right.
-Title "Day XX | 答案解析" in bold 青绿 [风格字体], centered, LARGE FONT, with thin 赭黄 underline.
+Title "Day XX | 答案解析" in EXTRA BOLD 青绿 [风格字体], centered, LARGE FONT, with thin 赭黄 underline.
 
 TWO COLUMNS, equal width, clean vertical separation:
 
@@ -638,7 +638,7 @@ Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
 
 | 风格        | 视觉特征                                         | 字体                 | 氛围                     | 主色                   |
 | ----------- | ------------------------------------------------ | -------------------- | ------------------------ | ---------------------- |
-| 经典        | 复古学院风，温润雅致，墨朱赭绿和谐                 | 瘦金体风格（瘦劲典雅） | 安静、书卷气             | 墨黑+朱红+赭黄+青绿     |
+| 经典        | 复古学院风，温润雅致而灵动醒目                 | 加粗手写钢笔体（流畅优雅，BOLD） | 安静、灵动、醒目         | 墨黑+朱红+赭黄+青绿     |
 | 科幻        | 洁净未来科技感，极简冷冽                         | 无衬线黑体风格（硬朗科技感） | 冷静、精准               | 冰蓝+银灰+电光紫       |
 | 活力手账    | 热情元气，笔触活泼                               | 手写圆体风格（圆润饱满） | 活力、积极               | 活力橙+珊瑚红+薄荷绿   |
 | 青绿新生    | 自然清新，东方素雅                               | 行楷风格（流畅温润）     | 清透、安宁               | 青绿+深青+浅绿         |
@@ -750,9 +750,14 @@ OI风格常见错误，在知识卡底部"高频易错点"中提醒：
 
 ---
 
-**更新日期**: 2026-07-31
+**更新日期**: 2026-08-01
 
 **变更记录**：
+- 2026-08-01: v1.9.4 设计升级：灵动+醒目——标题带手绘色块/波浪下划线，重点荧光笔高亮，标签/便利贴微倾斜（2~5°）错落，卡片加主题色顶部条/角标，装饰错落有致
+- 2026-08-01: v1.9.3 经典风格字体定稿：改"加粗手写钢笔体"——钢笔笔触流畅自然，字形舒展端庄，优雅利落不卡通，BOLD 加粗渲染、笔锋分明
+- 2026-08-01: v1.9.2 经典风格字体再调：弃楷体，改"加粗手写圆体"——笔画圆润饱满、转角柔和，手写温度与手账气质相合，BOLD 加粗渲染保持清晰
+- 2026-08-01: v1.9.1 经典风格字体微调：由"粗楷体"改为"加粗手写楷体"——保留 BOLD 加粗渲染，字形圆润丰腴、优雅流畅，忌粗犷生硬，回归手账温润气质
+- 2026-08-01: v1.9.0 全风格字体默认加粗（BOLD/THICK STROKE）：经典风格"瘦金体"改为"粗楷体"，笔画浑厚饱满；手写体规范、Prompt模板、维度填充、风格速查表同步更新，杜绝细瘦字重
 - 2026-07-31: v1.8.0 经典风格配色改革（深蓝/橙/绿 → 墨黑+朱红+赭黄+青绿，宣纸米底纹），模板配色引用同步更新；新增"我的世界像素风"风格（Minecraft 像素方块美学，像素字体，草绿+钻石蓝+泥土棕配色），触发词新增"像素风、我的世界、Minecraft、像素"；全篇表格格式对齐
 - 2026-07-25: v1.8.0 字体全面解绑，不再指定具体字体名（如瘦金体/清秀宋体），改为风格方向描述，AI自动匹配系统可用字体；新增字体匹配说明
 - 2026-07-25: v1.7.0 新增少女粉风格（纯粉甜美少女风）+ OI代码风格规范（含代码知识卡专用，全局变量/短名/大括号另起一行等竞赛标准）
