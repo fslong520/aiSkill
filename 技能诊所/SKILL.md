@@ -55,6 +55,7 @@ metadata:
 - AVOID 给了分不给建议
 - AVOID 忽略metadata.trigger检查
 - AVOID 冗余描述、废话连篇
+- AVOID Strategy 写死、无裁量空间
 
 ---
 
@@ -71,8 +72,8 @@ metadata:
 |------|------|--------|
 | 结构 | 30 | Keywords(8) + Summary(8) + Strategy(8) + AVOID(6) |
 | 触发 | 10 | metadata.trigger |
-| 内容 | 35 | 语言简练(15) + 信号密度(10) + 可执行性(10) |
-| 实践 | 25 | 渐进式披露(10) + Human-in-the-Loop(10) + CLI友好(5) |
+| 内容 | 40 | 语言简练(15) + 信号密度(10) + 可执行性(10) + **裁量空间(5)** |
+| 实践 | 20 | 渐进式披露(10) + Human-in-the-Loop(5) + CLI友好(5) |
 
 | 等级 | 分数 |
 |------|------|
