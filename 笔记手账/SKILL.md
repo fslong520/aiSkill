@@ -1,6 +1,6 @@
 ---
 name: 笔记手账
-version: 1.9.4
+version: 1.9.5
 description: 笔记手账风格教育知识卡片Prompt生成器。输入知识点，输出优雅简洁的手写体结构化Prompt，支持8套风格主题（含二次元/动漫风格、少女粉风格、我的世界像素风等）。字体自动匹配系统可用字体。
 allowed-tools:
   - Read
@@ -50,7 +50,7 @@ metadata:
 #### 经典风格（默认）
 
 **视觉特征**：复古学院风，温润雅致而灵动醒目。取法传统文人笔墨与现代手账美学之交融——墨色为主，朱赭点睛，青绿为辅。标题大字带手绘色块，重点以荧光笔划痕高亮，装饰错落倾斜，张弛有度。
-**字体**：**加粗手写钢笔体风格**——钢笔笔触流畅自然，字形舒展端庄，介于楷书端正与行书随性之间，优雅利落不卡通。AI自动匹配系统钢笔手写字体或近钢笔手写字体，**一律加粗渲染（BOLD），笔锋分明，忌细弱无力、忌卡通圆胖**。字号层级分明，标题大气，正文收敛。
+**字体**：**瘦金体风格（加粗渲染）**——笔画瘦劲锋利，锋芒劲挺，骨力洞达，瘦而不弱、劲而有韵。AI自动匹配系统瘦金体或近瘦金手写字体，**一律加粗渲染（BOLD），增其分量而不损其锋棱，忌过细无力、忌肥肿圆钝**。字号层级分明，标题大气，正文收敛。
 **装饰元素**：手绘箭头↗、涂鸦圈⭕、微倾斜便利贴（旋转 2~5°）、波浪高亮划痕、错落小星⋆、回形针📎、和纸胶带、小叶片🍃、朱红圆形编号①。装饰灵动摇曳、错落有致，每页点缀三四处，醒目而不杂乱。
 **背景质感**：宣纸米色底纹，极轻微纤维感，无重肌理。撕纸边缘自然柔和，活页孔细线框。留白开阔，不染杂色。
 **氛围**：安静、专注、书卷气。不争不抢，内容为王。
@@ -490,17 +490,17 @@ metadata:
 ```
 Clean, elegant cover page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist and refined.
 
-Top: 鸦青 tag "[打卡标签]" on left, 赭黄 sticky note "[便利贴文字]" on right.
-Title "[用户标题]" in EXTRA BOLD 墨黑 [风格字体], centered, with thin 赭黄 underline.
+Top: 鸦青 tag "[打卡标签]" tilted slightly on left, 赭黄 sticky note "[便利贴文字]" rotated on right.
+Title "[用户标题]" in EXTRA BOLD 墨黑 [风格字体], centered, with hand-drawn 赭黄 wave underline and subtle 墨黑 highlight block.
 Subtitle "[用户副标题]" in BOLD 青绿 [风格字体], centered.
 
-Center: "每日知识卡 + 配套练习" in 鸦青 rounded box with calendar icon.
+Center: "每日知识卡 + 配套练习" in 鸦青 rounded box with calendar icon, slightly tilted.
 
-Bottom: Three mini preview icons related to the topic. Small decorative stars in corners.
+Bottom: Three mini preview icons related to the topic. Hand-drawn arrows and scattered stars in corners, playful but refined.
 
 ELEGANT RULES:
-- Generous whitespace, centered composition
-- Minimal decoration, only essential accents
+- Generous whitespace, lively composition with slight tilts
+- Playful yet refined decoration, scattered accents
 - Typography hierarchy: title > subtitle > info
 - [风格字体]: font style matching the chosen theme (AI selects best available system font)
 
@@ -512,18 +512,18 @@ Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
 ```
 Clean, elegant knowledge page in notebook scrapbook style. Warm rice paper (#F2EDE4) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Minimalist with generous whitespace.
 
-Top: 鸦青 tag on left, 赭黄 sticky note "Day XX 第X页" on right.
-Title "Day XX | [用户标题]" in EXTRA BOLD 青绿 [风格字体], centered, LARGE FONT.
+Top: 鸦青 tag tilted on left, 赭黄 sticky note "Day XX 第X页" rotated on right.
+Title "Day XX | [用户标题]" in EXTRA BOLD 青绿 [风格字体], centered, LARGE FONT, with hand-drawn 赭黄 wave underline.
 
-Section 1: 朱红 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT. White card below with subtle shadow. 鸦青 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms underlined in 朱红.
+Section 1: 朱红 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT, slightly tilted. White card below with subtle shadow and 朱红 top color bar. 鸦青 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms in 朱红 with fluorescent highlighter stroke.
 
 Section 2: Same structure, 青绿 header.
 
 [Repeat for more sections]
 
 Bottom: Two boxes side by side:
-  Left: "高频易错点" with lightbulb icon, 朱红 border, SMALL FONT
-  Right: "一句话记忆" with target icon, 青绿 border, SMALL FONT
+  Left: "高频易错点" with lightbulb icon, 朱红 border, SMALL FONT, 朱红 highlighter on key words
+  Right: "一句话记忆" with target icon, 青绿 border, SMALL FONT, 赭黄 highlight background
 
 FONT SIZE HIERARCHY:
 - Title: LARGE (main focus)
@@ -532,9 +532,9 @@ FONT SIZE HIERARCHY:
 - Decorative text: SMALL
 
 ELEGANT RULES:
-- Clean vertical rhythm, consistent spacing
-- Minimal decoration, only essential elements
-- Cards have subtle shadows, not heavy borders
+- Clean vertical rhythm with playful tilts on tags and notes
+- Playful yet refined decoration, scattered hand-drawn accents
+- Cards have subtle shadows and colored top bars, not heavy borders
 - [风格字体]: font matching the chosen style's character
 
 Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
@@ -583,9 +583,9 @@ FONT SIZE HIERARCHY:
 - Options, tip, footer: SMALL
 
 ELEGANT RULES:
-- Generous whitespace between elements
+- Generous whitespace between elements, playful tilts on tags
 - Precise alignment, clean grid
-- Minimal decoration (only small stars in corners)
+- Playful yet refined decoration, scattered hand-drawn accents
 - [风格字体]: font matching the chosen style's character
 
 Style: elegant [风格字体] notebook, refined simplicity. Aspect ratio 3:4.
@@ -627,6 +627,7 @@ ELEGANT RULES:
 - Each answer clearly marked with 青绿 checkmark
 - Explanations concise but complete
 - Thin separators between answers
+- Playful yet refined decoration, scattered accents
 - [风格字体]: font matching the chosen style's character
 
 Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
@@ -638,7 +639,7 @@ Style: elegant [风格字体] notebook, clean and refined. Aspect ratio 3:4.
 
 | 风格        | 视觉特征                                         | 字体                 | 氛围                     | 主色                   |
 | ----------- | ------------------------------------------------ | -------------------- | ------------------------ | ---------------------- |
-| 经典        | 复古学院风，温润雅致而灵动醒目                 | 加粗手写钢笔体（流畅优雅，BOLD） | 安静、灵动、醒目         | 墨黑+朱红+赭黄+青绿     |
+| 经典        | 复古学院风，温润雅致而灵动醒目                 | 瘦金体（加粗，瘦劲锋棱） | 安静、灵动、醒目         | 墨黑+朱红+赭黄+青绿     |
 | 科幻        | 洁净未来科技感，极简冷冽                         | 无衬线黑体风格（硬朗科技感） | 冷静、精准               | 冰蓝+银灰+电光紫       |
 | 活力手账    | 热情元气，笔触活泼                               | 手写圆体风格（圆润饱满） | 活力、积极               | 活力橙+珊瑚红+薄荷绿   |
 | 青绿新生    | 自然清新，东方素雅                               | 行楷风格（流畅温润）     | 清透、安宁               | 青绿+深青+浅绿         |
@@ -753,6 +754,7 @@ OI风格常见错误，在知识卡底部"高频易错点"中提醒：
 **更新日期**: 2026-08-01
 
 **变更记录**：
+- 2026-08-01: v1.9.5 经典字体定稿：回归瘦金体并加粗渲染——瘦劲锋利、锋芒劲挺，增其分量而不损锋棱，忌过细无力、忌肥肿圆钝
 - 2026-08-01: v1.9.4 设计升级：灵动+醒目——标题带手绘色块/波浪下划线，重点荧光笔高亮，标签/便利贴微倾斜（2~5°）错落，卡片加主题色顶部条/角标，装饰错落有致
 - 2026-08-01: v1.9.3 经典风格字体定稿：改"加粗手写钢笔体"——钢笔笔触流畅自然，字形舒展端庄，优雅利落不卡通，BOLD 加粗渲染、笔锋分明
 - 2026-08-01: v1.9.2 经典风格字体再调：弃楷体，改"加粗手写圆体"——笔画圆润饱满、转角柔和，手写温度与手账气质相合，BOLD 加粗渲染保持清晰
