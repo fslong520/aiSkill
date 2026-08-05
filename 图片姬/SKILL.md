@@ -1,6 +1,6 @@
 ---
 name: 图片姬
-version: 2.1.0
+version: 2.2.0
 description: 通用型图像Prompt生成器。输入主题描述，AI自主分析主体特征、决定艺术风格、推荐配色构图，输出结构化Prompt。
 allowed-tools:
   - Read
@@ -26,8 +26,8 @@ metadata:
 **输出格式**：
 - Markdown 结构化版（含完整维度描述）
 - JSON 版（便于程序调用/二次编辑）
-- 纯文本版（直接复制到绘图工具）
-- 英文版（适用于 Midjourney/Stable Diffusion）
+
+> 只输出结构化维度，不输出纯文本/英文版等复制即用版本。
 
 ---
 
@@ -450,44 +450,6 @@ AI自主判断：
 
 ---
 
-### 纯文本版（复制即用）
-
-按金字塔架构组织，从宏观到微观：
-
-```text
-[比例]竖构图，[环境风格]摄影，[空间描述]，[色调+留白]。
-
-[主体概貌]，[年龄感知]，[发型发色]，[肤色妆容]。[微表情：眼神精度+嘴部细节+克制约束]。[姿态动作+手部细节+发丝联动]。
-
-身着[服装款式+颜色]，[面料质感]，[版型约束]，配[配饰]。
-
-[光质+色温]室内漫射光，环境光[均匀/层次]，肤色[通透/质感]，[高光控制]，[特效]。[空气感描述]。
-
-[焦段]镜头，[光圈]浅景深，背景自然虚化，[纹理要求]。[风格定调词]，[质量标签]。
-
---no [负面避免]
-aspect ratio [比例]
-```
-
-### 英文版
-
-```text
-[aspect ratio] vertical composition, [environment style] photography, [space description], [color palette + negative space].
-
-[subject overview], [age], [hair color and style], [skin and makeup].[micro-expression: eye precision + mouth detail + restraint].[pose + hand gesture + hair movement].
-
-Wearing [costume style and color], [fabric texture], [fit philosophy], accessorized with [accessories].
-
-[warm/cool] [hard/soft] indoor diffused light, [even/layered] ambient light, [skin tone description], [highlight control], [bloom/glow effect].[airy/atmospheric].
-
-[focal length] lens, [aperture] shallow depth of field, natural background blur, [texture details].[style anchor words], [quality tags].
-
---no [negative keywords]
-aspect ratio [ratio]
-```
-
----
-
 ## 画面比例说明
 
 | 比例 | 用途 | 说明 |
@@ -561,9 +523,10 @@ aspect ratio [ratio]
 
 ---
 
-**更新日期**: 2026-07-23
+**更新日期**: 2026-08-05
 
 **变更记录**：
+- 2026-08-05: v2.2.0 输出精简：只输出结构化维度（画面核心描述+16维度），移除"纯文本版（复制即用）"与"英文版"两个复制即用板块。
 - 2026-07-23: v2.1.0 全面强化六层：新增金字塔Prompt架构、微表情精度控制框架、服装深度描述框架、光质描写指南、镜头语言指南、质量标签体系、正反双向约束原则。14维度→16维度（新增lens/quality_tags）。更新输出模板、风格参考表。
 - 2026-05-20: v2.0.0 重构为14维度结构化框架，新增层级化描述法则、比例/风格参考表、中英双语输出
 - 2025-12-01: v1.0 初始版本
