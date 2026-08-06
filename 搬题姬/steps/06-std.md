@@ -8,23 +8,40 @@
 
 ```cpp
 #include <iostream>
+#include <vector>
+#include <map>
+#include <cmath>
+#include <set>
+#include <queue>
+#include <stack>
+#include <list>
+#include <tuple>
+#include <unordered_map>
 #include <algorithm>
+#include <climits>
+#include <tuple>
+#define endl '\n'
+#define int long long
+#define pii pair<int, int>
 using namespace std;
+const int inf = 0x3f3f3f3f3f3f3f3f;
+const int mod = 998244353;
+const int mxn = 3e6 + 5;
 
-// 全局数组——大小按题面数据范围来定
-// const int MAXN = 105;
-// int dp[MAXN], w[MAXN], v[MAXN], val[MAXN];
-
-int main()
+int n,a[114514];
+int c=0;
+signed main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    // 读数据 + 算答案
-
-    cout << ans << '\n';
+    cin>>n;
+    for(int i=0;i<n;++i) cin>>a[i];
+    for(int i=0;i<n-2;++i)
+    {
+        c+=(a[i]<a[i+1] and a[i+1]>a[i+2]);
+    }
+    cout<<c<<endl;
     return 0;
 }
+
 ```
 
 ## 要点
