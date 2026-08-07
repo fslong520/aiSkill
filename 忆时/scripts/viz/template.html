@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>忆时 · 记忆之书</title>
+<style>
+  :root{
+    --bg:#f8f6f6; --page:#fffdf7; --ink:#1a1a1a; --orange:#ec5b13;
+    --border:2.5px solid #1a1a1a; --r:0.9rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"Geist Sans","Noto Sans SC","PingFang SC",system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;gap:0.4rem}
+  /* ===== 工具条 ===== */
+  .toolbar{display:flex;align-items:center;gap:0.8rem;margin:0.4rem auto 0.8rem;flex-wrap:wrap;justify-content:center}
+  .btn{border:var(--border);border-radius:0.6rem;padding:0.5rem 1.1rem;font-weight:900;background:#fff;cursor:pointer;box-shadow:2px 2px 0 0 #1a1a1a;font-size:0.9rem;transition:transform .12s;user-select:none}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn.primary{background:var(--orange);color:#fff}
+  .pageinfo{font-weight:900;font-size:0.95rem;padding:0.5rem 1rem;background:#1a1a1a;color:#fff;border-radius:0.6rem;box-shadow:2px 2px 0 0 var(--orange)}
+  /* ===== 书 ===== */
+  .stage{perspective:2400px;width:min(1240px,96vw);display:flex;justify-content:center}
+  .book{position:relative;width:min(1200px,96vw);aspect-ratio:1414/1000;max-height:76vh;margin:0 auto}
+  .book::after{content:"";position:absolute;inset:auto 0 -0.9rem 0;height:1.6rem;background:rgba(0,0,0,.14);border-radius:50%;filter:blur(8px);z-index:0}
+  .leaf{position:absolute;top:0;left:50%;width:50%;height:100%;transform-style:preserve-3d;transform-origin:left center;transition:transform .9s cubic-bezier(.4,.1,.2,1);z-index:10;border-radius:0.4rem}
+  .leaf .front,.leaf .back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--page);border:var(--border);border-radius:0.4rem;overflow:hidden;display:flex;flex-direction:column}
+  .leaf .front > .face,.leaf .back > .face{flex:1;min-height:0;display:flex;flex-direction:column}
+  .leaf .front{padding:1.6rem 1.8rem 1.6rem 1.4rem;border-radius:0.6rem 0.4rem 0.4rem 0.6rem}
+  .leaf .back{transform:rotateY(180deg);padding:1.6rem 1.4rem 1.6rem 1.8rem;border-radius:0.4rem 0.6rem 0.6rem 0.4rem}
+  .leaf .front::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2.2rem;background:linear-gradient(to right,rgba(0,0,0,.13),rgba(0,0,0,.02) 70%,transparent);pointer-events:none}
+  .leaf .back::before{content:"";position:absolute;right:0;top:0;bottom:0;width:2.2rem;background:linear-gradient(to left,rgba(0,0,0,.13),rgba(0,0,0,.02) 70%,transparent);pointer-events:none}
+  .leaf.flip{transform:rotateY(-180deg);z-index:1}
+  .leaf .pnum{position:absolute;bottom:0.6rem;font-size:0.72rem;font-weight:800;color:#b5aca0;z-index:5}
+  .leaf .front .pnum{right:1.2rem}
+  .leaf .back .pnum{left:1.2rem}
+  /* 封面（孟菲斯风） */
+  .cover{justify-content:center;align-items:center;text-align:center;background:
+    radial-gradient(circle at 18% 22%, rgba(236,91,19,.10) 0 60px, transparent 61px),
+    radial-gradient(circle at 85% 80%, rgba(26,26,26,.06) 0 90px, transparent 91px),
+    radial-gradient(circle, rgba(26,26,26,.5) 1.4px, transparent 1.5px) 0 0/26px 26px,
+    var(--page);color:var(--ink);position:relative;overflow:hidden}
+  .cover .cv-sticker{position:absolute;top:1.1rem;right:1.3rem;background:var(--orange);color:#fff;font-weight:900;font-size:0.72rem;letter-spacing:0.22em;border:var(--border);border-radius:0.5rem;padding:0.35rem 0.9rem;transform:rotate(7deg);box-shadow:3px 3px 0 0 #1a1a1a;z-index:3}
+  .cover .cv-sticker2{position:absolute;top:1.2rem;left:1.3rem;background:#1a1a1a;color:var(--orange);font-weight:900;font-size:0.66rem;letter-spacing:0.18em;border:var(--border);border-radius:0.5rem;padding:0.32rem 0.8rem;transform:rotate(-5deg);box-shadow:3px 3px 0 0 rgba(0,0,0,.25);z-index:3}
+  .cover .cv-semi{position:absolute;right:-2.4rem;bottom:-2.8rem;width:9rem;height:9rem;border-radius:50%;background:var(--orange);border:var(--border);z-index:1}
+  .cover .cv-semi::after{content:"";position:absolute;left:50%;top:-0.6rem;width:1.2rem;height:1.2rem;background:#fffdf7;border:var(--border);border-radius:50%}
+  .cover .cv-bars{position:absolute;left:0;top:2.6rem;width:1.1rem;height:100%;background:repeating-linear-gradient(180deg,#1a1a1a 0 8px,transparent 8px 18px);opacity:.85;z-index:1}
+  .cover .cv-waves{position:absolute;left:3.6rem;bottom:1.2rem;width:6.5rem;height:1.6rem;opacity:.9;z-index:1}
+  .cover .cv-waves svg{width:100%;height:100%}
+  .cover .cv-body{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+  .cover .cv-kicker{font-size:0.85rem;font-weight:900;letter-spacing:0.42em;color:#8a8072;margin-bottom:1rem}
+  .cover .cv-kicker::before,.cover .cv-kicker::after{content:"◆";font-size:0.5rem;color:var(--orange);vertical-align:middle;margin:0 0.6rem}
+  .cover .ctitle{font-size:clamp(2.1rem,4.6vw,3.4rem);font-weight:900;letter-spacing:0.06em;line-height:1.25}
+  .cover .ctitle .dot{color:var(--orange);text-shadow:3px 3px 0 rgba(0,0,0,.14)}
+  .cover .cv-rule{display:flex;align-items:center;gap:0.6rem;margin:1.1rem 0 1.5rem;width:min(70%,15rem)}
+  .cover .cv-rule::before,.cover .cv-rule::after{content:"";flex:1;border-top:3px dashed #1a1a1a}
+  .cover .cv-rule i{width:0.9rem;height:0.9rem;background:var(--orange);border:2.5px solid #1a1a1a;transform:rotate(45deg)}
+  .cover .cnum{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center}
+  .cover .cstat{background:#fff;border:var(--border);border-radius:0.7rem;box-shadow:3px 3px 0 0 #1a1a1a;padding:0.7rem 1.3rem;min-width:6.4rem}
+  .cover .cstat:nth-child(1){transform:rotate(-2deg)}
+  .cover .cstat:nth-child(2){transform:rotate(1.5deg);background:var(--orange);color:#fff}
+  .cover .cstat:nth-child(3){transform:rotate(-1deg)}
+  .cover .cstat b{display:block;font-size:1.7rem;font-weight:900;line-height:1.1}
+  .cover .cstat small{display:block;font-size:0.68rem;font-weight:800;letter-spacing:0.14em;opacity:.85}
+  .cover .chint{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);font-size:0.76rem;color:#1a1a1a;font-weight:800;letter-spacing:0.08em;background:#fff;border:2px solid #1a1a1a;border-radius:99px;padding:0.4rem 1.2rem;box-shadow:2px 2px 0 0 rgba(0,0,0,.55);z-index:3;white-space:nowrap}
+  .cover .cv-owner{font-size:1.35rem;font-weight:900;letter-spacing:0.32em;color:var(--orange);background:#1a1a1a;border:var(--border);border-radius:0.6rem;padding:0.3rem 1.3rem;transform:rotate(-2deg);box-shadow:3px 3px 0 0 rgba(0,0,0,.45);margin-top:0.7rem}
+  /* 封底 */
+  .backcover{justify-content:center;align-items:center;text-align:center}
+  .backcover .bt{font-size:1.6rem;font-weight:900}
+  .backcover .bd{margin-top:1rem;font-size:0.9rem;color:#8a8072;font-weight:700;line-height:2}
+  /* 页内 */
+  .phead{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.9rem;flex-wrap:wrap}
+  .phead h2{font-size:1.35rem;font-weight:900;letter-spacing:0.02em}
+  .phead h2::before{content:"❧ ";color:var(--orange)}
+  .pbadge{font-size:0.72rem;font-weight:900;color:#fff;background:var(--orange);border:2px solid #1a1a1a;border-radius:99px;padding:0.18rem 0.7rem;transform:rotate(-2deg)}
+  .pbody{flex:1;min-height:0;overflow-y:auto;padding-right:0.4rem;display:flex;flex-direction:column}
+  .pbody::-webkit-scrollbar{width:6px}
+  .pbody::-webkit-scrollbar-thumb{background:#d8d2ca;border-radius:3px}
+  .chips-row{flex-shrink:0;margin-bottom:0.6rem}
+  .cards{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between}
+  .cards .mcard{margin-bottom:0;flex-shrink:0}
+  /* 目录 */
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem}
+  .toc-item{display:flex;align-items:center;gap:0.6rem;border:2px solid #1a1a1a;border-radius:0.6rem;padding:0.55rem 0.8rem;font-weight:800;font-size:0.85rem;background:#fff;cursor:pointer;box-shadow:2px 2px 0 0 #1a1a1a;transition:transform .12s}
+  .toc-item:hover{transform:translateY(-2px);background:var(--orange);color:#fff}
+  .toc-item .n{font-size:0.7rem;color:var(--orange);font-weight:900}
+  .toc-item:hover .n{color:#fff}
+  .toc-item .c{margin-left:auto;font-size:0.75rem;color:#8a8072}
+  /* 统计 */
+  .bar-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;font-size:0.82rem;font-weight:700}
+  .bar-row .k{width:4.2rem;flex-shrink:0}
+  .bar{height:1.15rem;border:2px solid #1a1a1a;border-radius:0.3rem;background:#efe9e0;flex:1;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--orange)}
+  .bar-row .n{width:2.2rem;text-align:right;flex-shrink:0}
+  .sec{font-size:0.95rem;font-weight:900;margin:0.8rem 0 0.55rem;display:flex;align-items:center;gap:0.5rem}
+  .sec::before{content:"";width:0.7rem;height:0.7rem;background:var(--orange);border:2px solid #1a1a1a;transform:rotate(45deg)}
+  /* 月度 */
+  .months{display:flex;align-items:flex-end;gap:0.4rem;height:130px}
+  .mcol{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:0.25rem}
+  .mcol .v{width:100%;background:var(--orange);border:2px solid #1a1a1a;border-bottom:none;border-radius:0.4rem 0.4rem 0 0;min-height:4px}
+  .mcol .c{font-size:0.72rem;font-weight:900}
+  .mcol .t{font-size:0.68rem;font-weight:800;color:#8a8072;writing-mode:vertical-rl;transform:rotate(180deg);height:2.8rem;text-align:center}
+  /* 主题记忆卡：一条一条；每条限高 3 行，超长截断 + hover 显全文 */
+  .mcard{border:2px solid #1a1a1a;border-radius:0.6rem;padding:0.5rem 0.8rem;margin-bottom:0.5rem;background:#fff;box-shadow:2px 2px 0 0 rgba(0,0,0,.85)}
+  .mcard .mm{display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;font-weight:900;margin-bottom:0.2rem}
+  .mcard .mm .ttype{font-size:0.66rem;font-weight:900;color:#fff;padding:0.08rem 0.5rem;border-radius:0.35rem;border:1.5px solid #1a1a1a}
+  .mcard .mm .d{color:#8a8072}
+  .mcard .mc{font-size:0.8rem;font-weight:600;line-height:1.5;color:#333;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .mcard .mc.short{display:block;overflow:visible}
+  .c-task{background:#ec5b13}.c-decision{background:#7c3aed}.c-preference{background:#16a34a}
+  .c-context{background:#2563eb}.c-emotion{background:#dc2626}.c-skill{background:#0d9488}.c-time{background:#ca8a04}
+  .kw-chip{font-size:0.66rem;font-weight:800;background:#f1ece6;border:1.5px solid #1a1a1a;border-radius:99px;padding:0.12rem 0.55rem;margin:0 0.3rem 0.3rem 0;display:inline-block}
+  .more{font-size:0.72rem;font-weight:800;color:var(--orange);margin-top:0.3rem}
+  /* 悬停浮层（fixed，防 leaf overflow 裁切） */
+  .fulltip{display:none;position:fixed;z-index:9999;max-width:420px;max-height:300px;overflow-y:auto;background:#fff;border:var(--border);border-radius:0.7rem;box-shadow:4px 4px 0 0 rgba(0,0,0,.55);padding:0.85rem 1rem;font-size:0.84rem;font-weight:600;line-height:1.6;color:#222;white-space:pre-wrap;word-break:break-word}
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <button class="btn" id="prev">◀ 上一页</button>
+  <button class="btn" id="tocbtn">☰ 目录</button>
+  <span class="pageinfo" id="pageinfo">第 1 / 1 页</span>
+  <button class="btn primary" id="next">下一页 ▶</button>
+  <span class="pageinfo" style="background:var(--orange);box-shadow:2px 2px 0 0 #1a1a1a" id="totalinfo"></span>
+</div>
+
+<div class="stage"><div class="book" id="book"></div></div>
+
+<script>
+/*__DATA__*/
+const TYPELABEL = {task:"任务",decision:"决策",preference:"偏好",context:"上下文",emotion:"情绪",skill:"技能",time:"时间"};
+const EMOMOJI = {extreme:"🔴",high:"🟠",medium:"🟡",low:"🟢"};
+
+/* ---------- 内容分页 ---------- */
+function pagesOf(){
+  const P = [];
+  /* 页1 封面 */
+  P.push(`<div class="face cover">
+    <div class="cv-sticker2">MEMORY</div>
+    <div class="cv-sticker">ATLAS</div>
+    <div class="cv-bars"></div>
+    <div class="cv-semi"></div>
+    <div class="cv-waves"><svg viewBox="0 0 120 20" preserveAspectRatio="none"><path d="M0 10 Q 15 0 30 10 T 60 10 T 90 10 T 120 10" fill="none" stroke="#ec5b13" stroke-width="3.5"/><path d="M0 16 Q 15 6 30 16 T 60 16 T 90 16 T 120 16" fill="none" stroke="#1a1a1a" stroke-width="2.5"/></svg></div>
+    <div class="cv-body">
+      <div class="cv-kicker">忆时 · 记忆系统</div>
+      <div class="ctitle">记忆<span class="dot">之</span>书</div>
+      <div class="cv-rule"><i></i></div>
+      <div class="cnum">
+        <div class="cstat"><b>${MEMORIES.total}</b><small>条记忆</small></div>
+        <div class="cstat"><b>${Object.keys(MEMORIES.type_dist).length}</b><small>种类型</small></div>
+        <div class="cstat"><b>${Object.keys(MEMORIES.month_dist).length}</b><small>个月</small></div>
+      </div>
+      <div class="cv-owner">fslong 藏</div>
+    </div>
+    <div class="chint">按 → 键 · 或点击「下一页」开始翻阅</div>
+  </div>`);
+
+  /* 页2 统计：类型+情绪 */
+  let bars = "";
+  const tMax = Math.max(...Object.values(MEMORIES.type_dist));
+  Object.entries(MEMORIES.type_dist).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+    bars += `<div class="bar-row"><span class="k">${TYPELABEL[k]||k}</span><div class="bar"><i style="width:${(v/tMax*100).toFixed(0)}%"></i></div><span class="n">${v}</span></div>`;
+  });
+  const eMax = Math.max(...Object.values(MEMORIES.emo_dist));
+  const eCol = {extreme:"#dc2626",high:"#ea580c",medium:"#ca8a04",low:"#16a34a"};
+  let ebars = "";
+  Object.entries(MEMORIES.emo_dist).forEach(([k,v])=>{
+    ebars += `<div class="bar-row"><span class="k">${EMOMOJI[k]} ${k}</span><div class="bar"><i style="width:${(v/eMax*100).toFixed(0)}%;background:${eCol[k]||"#ec5b13"}"></i></div><span class="n">${v}</span></div>`;
+  });
+  P.push(`<div class="face"><div class="phead"><h2>藏卷统计</h2><span class="pbadge">类型</span></div>
+    <div class="pbody">${bars}<div class="sec">情绪分布</div>${ebars}</div></div>`);
+
+  /* 页3 月度 + 高频 */
+  let months = "";
+  const mMax = Math.max(...Object.values(MEMORIES.month_dist));
+  Object.entries(MEMORIES.month_dist).forEach(([k,v])=>{
+    months += `<div class="mcol"><div class="v" style="height:${(v/mMax*100).toFixed(0)}%"></div><div class="c">${v}</div><div class="t">${k}</div></div>`;
+  });
+  let top10 = "";
+  MEMORIES.top_recs.slice(0,3).forEach(r=>{
+    const full = (r.full||r.c).replace(/"/g,'&quot;');
+    top10 += `<div class="mcard mcard-hot" data-full="${full}"><div class="mm"><span class="ttype c-${r.type}">${TYPELABEL[r.type]||r.type}</span><span class="d">${r.date} · 检索${r.freq}次</span></div><div class="mc">${r.c}</div></div>`;
+  });
+  P.push(`<div class="face"><div class="phead"><h2>时序与热度</h2><span class="pbadge">月度</span></div>
+    <div class="pbody"><div class="months">${months}</div><div class="sec">高频记忆 Top3</div>${top10}</div></div>`);
+
+  /* 页4 目录 */
+  const topics = Object.entries(MEMORIES.topic_count).sort((a,b)=>b[1]-a[1]);
+  let toc = "";
+  topics.forEach(([name,n])=>{
+    toc += `<div class="toc-item" data-topic="${name}"><span class="n">§</span>${name}<span class="c">${n}</span></div>`;
+  });
+  P.push(`<div class="face"><div class="phead"><h2>目 录</h2><span class="pbadge">共 ${topics.length} 卷</span></div>
+    <div class="pbody toc">${toc}</div>
+    <div style="font-size:0.72rem;color:#8a8072;font-weight:700">点击卷目跳转 · 或逐页翻阅</div></div>`);
+
+  /* 主题页：每页 4 条；每条限高 3 行，超长 hover 显全文 */
+  const PER = 4;
+  const topicPages = {};
+  let pg = 5;
+  topics.forEach(([name,n])=>{
+    topicPages[name] = pg;
+    const recs = MEMORIES.records.filter(r=>r.topic===name).slice(0, 40);
+    const kws = (MEMORIES.topic_kws[name]||[]).slice(0,10);
+    const kwHtml = kws.map(k=>`<span class="kw-chip">${k}</span>`).join("");
+    for(let i=0;i<recs.length;i+=PER){
+      const chunk = recs.slice(i,i+PER);
+      const cards = chunk.map(r=>{
+        const full = (r.full||r.c).replace(/"/g,'&quot;');
+        return `<div class="mcard" data-full="${full}"><div class="mm"><span class="ttype c-${r.type}">${TYPELABEL[r.type]||r.type}</span><span class="d">${EMOMOJI[r.emotion]||"🟡"} ${r.date}</span></div><div class="mc">${r.c}</div></div>`;
+      }).join("");
+      P.push(`<div class="face"><div class="phead"><h2>${name}</h2><span class="pbadge">${n} 条</span></div>
+        <div class="pbody"><div class="chips-row">${kwHtml}</div><div class="cards">${cards}</div></div></div>`);
+      pg++;
+    }
+  });
+
+  /* 封底 */
+  P.push(`<div class="face backcover"><div class="bt">❦ 阅 毕 ❦</div>
+    <div class="bd">忆时 · 记忆之书<br>共 ${MEMORIES.total} 条记忆 · ${MEMORIES.export_date} 成书<br>编于 <b>fslong</b> · 翻回封面，再阅一遍</div></div>`);
+
+  return {pages: P, topicPages};
+}
+
+/* ---------- 成书 ---------- */
+const {pages, topicPages} = pagesOf();
+const book = document.getElementById("book");
+const leaves = [];
+for(let i=0;i<pages.length;i+=2){
+  const leaf = document.createElement("div");
+  leaf.className = "leaf";
+  leaf.innerHTML = `
+    <div class="front">${pages[i]}<div class="pnum">${i+1}</div></div>
+    <div class="back">${pages[i+1]||'<div class="face backcover"><div class="bt">·</div></div>'}<div class="pnum">${i+2}</div></div>`;
+  leaf.dataset.i = leaves.length;
+  book.appendChild(leaf);
+  leaves.push(leaf);
+}
+const N = leaves.length;
+let cur = 0;   // 已翻叶数；当前右页 = 叶 cur 的 front（cur<N 时）
+/* 书自适应：A4 比例（宽高 √2:1），窗口矮时整体收缩保比例 */
+function fitBook(){
+  const b = document.getElementById("book");
+  const w0 = b.clientWidth || 1200;
+  const vh = window.innerHeight;
+  const w = Math.min(w0, vh * 0.76 * 1.4142);
+  b.style.width = w + "px";
+  b.style.height = (w / 1.4142) + "px";
+}
+window.addEventListener("resize", fitBook);
+fitBook();
+function zupdate(){
+  leaves.forEach((lf,i)=>{
+    const flipped = lf.classList.contains("flip");
+    lf.style.zIndex = flipped ? (500+i) : (N-i);
+  });
+}
+zupdate();
+
+/* 翻页 */
+function canNext(){return cur < N;}
+function canPrev(){return cur > 0;}
+function goNext(){
+  if(!canNext()) return;
+  const lf = leaves[cur];
+  lf.classList.add("flip");
+  lf.style.zIndex = 999;
+  setTimeout(()=>{zupdate();}, 50);
+  cur++;
+  updateUI();
+}
+function goPrev(){
+  if(!canPrev()) return;
+  cur--;
+  const lf = leaves[cur];
+  lf.classList.remove("flip");
+  lf.style.zIndex = 999;
+  setTimeout(()=>{zupdate();}, 50);
+  updateUI();
+}
+function goToLeaf(target, animate){
+  target = Math.max(0, Math.min(N, target));
+  if(!animate){ leaves.forEach((lf,i)=>{ lf.classList.toggle("flip", i < target); }); }
+  else {
+    if(target > cur){ for(let i=cur;i<target;i++){ leaves[i].classList.add("flip"); } }
+    else { for(let i=cur-1;i>=target;i--){ leaves[i].classList.remove("flip"); } }
+  }
+  cur = target;
+  zupdate();
+  updateUI();
+}
+function updateUI(){
+  const shownLeft = cur>0 ? cur*2 : null;
+  const shownRight = cur<N ? cur*2+1 : null;
+  const parts = [];
+  if(shownLeft) parts.push(shownLeft);
+  if(shownRight) parts.push(shownRight);
+  document.getElementById("pageinfo").textContent = `第 ${parts.join(" · ")} 页 / 共 ${pages.length} 页`;
+  document.getElementById("totalinfo").textContent = `${MEMORIES.total} 条记忆 · ${N} 叶`;
+  document.getElementById("prev").disabled = !canPrev();
+  document.getElementById("next").disabled = !canNext();
+}
+/* 点击页缘翻页 */
+book.addEventListener("click", e=>{
+  const x = e.clientX, r = book.getBoundingClientRect();
+  if(x > r.left + r.width*0.62) goNext();
+  else if(x < r.left + r.width*0.38) goPrev();
+});
+/* 键盘 */
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") goNext();
+  else if(e.key==="ArrowLeft"||e.key==="PageUp") goPrev();
+  else if(e.key==="Home") goToLeaf(0, true);
+  else if(e.key==="End") goToLeaf(N, true);
+});
+/* 鼠标滚轮翻页：页内滚动优先，滚到底/顶后翻页；节流 450ms */
+let lastWheel = 0;
+document.addEventListener("wheel", e=>{
+  const now = Date.now();
+  if(now - lastWheel < 450) return;
+  const pb = e.target.closest(".pbody");
+  if(pb && pb.scrollHeight > pb.clientHeight + 4){
+    const atBottom = pb.scrollTop + pb.clientHeight >= pb.scrollHeight - 2;
+    const atTop = pb.scrollTop <= 2;
+    if(e.deltaY > 0 && !atBottom) return;
+    if(e.deltaY < 0 && !atTop) return;
+  }
+  lastWheel = now;
+  if(e.deltaY > 0) goNext();
+  else if(e.deltaY < 0) goPrev();
+}, {passive: true});
+document.getElementById("next").addEventListener("click", goNext);
+document.getElementById("prev").addEventListener("click", goPrev);
+document.getElementById("tocbtn").addEventListener("click", ()=>{
+  goToLeaf(2, true);  // 目录页=页4 → 叶2.back
+});
+/* URL 直达：?page=N 打开即跳至该页 */
+const urlPage = parseInt(new URLSearchParams(location.search).get("page") || "", 10);
+if(urlPage > 0){
+  goToLeaf(Math.max(0, Math.min(N, Math.floor((urlPage - 1) / 2))), false);
+}
+/* 目录跳转 */
+book.addEventListener("click", e=>{
+  const t = e.target.closest(".toc-item");
+  if(t){
+    const target = topicPages[t.dataset.topic];   // 页号 1-based
+    const leafIdx = Math.floor((target-1)/2);
+    goToLeaf(leafIdx, true);
+  }
+});
+
+/* 成书后：检测每条正文是否超 3 行（临时放行量高），超长则标 long（hover 显全文） */
+function postProcess(){
+  book.querySelectorAll(".mcard").forEach(card=>{
+    const mc = card.querySelector(".mc");
+    if(!mc) return;
+    mc.style.webkitLineClamp = "unset";
+    mc.style.overflow = "visible";
+    const fullH = mc.scrollHeight;
+    mc.style.webkitLineClamp = "";
+    mc.style.overflow = "";
+    if(fullH > mc.clientHeight + 2){
+      card.classList.add("long");
+    } else {
+      mc.classList.add("short");
+    }
+  });
+}
+postProcess();
+
+/* 悬停浮层显全文（fixed，防 leaf overflow 裁切） */
+const tip = document.createElement("div");
+tip.className = "fulltip";
+document.body.appendChild(tip);
+book.addEventListener("mouseover", e=>{
+  const card = e.target.closest(".mcard.long[data-full]");
+  if(!card) return;
+  tip.textContent = card.dataset.full;
+  tip.style.display = "block";
+  const r = card.getBoundingClientRect();
+  let x = r.left, y = r.bottom + 8;
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  if(x + tw > innerWidth - 8) x = Math.max(8, innerWidth - tw - 8);
+  if(y + th > innerHeight - 8) y = Math.max(8, r.top - th - 8);
+  tip.style.left = x + "px";
+  tip.style.top = y + "px";
+});
+book.addEventListener("mouseout", e=>{
+  if(!e.target.closest(".mcard")) tip.style.display = "none";
+});
+updateUI();
+</script>
+</body>
+</html>
