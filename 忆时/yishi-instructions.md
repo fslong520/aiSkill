@@ -6,6 +6,7 @@
 ```bash
 SKILL_DIR=~/.config/opencode/skills/忆时
 YISHI=$SKILL_DIR/scripts/memory_core.py
+VIZ=$SKILL_DIR/scripts/viz/viz.py
 YISHI_DATA_DIR=$SKILL_DIR/data
 ```
 **所有命令均须设定 `YISHI_DATA_DIR`**，否则脚本会使用错误的数据路径。
@@ -57,6 +58,8 @@ YISHI_DATA_DIR=$SKILL_DIR/data
 - **对话启始**：取项目名 `recall` 之，同时检查梳理状态。流程见 SKILL.md。
 - **每言必检**：用户每句话触发涌现检索 + 情绪锚定，检索空则换词扩大再试。详情见 SKILL.md。
 - **主动存储**：用户言"记住"时必存；完成任务后必自问"有无值得记忆"；犹豫即存。命令见 SKILL.md。
+- **可视化回顾**：用户想看记忆全貌（"看看记了啥""可视化"），运行 `python3 $VIZ`（须设 YISHI_DATA_DIR），默认生成 `~/Desktop/忆时记忆全景.html` 并打开。详情见 SKILL.md「可视化」。
+- **人物画像**：用户问"我是怎样的人""人物画像"，**先问署名**（默认 fslong），运行 `python3 $VIZ/profile.py` 取素材，按 SKILL.md「画像」之正文结构撰写画像（页脚 s-foot 署名），注入生成 `~/Desktop/哥哥人物画像.html` 并打开，产出后存入记忆；画像自动封存为时间胶囊（3 个月后解锁，`--no-capsule` 可关）。
 - **决策前置**：做决策或提问前，先 recall 查询既有记忆。
 - **对话结束**：强制归档，回顾要点，判断是否存入记忆。流程见 SKILL.md。
 
