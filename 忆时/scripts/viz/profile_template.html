@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哥哥 · 人物设定</title>
+<style>
+  :root{
+    --bg:#f3efe8; --paper:#fffdf7; --ink:#1a1a1a; --orange:#ec5b13;
+    --border:2px solid #1a1a1a; --r:0.6rem;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"Geist Sans","Noto Sans SC","PingFang SC",system-ui,sans-serif;padding:2rem 1rem 4rem;background-image:radial-gradient(circle,rgba(26,26,26,.35) 1px,transparent 1.1px);background-size:22px 22px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:1.6rem}
+  h1{font-size:2.2rem;font-weight:900;letter-spacing:0.04em}
+  h1 .dot{color:var(--orange)}
+  .badge{display:inline-block;background:var(--orange);color:#fff;font-weight:900;border:var(--border);border-radius:0.5rem;padding:0.25rem 0.8rem;transform:rotate(-2deg);box-shadow:2px 2px 0 0 #1a1a1a;font-size:0.85rem}
+  .sub{width:100%;color:#777;font-weight:600;font-size:0.92rem}
+  /* ===== 两张设定集纸页 ===== */
+  .sheets{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem;align-items:start}
+  @media(max-width:900px){.sheets{grid-template-columns:1fr}}
+  .sheet{
+    background:var(--paper);border:var(--border);border-radius:var(--r);
+    box-shadow:5px 5px 0 0 rgba(0,0,0,.28);padding:2rem 2rem 1.4rem;
+    position:relative;min-height:860px;overflow:hidden;display:flex;flex-direction:column;
+  }
+  @media(max-height:1000px){.sheet{min-height:78vh}}
+  .sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:0.55rem;background:repeating-linear-gradient(90deg,var(--orange) 0 1.4rem,transparent 1.4rem 2.6rem);border-bottom:var(--border)}
+  .s-head{display:flex;align-items:baseline;gap:0.7rem;margin:0.8rem 0 1rem;padding-bottom:0.6rem;border-bottom:2px dashed #c9bfae}
+  .s-no{font-size:0.72rem;font-weight:900;background:#1a1a1a;color:var(--orange);border-radius:0.35rem;padding:0.18rem 0.6rem;letter-spacing:0.12em;white-space:nowrap}
+  .s-head h2{font-size:1.35rem;font-weight:900;letter-spacing:0.06em}
+  .s-body{flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between}
+  .s-group{display:flex;flex-direction:column}
+  .s-foot{margin-top:0.8rem;padding-top:0.5rem;border-top:2px dashed #c9bfae;font-size:0.68rem;font-weight:800;color:#b5aca0;display:flex;justify-content:space-between;letter-spacing:0.14em}
+  /* 印章 */
+  .seal{position:absolute;top:1.1rem;right:1.4rem;width:3.4rem;height:3.4rem;border-radius:50%;background:var(--orange);border:2.5px solid #1a1a1a;color:#fff;font-weight:900;font-size:0.72rem;display:flex;align-items:center;justify-content:center;transform:rotate(10deg);box-shadow:2px 2px 0 0 rgba(0,0,0,.4);letter-spacing:0.1em;writing-mode:vertical-rl;text-orientation:upright}
+  /* ===== 内容组件（AI 正文用） ===== */
+  .pname{font-size:2rem;font-weight:900;letter-spacing:0.08em;margin:0.4rem 0 0.2rem}
+  .pname .dot{color:var(--orange)}
+  .psub{font-size:0.82rem;font-weight:700;color:#8a8072;letter-spacing:0.2em;margin-bottom:0.9rem}
+  .pdata{display:flex;gap:1.4rem;margin:0.8rem 0 1.1rem;flex-wrap:wrap}
+  .pdata div{font-size:1.05rem;font-weight:900}
+  .pdata small{display:block;font-size:0.62rem;color:#8a8072;font-weight:800;letter-spacing:0.14em}
+  .impression{background:#1a1a1a;color:#fff;border:var(--border);border-radius:calc(var(--r)+0.3rem);padding:1.2rem 1.4rem;margin-bottom:1.1rem;position:relative}
+  .impression .q{font-size:0.8rem;font-weight:700;color:var(--orange);letter-spacing:0.24em;margin-bottom:0.5rem}
+  .impression p{font-size:1.02rem;font-weight:800;line-height:1.65}
+  .sec{font-size:0.88rem;font-weight:900;margin:0.9rem 0 0.55rem;display:flex;align-items:center;gap:0.5rem}
+  .sec::before{content:"";width:0.7rem;height:0.7rem;background:var(--orange);border:2px solid #1a1a1a;transform:rotate(45deg)}
+  .ids{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem}
+  .id{background:#fff;border:var(--border);border-radius:0.5rem;padding:0.55rem 0.7rem;display:flex;align-items:center;gap:0.55rem;box-shadow:2px 2px 0 0 rgba(0,0,0,.35)}
+  .id:nth-child(odd){transform:rotate(-0.6deg)}.id:nth-child(even){transform:rotate(0.6deg)}
+  .id .ico{font-size:1.25rem}
+  .id .nm{font-weight:900;font-size:0.85rem}
+  .id .ds{font-size:0.66rem;color:#777;font-weight:600;line-height:1.35}
+  .traits{display:flex;flex-direction:column;gap:0.65rem}
+  .trait{background:#fff;border:var(--border);border-radius:0.5rem;padding:0.95rem 1.1rem;box-shadow:2px 2px 0 0 rgba(0,0,0,.3)}
+  .trait .tt{font-size:0.95rem;font-weight:900;display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem}
+  .trait .tt .tag{font-size:0.6rem;background:var(--orange);color:#fff;border-radius:99px;padding:0.1rem 0.55rem;font-weight:800;transform:rotate(-1.5deg);white-space:nowrap}
+  .trait .td{font-size:0.8rem;font-weight:600;line-height:1.6;color:#333}
+  .trait .ev{margin-top:0.4rem;font-size:0.7rem;color:#999;font-weight:600;border-top:1.5px dashed #e0dad2;padding-top:0.4rem}
+  .trait .ev b{color:var(--orange)}
+  .vals{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
+  .val{background:#fff;border:var(--border);border-radius:0.5rem;padding:0.9rem 1rem}
+  .val:nth-child(odd){transform:rotate(0.4deg)}.val:nth-child(even){transform:rotate(-0.4deg)}
+  .val .vn{font-size:0.9rem;font-weight:900;color:var(--orange);margin-bottom:0.3rem}
+  .val p{font-size:0.76rem;font-weight:600;line-height:1.6;color:#333}
+  .tl{position:relative;padding-left:1.3rem;margin-top:0.4rem}
+  .tl::before{content:"";position:absolute;left:0.3rem;top:0.2rem;bottom:0.2rem;width:2px;background:#1a1a1a;border-radius:2px}
+  .tl-item{position:relative;margin-bottom:0.5rem}
+  .tl-item::before{content:"";position:absolute;left:-1.25rem;top:0.3rem;width:0.6rem;height:0.6rem;background:var(--orange);border:2px solid #1a1a1a;border-radius:50%}
+  .tl-item .d{font-size:0.66rem;font-weight:900;color:#8a8072}
+  .tl-item .e{font-size:0.78rem;font-weight:700;line-height:1.45}
+  .glow{background:#fff8ec;border:var(--border);border-radius:0.6rem;padding:0.9rem 1rem;margin-top:0.4rem;border-left:0.5rem solid var(--orange)}
+  .glow .gq{font-size:0.92rem;font-weight:900;margin-bottom:0.4rem}
+  .glow .gq::before{content:"✦ ";color:var(--orange)}
+  .glow p{font-size:0.78rem;font-weight:600;line-height:1.65;color:#333}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:0.5rem}
+  @media(max-width:480px){.row{grid-template-columns:1fr}}
+  .panel{background:#fff;border:var(--border);border-radius:0.5rem;padding:0.8rem 0.9rem}
+  .panel h3{font-size:0.85rem;font-weight:900;margin-bottom:0.6rem}
+  .bar-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;font-size:0.75rem;font-weight:700}
+  .bar-row .k{width:3.8rem;flex-shrink:0}
+  .bar{height:1rem;border:2px solid #1a1a1a;border-radius:0.25rem;background:#eee;flex:1;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--orange)}
+  .bar-row .n{width:1.9rem;text-align:right;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>fslong<span class="dot">·</span>人物设定</h1>
+    <span class="badge">SETTINGS</span>
+    <div class="sub">据 <!--TOTAL--> 条记忆 · <!--SPAN--> · 忆时绘像 · 设定集两页</div>
+  </header>
+
+  <div class="sheets"><!--CONTENT--></div>
+
+  <footer style="margin-top:2rem;text-align:center;color:#999;font-weight:700;font-size:0.82rem">忆时 · 人物设定集 · 编于 fslong · 数据源自忆时记忆库</footer>
+</div>
+</body>
+</html>
