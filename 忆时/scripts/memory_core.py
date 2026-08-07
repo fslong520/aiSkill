@@ -181,12 +181,63 @@ def _install_model():
 def get_embedding_fn():
     global _embedding_fn
     if _embedding_fn is None:
-        from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
-        _install_model()
-        _embedding_fn = ONNXMiniLM_L6_V2()
-        # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
-        _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
+        bge_dir = os.path.join(SKILL_MODEL_BASE, "bge-base-zh-v1.5")
+        if os.path.exists(os.path.join(bge_dir, "onnx", "model.onnx")):
+            with _silent_import():
+                _embedding_fn = _BGEONNX(bge_dir)
+        else:
+            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+            _install_model()
+            _embedding_fn = ONNXMiniLM_L6_V2()
+            # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
+            _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
     return _embedding_fn
+
+
+class _BGEONNX:
+    """bge-base-zh-v1.5 ONNX embedding：768 维，CLS pooling，L2 归一化。
+
+    中文语义检索，显著优于英文模型 all-MiniLM-L6-v2。
+    模型目录：{SKILL_MODEL_BASE}/bge-base-zh-v1.5/{onnx/model.onnx, tokenizer.json, ...}
+    """
+
+    def __init__(self, model_dir):
+        import onnxruntime as ort
+        from tokenizers import Tokenizer
+
+        self._np = __import__("numpy")
+        self.session = ort.InferenceSession(
+            os.path.join(model_dir, "onnx", "model.onnx"),
+            providers=["CPUExecutionProvider"],
+        )
+        self.tok = Tokenizer.from_file(os.path.join(model_dir, "tokenizer.json"))
+        self.tok.enable_truncation(max_length=512)
+        self.tok.enable_padding(pad_id=0, pad_token="[PAD]")
+
+    @staticmethod
+    def name():
+        return "bge-base-zh-v1.5"
+
+    def embed_query(self, input):
+        return self.__call__(input)
+
+    def embed_documents(self, input):
+        return self.__call__(input)
+
+    def __call__(self, input):
+        np = self._np
+        enc = self.tok.encode_batch(list(input))
+        ids = [e.ids for e in enc]
+        attn = [e.attention_mask for e in enc]
+        tids = [e.type_ids for e in enc]
+        out = self.session.run(None, {
+            "input_ids": np.array(ids, dtype=np.int64),
+            "attention_mask": np.array(attn, dtype=np.int64),
+            "token_type_ids": np.array(tids, dtype=np.int64),
+        })[0]
+        emb = out[:, 0, :]
+        emb = emb / np.linalg.norm(emb, axis=1, keepdims=True)
+        return emb.astype(np.float32).tolist()
 
 
 def get_client():

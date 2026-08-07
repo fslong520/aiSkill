@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "1.2.0"
+  version: "1.3.0"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"
@@ -218,7 +218,7 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 │   ├── 05-retrieval.md         # 类人检索策略
 │   └── 06-import-export.md     # 导入导出操作
 ├── models/                     # embedding 模型
-│   └── onnx.tar.gz             # 离线安装包 (80MB, 首次使用自动解压)
+│   └── onnx.tar.gz             # MiniLM 离线安装包 (80MB, 回退用)
 ├── scripts/
 │   ├── memory_core.py          # 核心引擎 CLI
 │   └── viz/                    # 记忆可视化
@@ -232,13 +232,26 @@ PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 
 ## 模型安装
 
-本技能使用 all-MiniLM-L6-v2 embedding 模型。安装方式：
+本技能默认使用 **bge-base-zh-v1.5**（BAAI 中文语义模型，768 维，~400MB）——中文记忆检索质量远超英文模型 all-MiniLM-L6-v2。引擎自动检测：`~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/onnx/model.onnx` 存在即用之；否则回退 MiniLM（384 维）。
 
-1. **有离线包** (`models/onnx.tar.gz`) → 首次调用时自动解压到 `models/all-MiniLM-L6-v2/onnx/`
-2. **无离线包** → 自动从 Chroma S3 下载到 `models/all-MiniLM-L6-v2/onnx/`
-3. 也可手动下载并解压至 `models/all-MiniLM-L6-v2/onnx/`
+**bge-base-zh-v1.5 安装**（模型放运行时目录，技能更新不覆盖）：
 
-> ⚠️ **注意**：模型文件永远存放在本技能目录下的 `models/` 中，**不会写入 `~/.cache/chroma/`**。即使执行 `rm -rf ~/.cache/chroma` 也不会影响已安装的模型。
+```bash
+mkdir -p ~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/onnx
+# 自 hf-mirror 下载（或浏览器下载后放入）
+curl -sL -o ~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/onnx/model.onnx \
+  https://hf-mirror.com/Xenova/bge-base-zh-v1.5/resolve/main/onnx/model.onnx
+cd ~/.local/share/opencode/忆时/models/bge-base-zh-v1.5
+for f in config.json tokenizer.json special_tokens_map.json tokenizer_config.json vocab.txt; do
+  curl -sL -o "$f" "https://hf-mirror.com/Xenova/bge-base-zh-v1.5/resolve/main/$f"
+done
+```
+
+**维度变更须重建集合**：bge 为 768 维，与 MiniLM 384 维不兼容——切换模型后须备份 `data/` 并重建 memories/relationships/meta 三集合、全量重嵌入（忆时 388 条约 1 分钟）。
+
+**MiniLM 回退**：`~/.local/share/opencode/忆时/models/onnx/model.onnx`（旧模型，离线包 `models/onnx.tar.gz` 自动解压）。
+
+> ⚠️ **注意**：运行时模型与数据统一存 `~/.local/share/opencode/忆时/`（LOCAL_BASE），**不写入 `~/.cache/chroma/`**，亦不存技能目录（技能更新会覆盖）。技能目录 `models/` 仅存 MiniLM 离线安装包。
 
 ## 使用说明
 
