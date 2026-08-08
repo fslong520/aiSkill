@@ -88,3 +88,5 @@ python3 scripts/memory_core.py recall "情绪词" --type-filter emotion --min-we
 - 关联分数 > 0.6
 - 与当前话题有语义关联
 - 不是已在此对话中提及过的内容
+
+> 强涌现强制流程（三轮检索）、检索升级穷尽模式（L0-L4）、主动存储细则——见 modules/13-retrieval-store.md。

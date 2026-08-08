@@ -44,7 +44,7 @@ python3 scripts/memory_core.py recall "查询内容" --limit 5 --expand
 
 默认使用 **bge-base-zh-v1.5**（BAAI 中文语义模型，768 维）——中文记忆检索质量远超英文模型 MiniLM。引擎自动检测 `~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/`，不存在则回退 MiniLM（384 维，离线包 `models/onnx.tar.gz` 自动解压）。
 
-bge 安装：自 hf-mirror 下载 Xenova/bge-base-zh-v1.5 之 `onnx/model.onnx` 与 tokenizer 文件至上述目录（详见 SKILL.md「模型安装」）。切换模型后须重建 Chroma 集合（384→768 维不兼容）。
+bge 安装：自 hf-mirror 下载 Xenova/bge-base-zh-v1.5 之 `onnx/model.onnx` 与 tokenizer 文件至上述目录（详见 modules/08-setup.md）。切换模型后须重建 Chroma 集合（384→768 维不兼容）。
 
 ## 目录结构
 
