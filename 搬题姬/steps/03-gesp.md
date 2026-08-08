@@ -190,6 +190,8 @@
 
 **独立于GESP级别**：一级题可甚难（复杂嵌套），八级题可甚简（直套模板）。
 
+> ⚠️ **星级仅供内部定分参考，不写入题面。** 题面（problem_zh.md）难度标注直接采用第六步算出的 CF 分数（score），格式 `难度（CF Rating）：**XXXX**`，与 `problem.yaml` 的 `score` 一致。
+
 ### 难度等级（五星制）
 
 | 星级 | 特征 | 举例 |
@@ -211,7 +213,7 @@
 
 ## 第六步：定分（CF Rating 估算）
 
-**目标**：为题目估算 Codeforces Rating（800~3500），写入 `problem.yaml` 的 `score` 字段。
+**目标**：为题目估算 Codeforces Rating（800~3500），写入 `problem.yaml` 的 `score` 字段，并作为题面（problem_zh.md）的难度标注（`难度（CF Rating）：XXXX`）。
 此步在定级（第三步）和定难（第五步）完成之后执行，综合二者结果。
 
 ### 6.1 基分表（GESP 等级 → 基准 Rating）
