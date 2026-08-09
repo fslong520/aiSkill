@@ -9,23 +9,12 @@ venv/
 # ChromaDB data (generated at runtime)
 data/
 
-# Extracted model files (auto-generated on first use)
-models/onnx/model.onnx
-models/onnx/config.json
-models/onnx/tokenizer.json
-models/onnx/tokenizer_config.json
-models/onnx/special_tokens_map.json
-models/onnx/vocab.txt
-
 # OS files
 .DS_Store
 Thumbs.db
 
 # Auto-generated backup (regenerated on each store)
 memories_backup.jsonl
-
-# 模型离线包（大文件，不入库）
-models/onnx.tar.gz
 
 # 数据备份
 data_minilm_backup/

@@ -4,7 +4,7 @@
 
 ## 模型安装
 
-本技能默认使用 **bge-base-zh-v1.5**（BAAI 中文语义模型，768 维，~400MB）——中文记忆检索质量远超英文模型 all-MiniLM-L6-v2。引擎自动检测：`~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/onnx/model.onnx` 存在即用之；否则回退 MiniLM（384 维）。
+本技能使用 **bge-base-zh-v1.5**（BAAI 中文语义模型，768 维，~400MB）——中文记忆检索质量远超英文模型 MiniLM。引擎检测 `~/.local/share/opencode/忆时/models/bge-base-zh-v1.5/onnx/model.onnx`，缺失即报错退出，**无回退**（MiniLM 384 维与 bge 768 维数据不兼容，曾致维度冲突）。
 
 **bge-base-zh-v1.5 安装**（模型放运行时目录，技能更新不覆盖）：
 
@@ -19,11 +19,7 @@ for f in config.json tokenizer.json special_tokens_map.json tokenizer_config.jso
 done
 ```
 
-**维度变更须重建集合**：bge 为 768 维，与 MiniLM 384 维不兼容——切换模型后须备份 `data/` 并重建 memories/relationships/meta 三集合、全量重嵌入（忆时 388 条约 1 分钟）。
-
-**MiniLM 回退**：`~/.local/share/opencode/忆时/models/onnx/model.onnx`（旧模型，离线包 `models/onnx.tar.gz` 自动解压）。
-
-> ⚠️ **注意**：运行时模型与数据统一存 `~/.local/share/opencode/忆时/`（LOCAL_BASE），**不写入 `~/.cache/chroma/`**，亦不存技能目录（技能更新会覆盖）。技能目录 `models/` 仅存 MiniLM 离线安装包。
+> ⚠️ **注意**：运行时模型与数据统一存 `~/.local/share/opencode/忆时/`（LOCAL_BASE），**不写入 `~/.cache/chroma/`**，亦不存技能目录（技能更新会覆盖）。
 
 ## 必须配置外挂提示词
 

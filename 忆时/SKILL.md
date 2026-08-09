@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "2.1.0"
+  version: "2.2.0"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"
@@ -153,8 +153,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
 │   ├── 12-viz-profile.md       # 可视化与人物画像
 │   ├── 13-retrieval-store.md   # 记忆操作流程 (检索/存储细则)
 │   └── 14-behavior.md          # 认知自知与上下文工程
-├── models/                     # embedding 模型
-│   └── onnx.tar.gz             # MiniLM 离线安装包 (80MB, 回退用)
+├── models/                     # （预留，仅 bge 模型不落此——运行时模型在 LOCAL_BASE）
 ├── scripts/
 │   ├── memory_core.py          # 核心引擎 CLI
 │   └── viz/                    # 记忆可视化
@@ -172,5 +171,5 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
 - 依赖: chromadb 1.5.4、jieba（BM25 关键词检索）
 - 脚本: `scripts/memory_core.py`
 - 数据: `data/` (ChromaDB PersistentClient 自动创建)
-- 模型: bge-base-zh-v1.5（768维，默认），回退 MiniLM（384维）。安装/切换见 modules/08-setup.md
+- 模型: bge-base-zh-v1.5（768维，唯一模型，无回退）。安装见 modules/08-setup.md
 - 备份: `~/.local/share/opencode/忆时/memories_backup.jsonl`（可用 MEMO_BAK 覆盖，多实例/测试隔离）
