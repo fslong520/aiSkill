@@ -95,7 +95,7 @@ recall "关键词" --limit 3
    - 情绪：用户情绪有无显著变化？
 2. **逐条存储**——每一条要点提取核心内容，以 `store` 存入记忆：
    ```bash
-   MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI store "要点" --type <类型> --emotion <情绪> --keywords "关键词"
+   MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI store "要点" --type <类型> --emotion <情绪> --keywords "关键词"
    ```
    - 存储前先 `recall` 检索旧忆，有相似者更新之，无则新增
 3. **告知用户**——简要报告收录条目，例：

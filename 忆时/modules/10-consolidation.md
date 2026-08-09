@@ -8,14 +8,14 @@
 
 以特殊记忆追踪末次梳理时间。每次对话启始，先查：
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
   recall "记忆梳理" --type-filter time --limit 1 --min-weight 0.1
 ```
 - **返回末次梳理时间**：有结果则告知用户"上次梳理于 XXXX-XX-XX"；无结果则言"尚无梳理记录"。
 - 若无结果，或末次梳理距今超过 7 日 → 触发梳理流程。
 - 梳理毕，以 `--type time --emotion medium --keywords "记忆梳理,consolidation"` 存储新时间戳：
   ```bash
-  MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+  MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
     store "上次记忆梳理时间: YYYY-MM-DD" --type time --emotion medium --keywords "记忆梳理,consolidation"
   ```
 - 梳理完成，告知用户"梳理完毕，上次梳理时间已更新"。
@@ -24,7 +24,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 
 1. **导出所有记忆**
    ```bash
-   MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+   MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
      export --format timeline --output /tmp/yishi_export.md
    ```
 2. **AI 分析导出内容**——以 AI 原生工具读 `/tmp/yishi_export.md`，提取：
@@ -33,7 +33,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
    - 长期任务之进度、阻滞点
 3. **沉淀为结构化记忆**：每一条主题存为一条记忆，示例：
    ```bash
-   MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
+   MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
      store "主题摘要" --type 类型 --emotion medium --keywords "主题关键词,consolidated"
    ```
    其中 `keywords` 须含 `consolidated` 标签，以示此条乃梳理产物。

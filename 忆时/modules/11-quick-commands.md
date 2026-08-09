@@ -37,7 +37,7 @@
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI store "内容" --type <类型> --emotion <情绪> --keywords "自动提取2-3关键词"
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI store "内容" --type <类型> --emotion <情绪> --keywords "自动提取2-3关键词"
 ```
 
 **默认值：** `--type task --emotion medium`
@@ -55,7 +55,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI store "内容" --t
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI recall "关键词" --limit <数量> --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI recall "关键词" --limit <数量> --expand
 ```
 
 **默认值：** `--limit 5 --expand`
@@ -75,7 +75,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI recall "关键词"
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI forget --query "关键词" --auto
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI forget --query "关键词" --auto
 ```
 
 **注意：** forget 操作不可逆（除非 recover）。执行前当先 recall 确认匹配条目，再行 forget。
@@ -92,7 +92,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI forget --query "�
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI stats
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI stats
 ```
 
 **回复格式：**
@@ -107,14 +107,14 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI stats
 ## 导出（export）
 
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI export --format timeline --output /tmp/yishi_export.md
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI export --format timeline --output /tmp/yishi_export.md
 ```
 回复：`"导出完毕。文件：/tmp/yishi_export.md"`
 
 ## 可视化（viz）
 
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
 ```
 参数、产出、主题聚类、回复风格——详见 modules/12-viz-profile.md「可视化」。
 
@@ -125,7 +125,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 ## 恢复（recover）
 
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI recover
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI recover
 ```
 回复：`"已恢复。"`
 
@@ -139,8 +139,8 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI recover
 
 **命令构造示例：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI capsule lock --unlock-at "2026-12-31" --summary "年度记忆"
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI capsule list
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI capsule lock --unlock-at "2026-12-31" --summary "年度记忆"
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI capsule list
 ```
 
 **回复风格：**

@@ -6,7 +6,7 @@
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
 ```
 
 **参数：**
@@ -36,9 +36,9 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 
 ```bash
 # ① 取素材（AI 消费）
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py
 # ② 注入画像正文，生成页面
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py \
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py \
   --content 画像正文.html --out ~/Desktop/哥哥人物画像.html --open
 ```
 

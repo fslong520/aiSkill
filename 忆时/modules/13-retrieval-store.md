@@ -6,7 +6,7 @@
 
 取工作目录之末尾目录名（即项目名）：
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "项目名" --limit 5 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "项目名" --limit 5 --expand
 ```
 若项目无关，则取其父目录名再试。过去涉及该项目之决策、偏好、任务皆可浮现。
 
@@ -19,13 +19,13 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 **第零轮（并行触发）：**
 收到用户消息后，立即以 background 任务发起语义检索，与分析用户意图并行执行：
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言核心关键词" --limit 5 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言核心关键词" --limit 5 --expand
 ```
 检索结果须在本次回复结束前收集并体现。
 
 **第一轮：语义检索**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言关键词" --limit 5 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户发言关键词" --limit 5 --expand
 ```
 
 **第二轮：涌现判定（强制）**
@@ -33,7 +33,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 - 若有 `[关联]` 标记项 → 已现涌现，直接表达："说到此，忆起一事……"
 - 若结果 ≥ 2 条 → 取 top-2 之关键字/内容，构建复合查询，做第二轮涌现检索：
   ```bash
-  MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "原关键词 新关键词" --limit 3
+  MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "原关键词 新关键词" --limit 3
   ```
 - 若第二轮结果与第一轮不重叠 → 此乃涌现之记忆，主动提及
 - **仅1条亦须审视**：哪怕是单条，若语义沾边，即应表达关联——降低涌现门槛
@@ -41,7 +41,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 **第三轮：情绪锚定（强制）**
 每轮都查情绪锚定，而非仅"情绪显著时"。以情绪倾向词 + 话题词检索：
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪倾向" --type-filter emotion --min-weight 0.5 --limit 2
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪倾向" --type-filter emotion --min-weight 0.5 --limit 2
 ```
 
 **涌现表达原则：**
@@ -65,16 +65,16 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 **命令示例（深度检索）：**
 ```bash
 # L1 加深：扩大limit + 跨类型
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户话题关键词" --limit 8 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "用户话题关键词" --limit 8 --expand
 
 # L2 换角度：近义词/同义表达
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "近义词" --limit 5 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "近义词" --limit 5 --expand
 
 # L3 扩散检索：以命中条的关键词延伸
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "已有结果的关键词 新角度" --limit 5 --expand
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "已有结果的关键词 新角度" --limit 5 --expand
 
 # L4 情绪锚定强搜索
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪词" --type-filter emotion --min-weight 0.7 --limit 3
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "话题词 情绪词" --type-filter emotion --min-weight 0.7 --limit 3
 ```
 
 ## 主动存储——激进策略
@@ -114,7 +114,7 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 
 **存储命令：**
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字" [--scene 场景] [--activity-start 开始] [--activity-end 结束] [--force]
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字" [--scene 场景] [--activity-start 开始] [--activity-end 结束] [--force]
 ```
 
 **类型**：task / decision / preference / emotion / time / context / skill
@@ -135,5 +135,5 @@ MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills
 
 **凡做决策或提问之前，必先查询记忆。** 无论大小决定——拟建议、择方案、答问题——皆先 `recall` 检索相关记忆，确认有无既有决策、偏好、约定可循：
 ```bash
-MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "决策主题关键词" --limit 3
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py recall "决策主题关键词" --limit 3
 ```
