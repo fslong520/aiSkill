@@ -18,7 +18,9 @@ VIZ_DIR = Path(__file__).resolve().parent
 SKILL_DIR = VIZ_DIR.parent.parent          # scripts/viz → scripts → 忆时/
 CORE = SKILL_DIR / "scripts" / "memory_core.py"
 TPL = VIZ_DIR / "template.html"
-DATA_DIR = os.environ.get("MEMO_DIR") or os.environ.get("YISHI_DATA_DIR") or str(SKILL_DIR / "data")
+# 与 memory_core.py 一致：默认 LOCAL_BASE/data（~/.local/share/opencode/忆时/data）
+LOCAL_BASE = Path.home() / ".local" / "share" / "opencode" / "忆时"
+DATA_DIR = os.environ.get("MEMO_DIR") or os.environ.get("YISHI_DATA_DIR") or str(LOCAL_BASE / "data")
 
 # ---------- 主题聚类规则（顺序优先，首中即归） ----------
 TOPICS = [
