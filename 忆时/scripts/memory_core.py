@@ -64,11 +64,6 @@ if os.environ.get("YISHI_DATA_DIR") and not os.environ.get("MEMO_DIR"):
 
 SKILL_MODEL_BASE = os.path.join(LOCAL_BASE, "models")
 
-# Chroma ONNXMiniLM_L6_V2 的 DOWNLOAD_PATH 即模型根目录：
-#   {DOWNLOAD_PATH}/onnx/model.onnx
-CHROMA_MODEL_DIR = os.path.join(SKILL_MODEL_BASE, "onnx")
-CHROMA_MODEL_ONNX = os.path.join(CHROMA_MODEL_DIR, "model.onnx")
-
 # 自动备份文件（JSONL 格式），存于 LOCAL_BASE 而非 data/ 中，
 # 即使 data/ 被误删也能用 recover 命令重建记忆库。
 # 可用环境变量 MEMO_BAK 覆盖（多实例/测试隔离）。
@@ -97,127 +92,23 @@ _embedding_client = None
 _embedding_fn = None
 
 
-def _skill_models_dir():
-    """返回技能目录下的 models/ 路径（即 SKILL.md 所在目录之 models/ 子目录）。"""
-    return os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "models")
-
-
-def _install_model():
-    """确保 embedding 模型位于 skill-local models/ 目录，而非 ~/.cache/chroma/."""
-    if os.path.exists(CHROMA_MODEL_ONNX):
-        return True
-
-    import shutil
-
-    # 检查旧版路径（models/onnx/ 结构），若有则迁移
-    old_onnx_dir = os.path.join(SKILL_MODEL_BASE, "onnx")
-    old_model = os.path.join(old_onnx_dir, "model.onnx")
-    if os.path.exists(old_model):
-        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
-        for f in os.listdir(old_onnx_dir):
-            shutil.copy2(os.path.join(old_onnx_dir, f), os.path.join(CHROMA_MODEL_DIR, f))
-        if os.path.exists(CHROMA_MODEL_ONNX):
-            return True
-
-    # 检查技能自身 models/onnx/（完整解压目录）
-    skill_onnx = os.path.join(_skill_models_dir(), "onnx")
-    if os.path.isdir(skill_onnx) and os.path.exists(os.path.join(skill_onnx, "model.onnx")):
-        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
-        for f in os.listdir(skill_onnx):
-            shutil.copy2(os.path.join(skill_onnx, f), os.path.join(CHROMA_MODEL_DIR, f))
-        if os.path.exists(CHROMA_MODEL_ONNX):
-            return True
-
-    # 尝试从本地 onnx.tar.gz 安装（优先技能目录，其次 LOCAL_BASE）
-    skill_tar = os.path.join(_skill_models_dir(), "onnx.tar.gz")
-    local_tar = os.path.join(SKILL_MODEL_BASE, "onnx.tar.gz")
-    onnx_tar = skill_tar if os.path.exists(skill_tar) else local_tar
-    if os.path.exists(onnx_tar):
-        import tarfile, tempfile
-        os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
-        with tempfile.TemporaryDirectory() as tmp:
-            with tarfile.open(onnx_tar, "r:gz") as tar:
-                tar.extractall(path=tmp, filter="data")
-            # tarball 结构可能是 onnx/xxx 或直接是文件
-            src = os.path.join(tmp, "onnx")
-            if os.path.isdir(src):
-                for f in os.listdir(src):
-                    shutil.move(os.path.join(src, f), CHROMA_MODEL_DIR)
-            else:
-                for f in os.listdir(tmp):
-                    fp = os.path.join(tmp, f)
-                    if os.path.isfile(fp):
-                        shutil.move(fp, CHROMA_MODEL_DIR)
-        return os.path.exists(CHROMA_MODEL_ONNX)
-
-    # 尝试从 Gitee（国内镜像）下载模型文件
-    import urllib.request
-    model_files = [
-        "config.json",
-        "model.onnx",
-        "special_tokens_map.json",
-        "tokenizer_config.json",
-        "tokenizer.json",
-        "vocab.txt",
-    ]
-    gitee_base = "https://gitee.com/hf-models/all-MiniLM-L6-v2-onnx/raw/main"
-    hf_base = "https://hf-mirror.com/sentence-transformers/all-MiniLM-L6-v2/resolve/main"
-
-    os.makedirs(CHROMA_MODEL_DIR, exist_ok=True)
-    all_ok = True
-    for fname in model_files:
-        dst = os.path.join(CHROMA_MODEL_DIR, fname)
-        if os.path.exists(dst) and os.path.getsize(dst) > 100:
-            continue
-
-        # 先试 Gitee，不行再换 hf-mirror
-        urls = [
-            f"{gitee_base}/{fname}",
-            f"{hf_base}/{fname}",
-        ]
-        downloaded = False
-        for url in urls:
-            try:
-                req = urllib.request.Request(url, headers={"User-Agent": "yishi/1.0"})
-                with urllib.request.urlopen(req, timeout=120) as resp:
-                    data = resp.read()
-                if len(data) < 50 and b"violation" in data.lower():
-                    continue  # Gitee 451 拦截，换下一个源
-                with open(dst, "wb") as f:
-                    f.write(data)
-                downloaded = True
-                break
-            except Exception:
-                continue
-        if not downloaded:
-            all_ok = False
-
-    if all_ok and os.path.exists(CHROMA_MODEL_ONNX):
-        return True
-    return False
-
-
 def get_embedding_fn():
     global _embedding_fn
     if _embedding_fn is None:
-        # YISHI_EMBED=minilm 强制 MiniLM（存量 collection 以 MiniLM 持久化时用）
-        if os.environ.get("YISHI_EMBED", "") == "minilm":
-            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
-            _install_model()
-            _embedding_fn = ONNXMiniLM_L6_V2()
-            # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
-            _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
-            return _embedding_fn
+        # 仅支持 bge-base-zh-v1.5（768 维）。模型目录：
+        #   {SKILL_MODEL_BASE}/bge-base-zh-v1.5/{onnx/model.onnx, tokenizer.json, ...}
+        # 安装方法见 modules/08-setup.md。无回退——MiniLM 384 维与 768 维数据不兼容，曾致维度冲突。
         bge_dir = os.path.join(SKILL_MODEL_BASE, "bge-base-zh-v1.5")
-        if os.path.exists(os.path.join(bge_dir, "onnx", "model.onnx")):
-            with _silent_import():
-                _embedding_fn = _BGEONNX(bge_dir)
-        else:
-            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
-            _install_model()
-            _embedding_fn = ONNXMiniLM_L6_V2()
-            # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
-            _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
+        bge_onnx = os.path.join(bge_dir, "onnx", "model.onnx")
+        if not os.path.exists(bge_onnx):
+            print(
+                "❌ 未找到 bge-base-zh-v1.5 模型（768 维）：" + bge_onnx + "\n"
+                "   安装方法见 modules/08-setup.md（hf-mirror 下载 Xenova/bge-base-zh-v1.5 至该目录）。",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        with _silent_import():
+            _embedding_fn = _BGEONNX(bge_dir)
     return _embedding_fn
 
 
