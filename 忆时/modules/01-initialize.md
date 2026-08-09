@@ -60,4 +60,4 @@ ChromaDB 内会创建以下集合:
 
 | 变量 | 默认值 | 说明 |
 |------|--------|------|
-| YISHI_DATA_DIR | ~/.config/opencode/skills/忆时/data | ChromaDB 存储路径 |
+| MEMO_DIR | ~/.config/opencode/skills/忆时/data | ChromaDB 存储路径 |

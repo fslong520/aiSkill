@@ -13,7 +13,7 @@
      → 生成后自动封存时间胶囊（3个月后解锁），--no-capsule 可关
 
 依赖：同目录 viz.py（复用导出与主题聚类）；profile_template.html。
-环境：须设 YISHI_DATA_DIR。
+环境：须设 MEMO_DIR。
 """
 import json, os, re, sys, subprocess, argparse, calendar, datetime
 from pathlib import Path
@@ -115,7 +115,7 @@ def capsule_lock(content, unlock_date, summary="人物画像", keywords="画像,
          "--unlock-at", unlock_date, "--content", content,
          "--summary", summary, "--keywords", keywords],
         capture_output=True, text=True,
-        env=dict(os.environ, YISHI_DATA_DIR=viz.DATA_DIR))
+        env=dict(os.environ, MEMO_DIR=viz.DATA_DIR))
     if r.returncode != 0:
         raise RuntimeError(f"胶囊封存失败: {r.stderr.strip() or r.stdout.strip()}")
     return r.stdout

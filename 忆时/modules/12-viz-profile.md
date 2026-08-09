@@ -6,7 +6,7 @@
 
 **命令构造：**
 ```bash
-YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
+MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/viz.py
 ```
 
 **参数：**
@@ -20,7 +20,7 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/
 
 **主题聚类**：脚本内 TOPICS 规则按关键词顺序匹配（纸焰小说→教学学生→GESP考级→灵逸OJ→数学讲义→技能开发→系统运维→工程配置→忆时系统→其他），首中即归。
 
-**依赖**：同目录 template.html（孟菲斯模板，含 `/*__DATA__*/` 占位符）；上一级 memory_core.py（内部调用 `export --format json` 取数）。须设 `YISHI_DATA_DIR`。
+**依赖**：同目录 template.html（孟菲斯模板，含 `/*__DATA__*/` 占位符）；上一级 memory_core.py（内部调用 `export --format json` 取数）。须设 `MEMO_DIR`。
 
 **回复风格：**
 ```
@@ -36,9 +36,9 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/
 
 ```bash
 # ① 取素材（AI 消费）
-YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py
+MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py
 # ② 注入画像正文，生成页面
-YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py \
+MEMO_DIR=~/.config/opencode/skills/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/viz/profile.py \
   --content 画像正文.html --out ~/Desktop/哥哥人物画像.html --open
 ```
 

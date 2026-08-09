@@ -9,7 +9,7 @@
   python3 viz.py --data x.json         # 复用已有导出 JSON（跳过导出）
 
 依赖：同目录 template.html；上一级 memory_core.py。
-环境：须设 YISHI_DATA_DIR（忆时铁律），否则数据路径错。
+环境：须设 MEMO_DIR（忆时铁律），否则数据路径错。
 """
 import json, os, re, subprocess, sys, argparse, tempfile
 from pathlib import Path
@@ -18,7 +18,7 @@ VIZ_DIR = Path(__file__).resolve().parent
 SKILL_DIR = VIZ_DIR.parent.parent          # scripts/viz → scripts → 忆时/
 CORE = SKILL_DIR / "scripts" / "memory_core.py"
 TPL = VIZ_DIR / "template.html"
-DATA_DIR = os.environ.get("YISHI_DATA_DIR", str(SKILL_DIR / "data"))
+DATA_DIR = os.environ.get("MEMO_DIR") or os.environ.get("YISHI_DATA_DIR") or str(SKILL_DIR / "data")
 
 # ---------- 主题聚类规则（顺序优先，首中即归） ----------
 TOPICS = [
@@ -50,7 +50,7 @@ def summarize(content, limit=110):
 
 def export_json(tmp):
     """调用 memory_core.py 导出全部记忆为 JSON"""
-    env = dict(os.environ, YISHI_DATA_DIR=DATA_DIR)
+    env = dict(os.environ, MEMO_DIR=DATA_DIR)
     r = subprocess.run([sys.executable, str(CORE), "export", "--format", "json", "--output", str(tmp)],
                        capture_output=True, text=True, env=env)
     if r.returncode != 0:

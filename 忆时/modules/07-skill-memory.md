@@ -42,7 +42,7 @@
 
 **存储命令：**
 ```bash
-YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI store "Strategy/Language/Example" \
+MEMO_DIR=~/.config/opencode/skills/忆时/data python3 $YISHI store "Strategy/Language/Example" \
   --type skill \
   --emotion high \
   --keywords "skill,格语,trigger:漫画,trigger:画漫画" \

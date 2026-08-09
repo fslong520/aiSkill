@@ -23,6 +23,7 @@ import argparse
 import json
 import math
 import os
+import re
 import sys
 import uuid
 import warnings
@@ -33,6 +34,8 @@ from pathlib import Path
 # 静默 ONNX C++ 层 Schema error 滋扰
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 warnings.filterwarnings('ignore')
+import jieba  # noqa: E402  须在 filterwarnings 之后 import，压 pkg_resources 弃用警告
+jieba.setLogLevel(60)  # 静默建词典日志
 
 @contextlib.contextmanager
 def _silent_import():
@@ -54,10 +57,10 @@ with _silent_import():
 # 不放在技能目录（更新技能会覆盖），也不放在 ~/.cache/（清缓存会被删除）。
 LOCAL_BASE = os.path.join(Path.home(), ".local", "share", "opencode", "忆时")
 
-DATA_DIR = os.environ.get(
-    "YISHI_DATA_DIR",
-    os.path.join(LOCAL_BASE, "data"),
-)
+DATA_DIR = os.environ.get("MEMO_DIR") or os.environ.get("YISHI_DATA_DIR") or os.path.join(LOCAL_BASE, "data")
+
+if os.environ.get("YISHI_DATA_DIR") and not os.environ.get("MEMO_DIR"):
+    print("⚠️ YISHI_DATA_DIR 已更名 MEMO_DIR，请更新调用", file=sys.stderr)
 
 SKILL_MODEL_BASE = os.path.join(LOCAL_BASE, "models")
 
@@ -68,12 +71,28 @@ CHROMA_MODEL_ONNX = os.path.join(CHROMA_MODEL_DIR, "model.onnx")
 
 # 自动备份文件（JSONL 格式），存于 LOCAL_BASE 而非 data/ 中，
 # 即使 data/ 被误删也能用 recover 命令重建记忆库。
-BACKUP_FILE = os.path.join(LOCAL_BASE, "memories_backup.jsonl")
+# 可用环境变量 MEMO_BAK 覆盖（多实例/测试隔离）。
+BACKUP_FILE = os.environ.get("MEMO_BAK") or os.environ.get("YISHI_BACKUP_FILE") or os.path.join(LOCAL_BASE, "memories_backup.jsonl")
 
 EMOTION_WEIGHTS = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
 RECALL_DECAY_DAYS = 30.0
 VALID_TYPES = {"emotion", "decision", "task", "time", "preference", "context", "skill"}
 VALID_EMOTIONS = {"extreme", "high", "medium", "low"}
+
+# ── 混合检索（BM25 关键词路 + 向量路 RRF 融合）─
+RRF_K = 60.0                # RRF 融合常数（标准值 60）
+BM25_K1 = 1.5               # BM25 词频饱和参数
+BM25_B = 0.75               # BM25 文档长度归一参数
+MERGE_SIM_HIGH = 0.90       # 去重：相似度高于此值 → 自动合并（实测子串包含≈0.91）
+MERGE_SIM_WARN = 0.85       # 去重：高于此值 → 警告仍存
+BM25_KEYWORD_WEIGHT = 2     # keywords 分词重复次数（权重×2）
+_STOP_WORDS = frozenset(
+    "的了是在我有和就都而及与或一个不也这那你们我们他们她他它它们被把让从到对向为以于之乎者也"
+    "啊呢吧吗哦嗯好行对没啥啥很最更再又还已经正在将要可以可能应该必须不要没有什么怎么为什么"
+    "因为所以但是然而如果那么虽然尽管只是还是或者以及关于对于通过由于根据按照例如比如这个那个"
+    "自己这里那里时候时候东西事情问题方法方式情况结果原因目的意义价值作用影响关系问题"
+)
+
 _embedding_client = None
 _embedding_fn = None
 
@@ -181,6 +200,14 @@ def _install_model():
 def get_embedding_fn():
     global _embedding_fn
     if _embedding_fn is None:
+        # YISHI_EMBED=minilm 强制 MiniLM（存量 collection 以 MiniLM 持久化时用）
+        if os.environ.get("YISHI_EMBED", "") == "minilm":
+            from chromadb.utils.embedding_functions.onnx_mini_lm_l6_v2 import ONNXMiniLM_L6_V2
+            _install_model()
+            _embedding_fn = ONNXMiniLM_L6_V2()
+            # ★ 关键：永远指向 skill-local，远离 ~/.cache/chroma/ ★
+            _embedding_fn.DOWNLOAD_PATH = SKILL_MODEL_BASE
+            return _embedding_fn
         bge_dir = os.path.join(SKILL_MODEL_BASE, "bge-base-zh-v1.5")
         if os.path.exists(os.path.join(bge_dir, "onnx", "model.onnx")):
             with _silent_import():
@@ -219,6 +246,9 @@ class _BGEONNX:
         return "bge-base-zh-v1.5"
 
     def embed_query(self, input):
+        # Chroma 1.5.9 embed_query 为 batch 语义：入 ['q'] 出 [[768]]；直调可能传 str——双兼容
+        if isinstance(input, str):
+            input = [input]
         return self.__call__(input)
 
     def embed_documents(self, input):
@@ -226,6 +256,8 @@ class _BGEONNX:
 
     def __call__(self, input):
         np = self._np
+        if isinstance(input, str):
+            input = [input]
         enc = self.tok.encode_batch(list(input))
         ids = [e.ids for e in enc]
         attn = [e.attention_mask for e in enc]
@@ -300,6 +332,91 @@ def _load_backups():
     return records
 
 
+# ========== 混合检索（BM25 关键词路）==========
+def _tokenize(text):
+    """jieba 分词 + 过滤停用词/单字中文/纯符号。keywords 以 BM25_KEYWORD_WEIGHT 倍权重入。"""
+    toks = []
+    parts = text.split("|||")  # 分隔符：content ||| keywords
+    for pi, part in enumerate(parts):
+        repeat = BM25_KEYWORD_WEIGHT if pi == 1 else 1
+        for w in jieba.lcut(part):
+            w = w.strip().lower()
+            if not w or w in _STOP_WORDS:
+                continue
+            if len(w) == 1 and "\u4e00" <= w <= "\u9fff":
+                continue
+            if not re.search(r"[\w\u4e00-\u9fff]", w):
+                continue
+            toks.extend([w] * repeat)
+    return toks
+
+
+def _bm25_scores(docs, query_tokens, k1=BM25_K1, b=BM25_B):
+    """对全部文档打 BM25 分，返回 {mem_id: score}。"""
+    N = len(docs)
+    if N == 0 or not query_tokens:
+        return {}
+    df = {}
+    doc_len = {}
+    for i, (_, toks) in enumerate(docs):
+        seen = set()
+        for t in toks:
+            if t not in seen:
+                df[t] = df.get(t, 0) + 1
+                seen.add(t)
+        doc_len[i] = len(toks)
+    avgdl = sum(doc_len.values()) / N
+    scores = {}
+    for i, (mid, toks) in enumerate(docs):
+        tf = {}
+        for t in toks:
+            tf[t] = tf.get(t, 0) + 1
+        dl = doc_len[i]
+        s = 0.0
+        for q in query_tokens:
+            if q not in tf:
+                continue
+            idf = math.log(1.0 + (N - df.get(q, 0) + 0.5) / (df.get(q, 0) + 0.5))
+            s += idf * tf[q] * (k1 + 1.0) / (tf[q] + k1 * (1.0 - b + b * dl / avgdl))
+        scores[mid] = s
+    return scores
+
+
+def _bm25_search(query, limit):
+    """BM25 关键词检索：以 JSONL 备份为数据源，返回 [(mem_id, score), ...] 降序。"""
+    records = _load_backups()
+    if not records:
+        return []
+    docs = []
+    for rec in records:
+        mid = rec.get("id", "")
+        content = rec.get("content", "") or ""
+        meta = rec.get("metadata", {}) or {}
+        kw = meta.get("keywords", "") or ""
+        if mid and (content or kw):
+            docs.append((mid, _tokenize(f"{content}|||{kw}")))
+    if not docs:
+        return []
+    qt = _tokenize(query)
+    scores = _bm25_scores(docs, qt)
+    ranked = sorted(scores.items(), key=lambda x: -x[1])
+    if limit:
+        ranked = ranked[:limit]
+    return ranked
+
+
+def _rrf_merge(ranked_lists, limit):
+    """Reciprocal Rank Fusion：多路排名融合，返回 [(mem_id, rrf_score), ...] 降序。"""
+    rrf = {}
+    for lst in ranked_lists:
+        for rank, (mid, _) in enumerate(lst):
+            rrf[mid] = rrf.get(mid, 0.0) + 1.0 / (RRF_K + rank + 1.0)
+    order = sorted(rrf.items(), key=lambda x: -x[1])
+    if limit:
+        order = order[:limit]
+    return order
+
+
 # ========== init ==========
 def cmd_init(args):
     client = get_client()
@@ -325,6 +442,15 @@ def cmd_init(args):
 
 
 # ========== store ==========
+def _merge_keywords(old_kw, new_kw):
+    merged = []
+    for kw in (old_kw or "").split(",") + (new_kw or "").split(","):
+        k = kw.strip()
+        if k and k not in merged:
+            merged.append(k)
+    return ",".join(merged)
+
+
 def cmd_store(args):
     client = get_client()
     mem_col = get_collection(client, "memories")
@@ -345,6 +471,13 @@ def cmd_store(args):
         "frequency": 1,
         "recall_count": 0,
     }
+    # 场景与活动时间段（段段时间语义，借鉴分层记忆场景块）
+    if getattr(args, "scene", None):
+        metadata["scene"] = args.scene
+    if getattr(args, "activity_start", None):
+        metadata["activity_start"] = args.activity_start
+    if getattr(args, "activity_end", None):
+        metadata["activity_end"] = args.activity_end
     # skill 类型自动追加 "skill" 标签
     if mem_type == "skill":
         if "skill" not in (args.keywords or ""):
@@ -357,12 +490,60 @@ def cmd_store(args):
         if val is not None:
             metadata[key] = val
 
+    # ── 去重合并：存前查最相似记忆 ──
+    if not getattr(args, "force", False):
+        try:
+            dup = mem_col.query(query_texts=[args.content], n_results=1)
+            if dup["ids"] and dup["ids"][0]:
+                did = dup["ids"][0][0]
+                ddist = dup["distances"][0][0] if dup["distances"] else 1.0
+                dsim = 1.0 - ddist
+                if dsim > MERGE_SIM_HIGH:
+                    old = mem_col.get(ids=[did])
+                    if old["ids"]:
+                        om = old["metadatas"][0]
+                        ocontent = old["documents"][0]
+                        new_content = ocontent
+                        if args.content.strip() not in ocontent:
+                            new_content = f"{ocontent}。{args.content.strip()}"
+                        nm = dict(om)
+                        nm["content"] = new_content
+                        nm["keywords"] = _merge_keywords(om.get("keywords", ""), args.keywords or "")
+                        nm["frequency"] = int(om.get("frequency", 1)) + 1
+                        nm["updated_at"] = now.isoformat()
+                        if EMOTION_WEIGHTS.get(emotion, 0.5) > float(om.get("emotion_weight", 0.5)):
+                            nm["emotion"] = emotion
+                            nm["emotion_weight"] = EMOTION_WEIGHTS.get(emotion, 0.5)
+                        for f in ("scene", "activity_start", "activity_end"):
+                            if getattr(args, f, None) and not om.get(f):
+                                nm[f] = getattr(args, f)
+                        mem_col.update(ids=[did], documents=[new_content], metadatas=[nm])
+                        _append_backup(did, new_content, nm)
+                        print(f"记忆已合并（相似 {dsim:.0%} > {MERGE_SIM_HIGH:.0%}）")
+                        print(f"  ID: {did}  frequency: {nm['frequency']}")
+                        print(f"  合并内容: {new_content[:120]}")
+                        return did
+        except Exception:
+            pass
+
     mem_id = str(uuid.uuid4())
     mem_col.add(documents=[args.content], metadatas=[metadata], ids=[mem_id])
     _update_meta_total(client, "total_memories", 1)
 
     # 自动备份到 JSONL（与 data/ 独立，不怕误删）
     _append_backup(mem_id, args.content, metadata)
+
+    # 去重警告（相似但未达合并阈值）
+    if not getattr(args, "force", False):
+        try:
+            wq = mem_col.query(query_texts=[args.content], n_results=1)
+            if wq["ids"] and wq["ids"][0]:
+                wdist = wq["distances"][0][0] if wq["distances"] else 1.0
+                wsim = 1.0 - wdist
+                if wsim > MERGE_SIM_WARN and wq["ids"][0][0] != mem_id:
+                    print(f"  ⚠️ 提示: 与已有记忆相似 {wsim:.0%}（ID: {wq['ids'][0][0]}），可能重复")
+        except Exception:
+            pass
 
     # 自动建语义关联：找相似记忆，写入 relationships 集合
     # 关键词各自保留，不做跨记忆融合（避免关键词雪球式膨胀）
@@ -389,6 +570,8 @@ def cmd_store(args):
     print(f"记忆已存储")
     print(f"  ID: {mem_id}")
     print(f"  类型: {mem_type}  情绪: {emotion}")
+    if metadata.get("scene"):
+        print(f"  场景: {metadata['scene']}")
     if metadata["keywords"]:
         print(f"  关键字: {metadata['keywords']}")
     print(f"  已自动备份到: {BACKUP_FILE}")
@@ -406,24 +589,58 @@ def cmd_recall(args):
     type_filter = args.type_filter or None
     now = _now()
 
-    results = mem_col.query(query_texts=[query], n_results=limit * 3)
-    if not results["ids"] or not results["ids"][0]:
+    # ── 混合检索：向量路 + BM25 关键词路，RRF 融合成候选池 ──
+    no_embed = getattr(args, "no_embed", False)
+    vec_ranked = []
+    vec_semantic = {}
+    if not no_embed:
+        try:
+            vec_results = mem_col.query(query_texts=[query], n_results=limit * 6)
+            if vec_results["ids"] and vec_results["ids"][0]:
+                for j in range(len(vec_results["ids"][0])):
+                    mid = vec_results["ids"][0][j]
+                    dist = vec_results["distances"][0][j] if vec_results["distances"] else 1.0
+                    sem = 1.0 - dist
+                    vec_ranked.append((mid, sem))
+                    vec_semantic[mid] = sem
+        except Exception:
+            vec_ranked = []
+            vec_semantic = {}
+
+    bm25_ranked = _bm25_search(query, limit * 6)
+    bm25_semantic = {}
+    if bm25_ranked:
+        bmax = max((s for _, s in bm25_ranked), default=0.0)
+        if bmax > 0:
+            for mid, s in bm25_ranked:
+                bm25_semantic[mid] = s / bmax
+
+    fused = _rrf_merge([vec_ranked, bm25_ranked], limit * 3)
+    if not fused:
         print("没有找到相关记忆")
         return
 
     scored = []
     seen = set()
+    cand_ids = [mid for mid, _ in fused]
+    pool = {}
+    try:
+        pg = mem_col.get(ids=cand_ids)
+        if pg["ids"]:
+            for pi in range(len(pg["ids"])):
+                pool[pg["ids"][pi]] = (
+                    pg["documents"][pi] if pg["documents"] else "",
+                    pg["metadatas"][pi] if pg["metadatas"] else {},
+                )
+    except Exception:
+        pass
 
-    for i in range(len(results["ids"][0])):
-        mid = results["ids"][0][i]
-        if mid in seen:
+    for mid in cand_ids:
+        if mid in seen or mid not in pool:
             continue
         seen.add(mid)
-
-        meta = results["metadatas"][0][i] if results["metadatas"] else {}
-        doc = results["documents"][0][i] if results["documents"] else ""
-        dist = results["distances"][0][i] if results["distances"] else 0.0
-        semantic = 1.0 - dist
+        doc, meta = pool[mid]
+        semantic = max(vec_semantic.get(mid, 0.0), bm25_semantic.get(mid, 0.0))
         em_w = float(meta.get("emotion_weight", 0.5))
         recall_count = int(meta.get("recall_count", 0))
         freq = int(meta.get("frequency", 1))
@@ -444,6 +661,9 @@ def cmd_recall(args):
             "emotion_weight": em_w, "type": meta.get("type", "context"),
             "created_at": meta.get("created_at", ""), "created_date": meta.get("created_date", ""),
             "keywords": meta.get("keywords", ""),
+            "scene": meta.get("scene", ""),
+            "activity_start": meta.get("activity_start", ""),
+            "activity_end": meta.get("activity_end", ""),
             "is_capsule": meta.get("is_capsule", "false") == "true",
             "capsule_unlock_at": meta.get("capsule_unlock_at", ""),
             "frequency": freq, "recall_count": recall_count, "is_expanded": False,
@@ -596,30 +816,55 @@ def cmd_recall(args):
     total = len(scored)
     print(f"\n  记忆检索 ── 查询「{query}」 命中 {total} 条\n")
 
+    TRUNC_SUFFIX = "…（已截断）"
+    max_per = getattr(args, "max_chars_per_item", 0) or 0
+    max_total = getattr(args, "max_total_chars", 0) or 0
+    used_chars = 0
+
     for idx, item in enumerate(scored, 1):
         e_emoji = emoji_map.get(item["emotion"], "⚪")
         t_emoji = type_emoji.get(item.get("type", ""), "📄")
         capsule_tag = " 🔒" if item["is_capsule"] else ""
         assoc_tag = " ⟡关联" if item.get("is_expanded") else ""
         trigger_tag = " ⚡触发" if item.get("is_trigger_match") else ""
+        scene_tag = f" | {item['scene']}" if item.get("scene") else ""
         type_label = item['type'].upper()
         score_pct = int(item.get("score", 0) * 100)
 
-        print(f"  {idx}. {e_emoji} {type_label}{capsule_tag}{assoc_tag}{trigger_tag}  ──  {item['created_date']}  被检索{item['recall_count']}次  匹配{score_pct}%")
-
         kw = item.get("keywords", "")
+        kw_display = ""
         if kw:
             kw_list = [k.strip() for k in kw.split(",") if k.strip()]
             if len(kw_list) > 6:
                 kw_display = "、".join(kw_list[:6]) + f" 等{len(kw_list)}个"
             else:
                 kw_display = "、".join(kw_list)
-            print(f"     │ 🏷️ {kw_display}")
 
         content = item['content'].replace('\n', ' ').strip()
-        if len(content) > 100:
-            content = content[:100] + "…"
-        print(f"     │ 📝 {content}")
+        per_limit = max_per if max_per else 100
+        if len(content) > per_limit:
+            content = content[:max(0, per_limit - len(TRUNC_SUFFIX))].rstrip() + TRUNC_SUFFIX
+
+        line_est = len(content) + len(kw_display) + len(item.get("activity_start", "")) + len(item.get("activity_end", "")) + 60
+        if max_total and used_chars + line_est > max_total:
+            if idx == 1:
+                content = content[: max(0, max_total - len(TRUNC_SUFFIX))].rstrip() + TRUNC_SUFFIX
+            else:
+                print(f"  ……（已达注入预算 {max_total} 字符，余 {total - idx + 1} 条省略）")
+                break
+        used_chars += line_est
+
+        print(f"  {idx}. {e_emoji} {type_label}{scene_tag}{capsule_tag}{assoc_tag}{trigger_tag}  ──  {item['created_date']}  被检索{item['recall_count']}次  匹配{score_pct}%")
+
+        if kw_display:
+            print(f"     │ 🏷️ {kw_display}")
+
+        activity = ""
+        if item.get("activity_start") or item.get("activity_end"):
+            a = item.get("activity_start", "") or "?"
+            b = item.get("activity_end", "") or "?"
+            activity = f" (活动时间: {a} ~ {b})" if item.get("activity_start") and item.get("activity_end") else f" (活动时间: {a or b})"
+        print(f"     │ 📝 {content}{activity}")
         print()
 
 
@@ -643,7 +888,11 @@ def cmd_update(args):
         meta["emotion"] = args.emotion
         meta["emotion_weight"] = EMOTION_WEIGHTS.get(args.emotion, 0.5)
     if args.type is not None: meta["type"] = args.type
+    if args.scene is not None: meta["scene"] = args.scene
+    if args.activity_start is not None: meta["activity_start"] = args.activity_start
+    if args.activity_end is not None: meta["activity_end"] = args.activity_end
     mem_col.update(ids=[args.id], documents=[content], metadatas=[meta])
+    _append_backup(args.id, content, meta)
     print(f"记忆已更新: {args.id}")
 
 
@@ -829,6 +1078,10 @@ def cmd_import(args):
     mem_col = get_collection(client, "memories")
     fmt = args.format
 
+    if not os.path.exists(args.filepath):
+        print(f"错误: 文件不存在: {args.filepath}")
+        sys.exit(1)
+
     if fmt == "json":
         with open(args.filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -883,6 +1136,11 @@ def cmd_export(args):
     result = mem_col.get()
     if not result["ids"]:
         print("没有可导出的记忆"); return
+
+    out_dir = os.path.dirname(os.path.abspath(args.output))
+    if not os.path.isdir(out_dir):
+        print(f"错误: 输出目录不存在: {out_dir}")
+        sys.exit(1)
 
     memories = []
     for i in range(len(result["ids"])):
@@ -977,8 +1235,13 @@ def cmd_recover(args):
     now = _now()
     restored = 0
 
+    # 同 id 多条时取最后版本（合并/更新会追加同 id 记录）
+    latest = {}
     for rec in records:
-        mid = rec.get("id", str(uuid.uuid4()))
+        mid = rec.get("id")
+        if mid:
+            latest[mid] = rec
+    for mid, rec in latest.items():
         content = rec.get("content", "")
         meta = rec.get("metadata", {})
         # 确保元数据字段完整
@@ -1028,6 +1291,10 @@ def main():
     p.add_argument("--emotion", choices=VALID_EMOTIONS, help="情绪强度")
     p.add_argument("--keywords", help="关键字")
     p.add_argument("--source", help="来源"); p.add_argument("--session", help="会话ID")
+    p.add_argument("--scene", help="场景（如: 教学课后反馈）")
+    p.add_argument("--activity-start", help="活动开始时间（如 2025-05-01）")
+    p.add_argument("--activity-end", help="活动结束时间（如 2025-05-10）")
+    p.add_argument("--force", action="store_true", help="跳过去重合并，强制新增")
     p.add_argument("--skill-name", help="技能名称")
     p.add_argument("--skill-summary", help="技能一句话概括")
     p.add_argument("--skill-strategy", help="技能策略/步骤")
@@ -1045,12 +1312,18 @@ def main():
     p.add_argument("--min-weight", type=float, default=0.0, help="最低权重分数")
     p.add_argument("--type-filter", choices=VALID_TYPES, help="按类型过滤")
     p.add_argument("--expand", action="store_true", help="联想扩散")
+    p.add_argument("--no-embed", action="store_true", help="仅 BM25 关键词检索（快速，不加载 embedding）")
+    p.add_argument("--max-chars-per-item", type=int, default=0, help="单条注入字符上限（0=不限）")
+    p.add_argument("--max-total-chars", type=int, default=0, help="总注入字符预算（0=不限）")
     p.set_defaults(func=cmd_recall)
 
     p = sub.add_parser("update", help="更新记忆")
     p.add_argument("--id", required=True, help="记忆ID")
     p.add_argument("--content", help="新内容"); p.add_argument("--keywords", help="新关键字")
     p.add_argument("--emotion", choices=VALID_EMOTIONS, help="新情绪"); p.add_argument("--type", choices=VALID_TYPES, help="新类型")
+    p.add_argument("--scene", help="新场景")
+    p.add_argument("--activity-start", help="新活动开始时间")
+    p.add_argument("--activity-end", help="新活动结束时间")
     p.set_defaults(func=cmd_update)
 
     p = sub.add_parser("delete", help="删除记忆")

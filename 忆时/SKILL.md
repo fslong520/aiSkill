@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "2.0.0"
+  version: "2.1.0"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"
@@ -30,10 +30,13 @@ metadata:
 | 概念 | 说明 |
 |------|------|
 | **类人检索** | 语义40% + 近因20% + 情绪15% + 频率25%，不像数据库那样精确 |
+| **混合检索** | BM25 关键词 + 向量语义双路 RRF 融合（k=60），人名/专名/代码标识符检索更准；embedding 失败自动降级关键词 |
+| **去重合并** | 存储时相似>90% 自动合并（内容并入、频率+1），85%~90% 警告提示，--force 强存 |
 | **渐进式回忆** | 先抛最相关的1-2条，用户追问再深入，非一次性倒出 |
 | **遗忘曲线** | 记忆随时间指数衰减，低频率的记忆会变得"模糊" |
 | **情绪锚定** | 高情绪（🔴高/🟠中高）记忆权重更高，不易遗忘 |
 | **记忆涌现** | 话题转换时发现隐藏关联，主动说出"说到这个我突然想到…" |
+| **场景分组** | 记忆可标 --scene 归组，事件记忆可标活动时间段（2025-05-01 ~ 05-10） |
 | **时间胶囊** | 封存某段记忆，设定解锁日期，到期后自动/手动解封翻阅 |
 
 ## 记忆类型
@@ -56,7 +59,7 @@ metadata:
 |------|--------|
 | 对话启始、每言必检、主动存储、检索升级、决策前置 | modules/13-retrieval-store.md |
 | 用户描述工作流（教AI流程）、skill记忆检索命中 | modules/07-skill-memory.md |
-| 对话结束归档、仅输入 `/忆时` 会话整理 | modules/09-archiving.md |
+| 对话结束归档、仅输入 `/忆时` 会话整理、每满5轮定期提取 | modules/09-archiving.md |
 | 用户输入 `/忆时 ...`（命令构造/回复风格） | modules/11-quick-commands.md |
 | 可视化（"看看记了啥"）、人物画像 | modules/12-viz-profile.md |
 | 记忆自动梳理（上次梳理过期7日） | modules/10-consolidation.md |
@@ -73,11 +76,11 @@ metadata:
 
 ```bash
 PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
-YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
+MEMO_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
 
 初始化:    python3 $PY init
-存储记忆:  python3 $PY store "内容" --type task --emotion high
-检索记忆:  python3 $PY recall "查询" --limit 5 --expand
+存储记忆:  python3 $PY store "内容" --type task --emotion high [--scene 场景] [--activity-start 2025-05-01] [--activity-end 2025-05-10] [--force]
+检索记忆:  python3 $PY recall "查询" --limit 5 --expand [--no-embed] [--max-total-chars 600]
 封胶囊:   python3 $PY capsule lock --unlock-at "2026-12-31"
 查看胶囊:  python3 $PY capsule list
 导入:      python3 $PY import-file file.md --format markdown
@@ -166,7 +169,8 @@ YISHI_DATA_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
 ## 运行环境
 
 - Python: 3.13+
-- 依赖: chromadb 1.5.4
+- 依赖: chromadb 1.5.4、jieba（BM25 关键词检索）
 - 脚本: `scripts/memory_core.py`
 - 数据: `data/` (ChromaDB PersistentClient 自动创建)
 - 模型: bge-base-zh-v1.5（768维，默认），回退 MiniLM（384维）。安装/切换见 modules/08-setup.md
+- 备份: `~/.local/share/opencode/忆时/memories_backup.jsonl`（可用 MEMO_BAK 覆盖，多实例/测试隔离）

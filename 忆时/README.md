@@ -19,6 +19,9 @@ cp -r 忆时/{scripts,modules,SKILL.md,yishi-instructions.md} ~/.config/opencode
 ## 功能
 
 - **类人检索**: 语义40% + 近因20% + 情绪15% + 频率25%
+- **混合检索**: BM25 关键词 + 向量语义双路 RRF 融合（k=60），人名/专名/代码标识符更准；embedding 失败自动降级关键词
+- **去重合并**: 存储时相似>90% 自动合并，85%~90% 警告提示，--force 强存
+- **场景分组**: --scene 归组 + 活动时间段（--activity-start/--activity-end）
 - **渐进式回忆**: 先抛最相关的1-2条，用户追问再深入
 - **情绪锚定**: 高情绪记忆权重更高，不易遗忘
 - **记忆涌现**: 话题转换时发现隐藏关联
@@ -34,10 +37,10 @@ pip install chromadb
 python3 scripts/memory_core.py init
 
 # 3. 存储记忆
-python3 scripts/memory_core.py store "记忆内容" --type context --emotion medium --keywords "标签"
+python3 scripts/memory_core.py store "记忆内容" --type context --emotion medium --keywords "标签" --scene "场景名"
 
 # 4. 检索记忆
-python3 scripts/memory_core.py recall "查询内容" --limit 5 --expand
+python3 scripts/memory_core.py recall "查询内容" --limit 5 --expand --no-embed
 ```
 
 ## 模型安装
