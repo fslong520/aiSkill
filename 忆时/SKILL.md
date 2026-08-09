@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "2.2.0"
+  version: "2.2.1"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"
@@ -76,7 +76,7 @@ metadata:
 
 ```bash
 PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
-MEMO_DIR=~/.config/opencode/skills/忆时/data    # 所有命令必设
+MEMO_DIR=~/.local/share/opencode/忆时/data    # 所有命令必设
 
 初始化:    python3 $PY init
 存储记忆:  python3 $PY store "内容" --type task --emotion high [--scene 场景] [--activity-start 2025-05-01] [--activity-end 2025-05-10] [--force]
