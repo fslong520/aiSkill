@@ -5,11 +5,12 @@
 为保跨机器可移植，忆时路径统一用 `~` 展开：
 ```bash
 SKILL_DIR=~/.config/opencode/skills/忆时
+LOCAL_BASE=~/.local/share/opencode/忆时
 YISHI=$SKILL_DIR/scripts/memory_core.py
 VIZ=$SKILL_DIR/scripts/viz/viz.py
-MEMO_DIR=$SKILL_DIR/data
+MEMO_DIR=$LOCAL_BASE/data
 ```
-**所有命令均须设定 `MEMO_DIR`**，否则脚本会使用错误的数据路径。
+**所有命令均须设定 `MEMO_DIR`**，否则脚本会使用错误的数据路径。忆时数据统一存 `LOCAL_BASE/data`（含 Chroma 库与自动备份），不存技能目录——技能更新不覆盖数据。
 
 **凡读写文本文件，须用AI原生工具（read/write/edit/bash/grep），不得调用python脚本。**
 
