@@ -1,0 +1,777 @@
+#!/usr/bin/env bash
+# ============================================================================
+# sysctl —— openKylin 3.0 (huanghe) UKUI 系统控制统一封装脚本
+#
+# 来源：KylinBot 12 个独立技能（/usr/share/kylinbot/.kylinbot/workspace/skills/）
+#   audio, bluetooth, keyboard, mouse, navigations, network-manager,
+#   osdserver, panel, power, shortcut-navigations, srceen, touchpad
+# 每个技能的 SKILL.md 为唯一命令来源；本脚本仅包装其中已记载之方法，不发明新方法。
+#
+# 技术栈：
+#   gdbus call --session --dest org.ukui.Framework   （Devices/UI/Navigations/ShortcutNavigations）
+#   nmcli                                              （network-manager）
+#   python3 ukui-bluetooth-cli.py                      （bluetooth，DBus 系统服务 com.ukui.bluetooth）
+#
+# 前置条件：
+#   - openKylin UKUI 桌面会话，DBus session bus 可达（unix:path=/run/user/1000/bus）
+#   - org.ukui.Framework 服务在运行
+#   - gdbus / nmcli / python3 于 PATH 中
+#
+# 用法：
+#   sysctl <域> <子命令> [参数...]
+#   sysctl --dry-run <域> <子命令> ...   # 只打印将执行之命令，不实际执行
+#   sysctl help                          # 列出全部子命令
+#
+# 生成日期：2026-08-10
+# ============================================================================
+
+# 常量：org.ukui.Framework 各对象路径
+OBJ_AUDIO="/org/ukui/Framework/Devices/Audio"
+OBJ_SCREEN="/org/ukui/Framework/Devices/Screen"
+OBJ_POWER="/org/ukui/Framework/Devices/Power"
+OBJ_TOUCHPAD="/org/ukui/Framework/Devices/Touchpad"
+OBJ_KEYBOARD="/org/ukui/Framework/Devices/Keyboard"
+OBJ_MOUSE="/org/ukui/Framework/Devices/Mouse"
+OBJ_PANEL="/org/ukui/Framework/UI/Panel"
+OBJ_OSD="/org/ukui/Framework/UI/OsdServer"
+OBJ_NAV="/org/ukui/Framework/Navigations"
+OBJ_SHORTCUT="/org/ukui/Framework/ShortcutNavigations"
+DEST="org.ukui.Framework"
+
+BT_CLI="/usr/share/kylinbot/.kylinbot/workspace/skills/bluetooth/ukui-bluetooth-cli.py"
+
+DRY=0
+[ "${1:-}" = "--dry-run" ] && { DRY=1; shift; }
+
+# ---------------------------------------------------------------------------
+# 辅助函数
+# ---------------------------------------------------------------------------
+die() { echo "错误: $*" >&2; exit 1; }
+
+# gdcall <object-path> <interface.method> [args...] —— 经 org.ukui.Framework 的 gdbus 调用
+gdcall() {
+    local op="$1" im="$2"; shift 2
+    local cmd=(gdbus call --session --dest "$DEST" --object-path "$op" --method "$im" "$@")
+    if [ "$DRY" = 1 ]; then
+        printf '[dry-run] %s\n' "${cmd[*]}"
+        return 0
+    fi
+    "${cmd[@]}"
+}
+
+# nm <cmd...> —— nmcli 包装
+nm() {
+    if [ "$DRY" = 1 ]; then
+        printf '[dry-run] nmcli %s\n' "$*"
+        return 0
+    fi
+    nmcli "$@"
+}
+
+# bt <cmd...> —— ukui-bluetooth-cli.py 包装
+bt() {
+    [ -f "$BT_CLI" ] || die "蓝牙 CLI 不存在: $BT_CLI"
+    if [ "$DRY" = 1 ]; then
+        printf '[dry-run] python3 %s %s\n' "$BT_CLI" "$*"
+        return 0
+    fi
+    python3 "$BT_CLI" "$@"
+}
+
+check_int() { # <名> <值> <min> <max>
+    local name="$1" val="$2" min="$3" max="$4"
+    [[ "$val" =~ ^-?[0-9]+$ ]] || die "$name 须为整数，得到: $val"
+    [ "$val" -ge "$min" ] 2>/dev/null && [ "$val" -le "$max" ] 2>/dev/null \
+        || die "$name 须在 $min~$max 之间，得到: $val"
+}
+
+check_float() { # <名> <值> <min> <max>
+    local name="$1" val="$2" min="$3" max="$4"
+    awk -v v="$val" -v lo="$min" -v hi="$max" 'BEGIN{exit !(v+0==v && v>=lo && v<=hi)}' \
+        || die "$name 须为 $min~$max 之间之数字，得到: $val"
+}
+
+check_bool() { # <名> <值>，接受 on/off/true/false/1/0；结果放全局 __BOOL__
+    local name="$1" val="$2"
+    case "$val" in
+        true|on|1)  __BOOL__=true ;;
+        false|off|0) __BOOL__=false ;;
+        *) die "$name 须为 on/off/true/false，得到: $val" ;;
+    esac
+}
+
+# 幂等开关：写布尔值
+set_bool() { # <object> <interface> <SetterMethod> <on|off>
+    local op="$1" iface="$2" meth="$3" sw="$4"
+    check_bool "$meth" "$sw"
+    gdcall "$op" "$iface.$meth" "$__BOOL__"
+}
+
+usage() {
+    cat <<'EOF'
+sysctl —— openKylin UKUI 系统控制（KylinBot 12 技能合一）
+
+用法: sysctl <域> <子命令> [参数...]
+      sysctl --dry-run <域> <子命令> ...   # 打印命令，不执行
+      sysctl help
+
+域与子命令:
+  volume   音频（audio）
+    get                          查输出音量
+    set <0-100>                  设输出音量
+    mute | unmute                静音 / 取消静音
+    mute-status                  查静音状态
+    device                       查当前输出设备
+    device-set <设备> [端口]       切换输出设备
+    mic-get | mic-set <0-100>    查/设麦克风音量
+    mic-mute | mic-unmute        麦克风静音 / 取消静音
+
+  screen   屏幕（srceen）
+    brightness                   查全部显示器亮度
+    brightness-get               查主屏亮度
+    brightness <0-100>           设主屏亮度
+    brightness-set <名> <0-100>   设指定显示器亮度
+    brightness-all <0-100>       统一所有显示器亮度
+    mode [primary|mirror|extension|secondary|原字符串]
+                                查/设显示模式
+    eyecare on|off | eyecare-status        护眼模式
+    night on|off                 夜间模式
+    scale <1.0-2.0> | scale-status          缩放率
+    autobright on|off            自动亮度
+    increase | decrease          内置屏增/减亮（笔记本）
+
+  power    电源（power）
+    status                       电量+充电状态+电源模式汇总
+    battery | state              电量 / 充电状态
+    time-empty | time-full       剩余时长 / 充满时长
+    mode [0|1|2]                 查/设电源模式（0性能 1平衡 2节能）
+    power-button [动作]          查/设电源键动作
+    lid [动作]                   查/设合盖动作
+    screen-timeout-ac [秒]       查/设 AC 息屏时间
+    screen-timeout-dc            查 DC 息屏时间
+    sleep-timeout-ac             查 AC 睡眠时间
+    low-battery | low-battery-threshold | low-battery-notify
+                                低电量策略 / 阈值 / 通知阈值
+    show-left-time | battery-present | lid-present
+    ac-policy | dc-policy        查 AC/DC 电源策略
+
+  touchpad 触摸板（touchpad）
+    status | on | off            查/开/关
+    count                        查触摸板数量
+    disable-on-mouse on|off      插鼠标时禁用
+    disable-typing on|off        打字时禁用
+    tap on|off                   轻触点击
+    natural on|off               自然滚动
+    scroll <0|1|2>               滚动类型（0无 1边界 2双指）
+    speed <数字>                  移动速度
+
+  panel    任务栏（panel）
+    mergestatus | merge <0|1|2>  查/设图标合并（0始终 1从不 2窗口满时）
+    location-status | location <0|1|2|3>
+                                查/设位置（0底 1左 2顶 3右）
+    sizepolicy-status | sizepolicy <0|1|2>
+                                查/设尺寸（0小 1中 2大）
+    autohide-status | autohide on|off
+    lock-status | lock on|off
+    allscreens-status | allscreens on|off
+    tray-all on|off              所有面板显示系统托盘
+    taskicons <0|1>              图标显示工作区（0仅当前 1所有）
+    taskview on|off | search on|off
+                                任务视图/搜索按钮
+
+  kbd      键盘（keyboard）
+    repeat-status | repeat on|off
+    locktip-status | locktip on|off
+    count                        查键盘数量
+
+  mouse    鼠标（mouse）
+    cursor-theme [主题]          查/设光标主题
+    cursor-size <尺寸>           设光标大小
+    speed <数字>                 鼠标速度
+    accel on|off                 鼠标加速
+    wheel <值>                   滚轮速度
+    left-handed on|off           左手模式
+    natural-scroll on|off        自然滚动
+    locate <0|1|2>               指针定位（0不 1Ctrl 2晃动）
+    double-click <毫秒>          双击速度
+    middle on|off                中键
+    count                        查鼠标数量
+
+  osd      屏幕提示（osdserver，仅显示不改变系统状态）
+    volume <值> <max> | volume-mute <值> <max> <静音bool>
+    brightness <值> <max>
+    flight on|off | flight-osd <bool>
+    touchpad on|off | touchpad-osd <bool>
+    mic on|off | mic-osd <bool>
+    camera on|off | camera-osd <bool>
+    audio on|off | audio-osd <bool>
+    power-mode <perf|eco|auto> | power-mode-osd <0|1|2>
+    wifi on|off | wifi-osd <bool>
+    custom <图标名>
+    bar <id> <值> <max>
+
+  nav      打开系统应用（navigations，30 个 Open 方法）
+    open <模块>   模块: audio display theme power bluetooth touchpad date
+                  shortcut keyboard wlan/net userinfo screensaver screenlock
+                  notice upgrade security vino printer proxy hotspot area
+                  backup autostart login devicemanager monitor clock music video
+                  亦可直接传方法全名（如 OpenUkccAudio）
+
+  shortcut 快捷键（shortcut-navigations，44 个方法）
+    volume-up|volume-down|mute|mic-mute
+    bright-up|bright-down
+    touchpad-toggle|touchpad-on|touchpad-off
+    power-down|power-off
+    wlan-toggle|flight-toggle|flight-on|flight-off|bluetooth-toggle
+    screenshot|screenshot-window|screenshot-area
+    file-manager|calculator|email|www|settings|terminal|search|sidebar
+    window-switch|screensaver|clipboard|kylin-manager|screencap
+    display-switch|performance-switch|ai-assistant|camera-toggle
+    media-play|media-pause|media-playpause|media-stop|media-next
+    media-prev|media-repeat|media-shuffle
+    亦可直接传方法名（如 VolumeUp）
+
+  net      网络（network-manager，nmcli）
+    status|devices                设备状态
+    connections | active          连接列表 / 活跃连接
+    scan                          扫描 Wi-Fi
+    wifi [on|off]                 查/开关 Wi-Fi
+    connect <连接名或UUID>         连接指定连接
+    connect-wifi <SSID> [密码]    连接 Wi-Fi（带/不带密码）
+    static-ip <连接> <IP/前缀> [网关] [DNS]   设静态 IP
+    dhcp <连接>                   改回 DHCP
+    disconnect <连接>             断开连接（按连接名）
+    ethernet [on|off]             有线网：查/开/关
+
+  bt       蓝牙（bluetooth，ukui-bluetooth-cli.py 包装）
+    power on|off | tray on|off | discoverable on|off
+    active-connection on|off | audio-combine on|off
+    scan on|off | list | connect <地址> | info <地址>
+EOF
+    exit 1
+}
+
+[ $# -eq 0 ] && usage
+
+DOMAIN="$1"; shift
+
+# ===========================================================================
+# volume —— 音频
+# ===========================================================================
+cmd_volume() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        get)            gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.getSinkVolume" ;;
+        set)            [ $# -ge 1 ] || die "volume set 须给 0-100"; check_int 音量 "$1" 0 100
+                        gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSinkVolume" "$1" ;;
+        mute)           gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSinkMute" true ;;
+        unmute)         gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSinkMute" false ;;
+        mute-status)    gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.getSinkMute" ;;
+        device)         gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.getSinkDevice" ;;
+        device-set)     [ $# -ge 1 ] || die "volume device-set 须给设备名"
+                        gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSinkDevice" "$@" ;;
+        mic-get)        gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.getSourceVolume" ;;
+        mic-set)        [ $# -ge 1 ] || die "volume mic-set 须给 0-100"; check_int 麦克风音量 "$1" 0 100
+                        gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSourceVolume" "$1" ;;
+        mic-mute)       gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSourceMute" true ;;
+        mic-unmute)     gdcall "$OBJ_AUDIO" "org.ukui.Framework.Devices.Audio.setSourceMute" false ;;
+        *) die "volume 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# screen —— 屏幕
+# ===========================================================================
+cmd_screen() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        brightness)
+            if [ $# -ge 1 ]; then
+                check_int 亮度 "$1" 0 100
+                gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetPrimaryScreenBrightness" "$1"
+            else
+                gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.GetAllScreenBrightness"
+            fi ;;
+        brightness-get)  gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.GetPrimaryScreenBrightness" ;;
+        brightness-set)  [ $# -ge 2 ] || die "screen brightness-set 须给 显示器名 和 0-100"
+                        check_int 亮度 "$2" 0 100
+                        gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetScreenBrightness" "$1" "$2" ;;
+        brightness-all) [ $# -ge 1 ] || die "screen brightness-all 须给 0-100"; check_int 亮度 "$1" 0 100
+                        gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetAllScreenSameBrightness" "$1" ;;
+        mode)
+            if [ $# -ge 1 ]; then
+                local m="$1"
+                case "$m" in
+                    primary)   m=primaryScreenOnlyMode ;;
+                    mirror)    m=mirrorScreenMode ;;
+                    extension) m=extensionMode ;;
+                    secondary) m=secondaryScreenOnlyMode ;;
+                esac
+                gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetScreenMode" "$m"
+            else
+                gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.GetScreenMode"
+            fi ;;
+        eyecare)       [ $# -ge 1 ] || die "screen eyecare 须给 on|off"
+                       check_bool 护眼 "$1"
+                       gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetEyeCareEnabled" "$__BOOL__" ;;
+        eyecare-status) gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.IsEyeCareEnabled" ;;
+        night)         [ $# -ge 1 ] || die "screen night 须给 on|off"
+                       check_bool 夜间模式 "$1"
+                       gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetNightModeEnable" "$__BOOL__" ;;
+        scale)         [ $# -ge 1 ] || die "screen scale 须给 1.0-2.0"; check_float 缩放 "$1" 1.0 2.0
+                       gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetScreenScale" "$1" ;;
+        scale-status)  gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.GetScreenScale" ;;
+        autobright)    [ $# -ge 1 ] || die "screen autobright 须给 on|off"
+                       check_bool 自动亮度 "$1"
+                       gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.SetAutoBrightBrightnessEnable" "$__BOOL__" ;;
+        increase)      gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.IncreaseBuiltinScreenBrightness" ;;
+        decrease)      gdcall "$OBJ_SCREEN" "org.ukui.Framework.Devices.Screen.DecreaseBuiltinBrightness" ;;
+        *) die "screen 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# power —— 电源
+# ===========================================================================
+POWER_STATES=(未知 充电 放电 空 充满 准备充 准备断)
+POWER_MODES=(性能 平衡 节能)
+POWER_BTN_ACTIONS=(interactive blank suspend hibernate shutdown)
+LID_ACTIONS=(nothing blank suspend hibernate shutdown)
+
+cmd_power() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        status)
+            local pct state mode
+            pct=$(gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.BatteryPercentage")
+            state=$(gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetBatteryState")
+            mode=$(gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetPowerMode")
+            local np ns nm
+            np=$(echo "$pct"  | tr -dc '0-9'); ns=$(echo "$state" | tr -dc '0-9'); nm=$(echo "$mode" | tr -dc '0-9')
+            [ -n "$np" ] || np=0; [ -n "$ns" ] || ns=0; [ -n "$nm" ] || nm=0
+            echo "电量 $np%，状态 ${POWER_STATES[$ns]}，模式 ${POWER_MODES[$nm]}"
+            ;;
+        battery)       gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.BatteryPercentage" ;;
+        state)         gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetBatteryState" ;;
+        time-empty)    gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.TimeToEmpty" ;;
+        time-full)     gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.TimeToFull" ;;
+        mode)
+            if [ $# -ge 1 ]; then
+                check_int 电源模式 "$1" 0 2
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.SetPowerMode" "$1"
+            else
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetPowerMode"
+            fi ;;
+        power-button)
+            if [ $# -ge 1 ]; then
+                local v="$1"; case " ${POWER_BTN_ACTIONS[*]} " in *" $v "*) ;; *) die "电源键动作须为: ${POWER_BTN_ACTIONS[*]}";; esac
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.SetPowerButtonAction" "$v"
+            else
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetPowerButtonAction"
+            fi ;;
+        lid)
+            if [ $# -ge 1 ]; then
+                local v="$1"; case " ${LID_ACTIONS[*]} " in *" $v "*) ;; *) die "合盖动作须为: ${LID_ACTIONS[*]}";; esac
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.SetLidCloseAction" "$v"
+            else
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetLidCloseAction"
+            fi ;;
+        screen-timeout-ac)
+            if [ $# -ge 1 ]; then
+                check_int AC息屏秒数 "$1" 0 86400
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.SetScreenTimeoutOnAC" "$1"
+            else
+                gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetScreenTimeoutOnAC"
+            fi ;;
+        screen-timeout-dc) gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetScreenTimeoutOnDC" ;;
+        sleep-timeout-ac)  gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetSleepComputerTimeOnAC" ;;
+        low-battery)       gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetLowBatteryAction" ;;
+        low-battery-threshold) gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetLowBatteryActionThreshold" ;;
+        low-battery-notify)    gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetLowBatteryNotifyThreshold" ;;
+        show-left-time)  gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.IsShowLeftTime" ;;
+        battery-present) gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.IsBatteryPresent" ;;
+        lid-present)     gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.IsLid" ;;
+        ac-policy)       gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetACPowerPolicy" ;;
+        dc-policy)       gdcall "$OBJ_POWER" "org.ukui.Framework.Devices.Power.GetDCPowerPolicy" ;;
+        *) die "power 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# touchpad —— 触摸板
+# ===========================================================================
+cmd_touchpad() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        status)  gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.GetTouchpadEnabled" ;;
+        on)      gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetTouchpadEnabled" true ;;
+        off)     gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetTouchpadEnabled" false ;;
+        count)   gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.GetTouchpadCount" ;;
+        disable-on-mouse) [ $# -ge 1 ] || die "touchpad disable-on-mouse 须给 on|off"
+                   check_bool 插入禁用 "$1"
+                   gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetDisableOnExternalMouse" "$__BOOL__" ;;
+        disable-typing) [ $# -ge 1 ] || die "touchpad disable-typing 须给 on|off"
+                   check_bool 打字禁用 "$1"
+                   gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetDisableWhileTyping" "$__BOOL__" ;;
+        tap)     [ $# -ge 1 ] || die "touchpad tap 须给 on|off"
+                 check_bool 轻触点击 "$1"
+                 gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetTapToClick" "$__BOOL__" ;;
+        natural) [ $# -ge 1 ] || die "touchpad natural 须给 on|off"
+                 check_bool 自然滚动 "$1"
+                 gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetNaturalScroll" "$__BOOL__" ;;
+        scroll)  [ $# -ge 1 ] || die "touchpad scroll 须给 0|1|2"; check_int 滚动类型 "$1" 0 2
+                 gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetScrollType" "$1" ;;
+        speed)   [ $# -ge 1 ] || die "touchpad speed 须给数字"; check_float 速度 "$1" 0 10
+                 gdcall "$OBJ_TOUCHPAD" "org.ukui.Framework.Devices.Touchpad.SetMotionAcceleration" "$1" ;;
+        *) die "touchpad 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# panel —— 任务栏
+# ===========================================================================
+cmd_panel() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        mergestatus)     gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetMergeIcons" ;;
+        merge)           [ $# -ge 1 ] || die "panel merge 须给 0|1|2"; check_int 合并模式 "$1" 0 2
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetMergeIcon" "$1" ;;
+        location-status) gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetPanelLocation" ;;
+        location)        [ $# -ge 1 ] || die "panel location 须给 0|1|2|3"; check_int 位置 "$1" 0 3
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetPanelLocation" "$1" ;;
+        sizepolicy-status) gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetPanelSizePolicy" ;;
+        sizepolicy)      [ $# -ge 1 ] || die "panel sizepolicy 须给 0|1|2"; check_int 尺寸 "$1" 0 2
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetPanelSizePolicy" "$1" ;;
+        autohide-status) gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetPanelAutoHide" ;;
+        autohide)        [ $# -ge 1 ] || die "panel autohide 须给 on|off"
+                         check_bool 自动隐藏 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetPanelAutoHide" "$__BOOL__" ;;
+        lock-status)     gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetPanelLockState" ;;
+        lock)            [ $# -ge 1 ] || die "panel lock 须给 on|off"
+                         check_bool 锁定 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetPanelLockState" "$__BOOL__" ;;
+        allscreens-status) gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.GetShowPanelOnAllScreens" ;;
+        allscreens)      [ $# -ge 1 ] || die "panel allscreens 须给 on|off"
+                         check_bool 多屏显示 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetShowPanelOnAllScreens" "$__BOOL__" ;;
+        tray-all)        [ $# -ge 1 ] || die "panel tray-all 须给 on|off"
+                         check_bool 托盘显示 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetShowSystemTrayOnAllPanels" "$__BOOL__" ;;
+        taskicons)       [ $# -ge 1 ] || die "panel taskicons 须给 0|1"; check_int 图标工作区 "$1" 0 1
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetTaskBarIconsShowedOn" "$1" ;;
+        taskview)        [ $# -ge 1 ] || die "panel taskview 须给 on|off"
+                         check_bool 任务视图 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetShowTaskView" "$__BOOL__" ;;
+        search)          [ $# -ge 1 ] || die "panel search 须给 on|off"
+                         check_bool 搜索按钮 "$1"
+                         gdcall "$OBJ_PANEL" "org.ukui.Framework.UI.Panel.SetShowSearch" "$__BOOL__" ;;
+        *) die "panel 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# kbd —— 键盘
+# ===========================================================================
+cmd_kbd() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        repeat-status) gdcall "$OBJ_KEYBOARD" "org.ukui.Framework.Devices.Keyboard.GetRepeatState" ;;
+        repeat)        [ $# -ge 1 ] || die "kbd repeat 须给 on|off"
+                       check_bool 按键重复 "$1"
+                       gdcall "$OBJ_KEYBOARD" "org.ukui.Framework.Devices.Keyboard.SetRepeatState" "$__BOOL__" ;;
+        locktip-status) gdcall "$OBJ_KEYBOARD" "org.ukui.Framework.Devices.Keyboard.GetLockTipState" ;;
+        locktip)       [ $# -ge 1 ] || die "kbd locktip 须给 on|off"
+                       check_bool CapsLock提示 "$1"
+                       gdcall "$OBJ_KEYBOARD" "org.ukui.Framework.Devices.Keyboard.SetLockTipState" "$__BOOL__" ;;
+        count)         gdcall "$OBJ_KEYBOARD" "org.ukui.Framework.Devices.Keyboard.GetKbdCount" ;;
+        *) die "kbd 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# mouse —— 鼠标
+# ===========================================================================
+cmd_mouse() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        cursor-theme)
+            if [ $# -ge 1 ]; then
+                gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetCursorTheme" "$1"
+            else
+                gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.GetCursorTheme"
+            fi ;;
+        cursor-size)   [ $# -ge 1 ] || die "mouse cursor-size 须给尺寸"; check_int 光标大小 "$1" 8 128
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetCursorSize" "$1" ;;
+        speed)         [ $# -ge 1 ] || die "mouse speed 须给数字"; check_float 速度 "$1" 0 10
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetMotionAcceleration" "$1" ;;
+        accel)         [ $# -ge 1 ] || die "mouse accel 须给 on|off"
+                       check_bool 鼠标加速 "$1"
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetMouseAccel" "$__BOOL__" ;;
+        wheel)         [ $# -ge 1 ] || die "mouse wheel 须给值"; check_int 滚轮速度 "$1" 0 100
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetWheelSpeed" "$1" ;;
+        left-handed)   [ $# -ge 1 ] || die "mouse left-handed 须给 on|off"
+                       check_bool 左手模式 "$1"
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetLeftHanded" "$__BOOL__" ;;
+        natural-scroll) [ $# -ge 1 ] || die "mouse natural-scroll 须给 on|off"
+                       check_bool 自然滚动 "$1"
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetNaturalScroll" "$__BOOL__" ;;
+        locate)        [ $# -ge 1 ] || die "mouse locate 须给 0|1|2"; check_int 指针定位 "$1" 0 2
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetLocatePointer" "$1" ;;
+        double-click)  [ $# -ge 1 ] || die "mouse double-click 须给毫秒"; check_int 双击速度 "$1" 0 5000
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetDoubleClick" "$1" ;;
+        middle)        [ $# -ge 1 ] || die "mouse middle 须给 on|off"
+                       check_bool 中键 "$1"
+                       gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.SetMiddleButtonEnabled" "$__BOOL__" ;;
+        count)         gdcall "$OBJ_MOUSE" "org.ukui.Framework.Devices.Mouse.GetMouseCount" ;;
+        *) die "mouse 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# osd —— 屏幕提示（仅显示，不改系统状态）
+# ===========================================================================
+cmd_osd() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        volume)        [ $# -ge 2 ] || die "osd volume 须给 <值> <max>"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowVolumeBar" "$1" "$2" ;;
+        volume-mute)   [ $# -ge 3 ] || die "osd volume-mute 须给 <值> <max> <静音bool>"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowVolumeBarWithMute" "$1" "$2" "$3" ;;
+        brightness)    [ $# -ge 2 ] || die "osd brightness 须给 <值> <max>"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowBrightnessBar" "$1" "$2" ;;
+        flight)        [ $# -ge 1 ] || die "osd flight 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowFlightModeOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowFlightModeOff";;
+                                     *) die "osd flight 须给 on|off";; esac ;;
+        flight-osd)    [ $# -ge 1 ] || die "osd flight-osd 须给 true|false"
+                       check_bool 飞行模式 "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowFlightModeOSD" "$__BOOL__" ;;
+        touchpad)      [ $# -ge 1 ] || die "osd touchpad 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowTouchpadStatusOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowTouchpadStatusOff";;
+                                     *) die "osd touchpad 须给 on|off";; esac ;;
+        touchpad-osd)  [ $# -ge 1 ] || die "osd touchpad-osd 须给 true|false"
+                       check_bool 触摸板 "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowTouchpadStatusOSD" "$__BOOL__" ;;
+        mic)           [ $# -ge 1 ] || die "osd mic 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowMicrophoneStatusOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowMicrophoneStatusOff";;
+                                     *) die "osd mic 须给 on|off";; esac ;;
+        mic-osd)       [ $# -ge 1 ] || die "osd mic-osd 须给 true|false"
+                       check_bool 麦克风 "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowMicrophoneStatusOSD" "$__BOOL__" ;;
+        camera)        [ $# -ge 1 ] || die "osd camera 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowCameraStatusOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowCameraStatusOff";;
+                                     *) die "osd camera 须给 on|off";; esac ;;
+        camera-osd)    [ $# -ge 1 ] || die "osd camera-osd 须给 true|false"
+                       check_bool 摄像头 "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowCameraStatusOSD" "$__BOOL__" ;;
+        audio)         [ $# -ge 1 ] || die "osd audio 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowAudioStatusOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowAudioStatusOff";;
+                                     *) die "osd audio 须给 on|off";; esac ;;
+        audio-osd)     [ $# -ge 1 ] || die "osd audio-osd 须给 true|false"
+                       check_bool 音频 "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowAudioStatusOSD" "$__BOOL__" ;;
+        power-mode)    [ $# -ge 1 ] || die "osd power-mode 须给 perf|eco|auto"
+                       case "$1" in perf) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowPowerModePerformance";;
+                                     eco) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowPowerModeEco";;
+                                     auto) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowPowerModeAuto";;
+                                     *) die "osd power-mode 须给 perf|eco|auto";; esac ;;
+        power-mode-osd) [ $# -ge 1 ] || die "osd power-mode-osd 须给 0|1|2"; check_int 电源模式 "$1" 0 2
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowPowerModeOSD" "$1" ;;
+        wifi)          [ $# -ge 1 ] || die "osd wifi 须给 on|off"
+                       case "$1" in on) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowWifiModeOn";;
+                                     off) gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowWifiModeOff";;
+                                     *) die "osd wifi 须给 on|off";; esac ;;
+        wifi-osd)      [ $# -ge 1 ] || die "osd wifi-osd 须给 true|false"
+                       check_bool WiFi "$1"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowWifiModeOSD" "$__BOOL__" ;;
+        custom)        [ $# -ge 1 ] || die "osd custom 须给图标名"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowCustomOSD" "$1" ;;
+        bar)           [ $# -ge 3 ] || die "osd bar 须给 <id> <值> <max>"
+                       gdcall "$OBJ_OSD" "org.ukui.Framework.UI.OsdServer.ShowBarWindow" "$@" ;;
+        *) die "osd 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# nav —— 打开系统应用（navigations）
+# ===========================================================================
+nav_open() {
+    local key="$1"
+    case "$key" in
+        audio)     key=OpenUkccAudio ;;
+        display)   key=OpenUkccDisplay ;;
+        theme)     key=OpenUkccTheme ;;
+        power)     key=OpenUkccPower ;;
+        bluetooth) key=OpenUkccBluetooth ;;
+        touchpad)  key=OpenUkccTouchpad ;;
+        date)      key=OpenUkccDate ;;
+        shortcut)  key=OpenUkccShortcut ;;
+        keyboard)  key=OpenUkccKeyboard ;;
+        wlan|wifi) key=OpenUkccWlanconnect ;;
+        net|ethernet) key=OpenUkccNetconnect ;;
+        userinfo)  key=OpenUkccUserInfo ;;
+        screensaver) key=OpenUkccScreensaver ;;
+        screenlock|lock) key=OpenUkccScreenlock ;;
+        notice|notification) key=OpenUkccNotice ;;
+        upgrade|update) key=OpenUkccUpgrade ;;
+        security)  key=OpenUkccSecurityCenter ;;
+        vino|remote-desktop) key=OpenUkccVino ;;
+        printer)   key=OpenUkccPrinter ;;
+        proxy)     key=OpenUkccProxy ;;
+        hotspot)   key=OpenUkccMobileHotspot ;;
+        area|region|language) key=OpenUkccArea ;;
+        backup)    key=OpenUkccBackup ;;
+        autostart) key=OpenUkccAutostart ;;
+        login)     key=OpenUkccLoginOptions ;;
+        devicemanager) key=OpenKyomDeviceManager ;;
+        monitor|sysmonitor) key=OpenUksmAbout ;;
+        clock|alarm) key=OpenUkClock ;;
+        music)     key=OpenKyMusic ;;
+        video)     key=OpenKyVideo ;;
+        OpenUkccAudio|OpenUkccDisplay|OpenUkccTheme|OpenUkccPower|OpenUkccBluetooth|OpenUkccTouchpad|OpenUkccDate|OpenUkccShortcut|OpenUkccKeyboard|OpenUkccWlanconnect|OpenUkccNetconnect|OpenUkccUserInfo|OpenUkccScreensaver|OpenUkccScreenlock|OpenUkccNotice|OpenUkccUpgrade|OpenUkccSecurityCenter|OpenUkccVino|OpenUkccPrinter|OpenUkccProxy|OpenUkccMobileHotspot|OpenUkccArea|OpenUkccBackup|OpenUkccAutostart|OpenUkccLoginOptions|OpenKyomDeviceManager|OpenUksmAbout|OpenUkClock|OpenKyMusic|OpenKyVideo)
+                     : ;;  # 直接方法名，原样通过
+        *) die "nav 未知模块: $key（用 help 查看）" ;;
+    esac
+    gdcall "$OBJ_NAV" "org.ukui.Framework.Navigations.$key"
+}
+
+cmd_nav() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        open) [ $# -ge 1 ] || die "nav open 须给模块名"; nav_open "$1" ;;
+        *) die "nav 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# shortcut —— 快捷键（shortcut-navigations）
+# ===========================================================================
+SHORTCUT_MAP="volume-up:VolumeUp volume-down:VolumeDown mute:MuteToggleState mic-mute:MicMuteToggleState
+bright-up:BrightUp bright-down:BrightDown
+touchpad-toggle:TouchpadToggleState touchpad-on:TouchpadOn touchpad-off:TouchpadOff
+power-down:PowerDown power-off:PowerOff
+wlan-toggle:ToggleWlanSwitch flight-toggle:ToggleFlightModeState flight-on:TurnOnFlightModeState flight-off:TurnOffFlightModeState bluetooth-toggle:ToggleBluetoothState
+screenshot:Screenshot screenshot-window:WindowScreenshot screenshot-area:AreaScreenshot
+file-manager:OpenFileManager calculator:OpenCalculator email:OpenEmail www:OpenWWW settings:OpenSettings terminal:OpenTerminal search:OpenGlobalSearch sidebar:OpenUkuiSidebar window-switch:OpenWindowSwitch screensaver:OpenScreensaver clipboard:OpenClipboard kylin-manager:OpenKylinManager screencap:OpenKylinScreencap display-switch:OpenDisplaySwitch performance-switch:SwitchPerformanceMode ai-assistant:OpenAIassistant camera-toggle:CamToggleState
+media-play:MediaPlay media-pause:MediaPause media-playpause:MediaPlaypause media-stop:MediaStop media-next:MediaNext media-prev:MediaPrevious media-repeat:MediaRepeat media-shuffle:MediaShuffleKey"
+
+cmd_shortcut() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    [ -n "$sub" ] || die "shortcut 须给操作名"
+    local meth
+    case "$sub" in
+        volume-up|volume-down|mute|mic-mute|bright-up|bright-down|touchpad-toggle|touchpad-on|touchpad-off|power-down|power-off|wlan-toggle|flight-toggle|flight-on|flight-off|bluetooth-toggle|screenshot|screenshot-window|screenshot-area|file-manager|calculator|email|www|settings|terminal|search|sidebar|window-switch|screensaver|clipboard|kylin-manager|screencap|display-switch|performance-switch|ai-assistant|camera-toggle|media-play|media-pause|media-playpause|media-stop|media-next|media-prev|media-repeat|media-shuffle)
+            meth=$(echo "$SHORTCUT_MAP" | tr ' ' '\n' | sed -n "s/^$sub://p")
+            ;;
+        VolumeUp|VolumeDown|MuteToggleState|MicMuteToggleState|BrightUp|BrightDown|TouchpadToggleState|TouchpadOn|TouchpadOff|PowerDown|PowerOff|ToggleWlanSwitch|ToggleFlightModeState|TurnOnFlightModeState|TurnOffFlightModeState|ToggleBluetoothState|Screenshot|WindowScreenshot|AreaScreenshot|OpenFileManager|OpenCalculator|OpenEmail|OpenWWW|OpenSettings|OpenTerminal|OpenGlobalSearch|OpenUkuiSidebar|OpenWindowSwitch|OpenScreensaver|OpenClipboard|OpenKylinManager|OpenKylinScreencap|OpenDisplaySwitch|SwitchPerformanceMode|OpenAIassistant|CamToggleState|MediaPlay|MediaPause|MediaPlaypause|MediaStop|MediaNext|MediaPrevious|MediaRepeat|MediaShuffleKey)
+            meth="$sub"
+            ;;
+        *) die "shortcut 未知操作: $sub（用 help 查看）" ;;
+    esac
+    gdcall "$OBJ_SHORTCUT" "org.ukui.Framework.ShortcutNavigations.$meth"
+}
+
+# ===========================================================================
+# net —— 网络（nmcli）
+# ===========================================================================
+cmd_net() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        status|devices) nm device status ;;
+        connections) nm -t -f NAME,UUID,TYPE,DEVICE connection show ;;
+        active) nm -t -f NAME,DEVICE connection show --active ;;
+        scan) nm -t -f SSID,SECURITY,SIGNAL device wifi list ;;
+        wifi)
+            if [ $# -ge 1 ]; then
+                case "$1" in on) nm radio wifi on;; off) nm radio wifi off;; *) die "net wifi 须给 on|off";; esac
+            else
+                nm radio wifi
+            fi ;;
+        connect) [ $# -ge 1 ] || die "net connect 须给连接名或UUID"; nm connection up "$1" ;;
+        connect-wifi)
+            [ $# -ge 1 ] || die "net connect-wifi 须给 SSID"
+            if [ $# -ge 2 ]; then nm device wifi connect "$1" password "$2"; else nm device wifi connect "$1"; fi ;;
+        static-ip)
+            [ $# -ge 2 ] || die "net static-ip 须给 <连接> <IP/前缀> [网关] [DNS]"
+            local conn="$1" addr="$2" gw="${3:-}" dns="${4:-}"
+            if [ "$DRY" = 1 ]; then
+                printf '[dry-run] nmcli connection modify "%s" ipv4.method manual ipv4.addresses "%s"\n' "$conn" "$addr"
+                [ -n "$gw" ]  && printf '[dry-run] nmcli connection modify "%s" ipv4.gateway "%s"\n' "$conn" "$gw"
+                [ -n "$dns" ] && printf '[dry-run] nmcli connection modify "%s" ipv4.dns "%s"\n' "$conn" "$dns"
+                printf '[dry-run] nmcli connection up "%s"\n' "$conn"
+            else
+                nm connection modify "$conn" ipv4.method manual ipv4.addresses "$addr" || return 1
+                [ -n "$gw" ]  && { nm connection modify "$conn" ipv4.gateway "$gw" || return 1; }
+                [ -n "$dns" ] && { nm connection modify "$conn" ipv4.dns "$dns" || return 1; }
+                nm connection up "$conn"
+            fi ;;
+        dhcp) [ $# -ge 1 ] || die "net dhcp 须给连接名"
+              if [ "$DRY" = 1 ]; then
+                  printf '[dry-run] nmcli connection modify "%s" ipv4.method auto\n' "$1"
+                  printf '[dry-run] nmcli connection up "%s"\n' "$1"
+              else
+                  nm connection modify "$1" ipv4.method auto || return 1
+                  nm connection up "$1"
+              fi ;;
+        disconnect) [ $# -ge 1 ] || die "net disconnect 须给连接名"; nm connection down "$1" ;;
+        ethernet)
+            local dev
+            dev=$(nm -t -f DEVICE,TYPE device status | awk -F: '$2=="ethernet" {print $1; exit}')
+            if [ $# -ge 1 ]; then
+                case "$1" in
+                    on)  [ -n "$dev" ] || die "未找到有线网卡"
+                         nm device set "$dev" managed yes && nm device connect "$dev" ;;
+                    off) [ -n "$dev" ] || die "未找到有线网卡"
+                         nm device disconnect "$dev" && nm device set "$dev" managed no ;;
+                    *) die "net ethernet 须给 on|off";;
+                esac
+            else
+                nm -t -f DEVICE,TYPE device status | awk -F: '$2=="ethernet" {print "有线网卡: "$1}'
+            fi ;;
+        *) die "net 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# bt —— 蓝牙（ukui-bluetooth-cli.py 包装）
+# ===========================================================================
+cmd_bt() {
+    local sub="${1:-}"; [ $# -gt 0 ] && shift
+    case "$sub" in
+        power)            bt power "$@" ;;
+        tray)             bt tray "$@" ;;
+        discoverable)     bt discoverable "$@" ;;
+        active-connection) bt active-connection "$@" ;;
+        audio-combine)    bt audio-combine "$@" ;;
+        scan)             bt scan "$@" ;;
+        list)             bt list ;;
+        connect)          [ $# -ge 1 ] || die "bt connect 须给设备地址"; bt connect "$1" ;;
+        info)             [ $# -ge 1 ] || die "bt info 须给设备地址"; bt info "$1" ;;
+        *) die "bt 未知子命令: $sub（用 help 查看）" ;;
+    esac
+}
+
+# ===========================================================================
+# 主分发
+# ===========================================================================
+case "$DOMAIN" in
+    volume|audio)  cmd_volume "$@" ;;
+    screen|srceen) cmd_screen "$@" ;;
+    power)         cmd_power "$@" ;;
+    touchpad)      cmd_touchpad "$@" ;;
+    panel)         cmd_panel "$@" ;;
+    kbd|keyboard)  cmd_kbd "$@" ;;
+    mouse)         cmd_mouse "$@" ;;
+    osd)           cmd_osd "$@" ;;
+    nav|navigations) cmd_nav "$@" ;;
+    shortcut|shortcut-navigations) cmd_shortcut "$@" ;;
+    net|network)   cmd_net "$@" ;;
+    bt|bluetooth)  cmd_bt "$@" ;;
+    help|-h|--help) usage ;;
+    *) die "未知域: $DOMAIN（用 sysctl help 查看）" ;;
+esac
+exit $?

@@ -259,7 +259,8 @@ def cmd_open(url):
         print("❌ CDP 未开启，请先运行: urlgo start")
         sys.exit(1)
 
-    r = run_cmd(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/new?{url}"])
+    from urllib.parse import quote
+    r = run_cmd(["curl", "-s", "-X", "PUT", f"{CDP_URL}/json/new?{quote(url, safe='')}"])
     data = json.loads(r.stdout)
     print(f"✅ 已打开: {url}")
     print(f"   ID: {data['id']}")
