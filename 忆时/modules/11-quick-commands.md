@@ -71,19 +71,19 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI recall "关键词" -
   ```
 - 无结果 → `"未寻得。"` 或 `"空空如也。"`
 
-## 忘记（forget）
+## 忘记（delete）
 
 **命令构造：**
 ```bash
-MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI forget --query "关键词" --auto
+MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI delete --id <记忆ID>
 ```
 
-**注意：** forget 操作不可逆（除非 recover）。执行前当先 recall 确认匹配条目，再行 forget。
+**注意：** delete 按记忆 ID 删除单条，不可逆（除非 recover）。forget 命令仅支持按日期/频率归档（--before/--low-freq/--auto），不支持按关键词删除。
 
 **流程：**
-1. `recall "关键词" --limit 3` 查看匹配项
+1. `recall "关键词" --limit 3` 查看匹配项（结果含记忆 ID）
 2. 向用户展示即将遗忘之条目，请其确认
-3. 确认后执行 `forget --query "关键词" --auto`
+3. 确认后执行 `delete --id <记忆ID>`（用上一步得到的 ID）
 4. 回复：`"已忘。"`
 
 > 一步到位式忘记（用户明确说"忘记X"无疑问时）可跳过确认，直接执行。

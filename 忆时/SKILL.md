@@ -77,6 +77,7 @@ metadata:
 ```bash
 PY=/home/fslong/.config/opencode/skills/忆时/scripts/memory_core.py
 MEMO_DIR=~/.local/share/opencode/忆时/data    # 所有命令必设
+# 注意：以下命令使用 $PY 与 $MEMO_DIR 变量，须先执行上方两行定义；或直接写全路径 python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py
 
 初始化:    python3 $PY init
 存储记忆:  python3 $PY store "内容" --type task --emotion high [--scene 场景] [--activity-start 2025-05-01] [--activity-end 2025-05-10] [--force]
