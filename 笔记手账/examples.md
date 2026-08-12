@@ -27,8 +27,8 @@ Style: notebook scrapbook, elegant, ink-blue, neat and graceful. Aspect ratio 3:
 ```
 A educational daily check-in poster in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn left edge and hole punches.
 
-Top-left: 墨蓝(#26355D) tag with "CSP-J初赛60天打卡", straight. Top-right: 柠檬黄 sticky note "Day 15 第2页", straight.
-Title "Day 15 | 二叉树遍历" in bold 墨蓝, with straight 柠檬黄 underline.
+Top-left: 墨蓝(#26355D) tag with "CSP-J初赛60天打卡", straight. Top-right: 柠檬黄 sticky note "第2页", straight.
+Title "二叉树遍历" in bold 墨蓝, with straight 柠檬黄 underline.
 
 Section 1: 墨蓝 header "一、前序遍历（根-左-右）". White rounded card below with light shadow, 黛蓝 top color bar. Tree icon in 黛蓝. "先访问根节点，再递归左子树，最后递归右子树" with example: A→B→D→E→C→F.
 
@@ -78,7 +78,7 @@ Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect rat
 ```
 A educational daily check-in cover page in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn paper edges on the left side and hole punches. Spiral binding visible at bottom.
 
-Title "CSP-J初赛 60天打卡" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "Day 01 | 计算机系统基础" in 黛蓝(#3E5C76).
+Title "CSP-J初赛 60天打卡" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "计算机系统基础" in 黛蓝(#3E5C76).
 
 墨蓝 header tag in top-left corner reading "60天一起打卡！", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 

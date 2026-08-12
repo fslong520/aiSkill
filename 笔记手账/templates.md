@@ -45,7 +45,7 @@
 ┌─────────────────────────────────┐
 │ [蓝色标签]              [便利贴] │
 │                                 │
-│      Day XX | [主题]            │
+│      [主题]                     │
 │                                 │
 │ ┌─────────────────────────────┐ │
 │ │ 一、[小节名]                │ │
@@ -69,7 +69,7 @@
 ┌─────────────────────────────────┐
 │ [蓝色标签]              [便利贴] │
 │                                 │
-│      Day XX | 配套练习          │
+│      [主题] 配套练习            │
 │      [黄色下划线]               │
 │                                 │
 │ 💡 建议先独立完成，再看答案解析。│
@@ -147,7 +147,7 @@
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
-[title]: "Day XX | [主题]" in BOLD [主题标题色] [风格字体], centered
+[title]: "[主题]" in BOLD [主题标题色] [风格字体], centered
 [sections]:
   - 墨蓝 header "一、[小节名]" in [风格字体] + white card with subtle shadow, 双色条 (黛蓝 main + 暖金 thin) + 黛蓝 icon + [风格字体] bullet points
   - repeat structure
@@ -163,7 +163,7 @@
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
-[title]: "Day XX | 配套练习" in [主题标题色] [风格字体], centered
+[title]: "[主题] 配套练习" in [主题标题色] [风格字体], centered
 [tip]: small lightbulb + "建议先独立完成，再看答案解析。" in 暖金, centered
 [topic]: "[主题] (N题)" in 墨蓝, centered
 [layout]: TWO COLUMNS, equal width
@@ -182,7 +182,7 @@
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
-[title]: "Day XX | 答案解析" in [主题标题色] [风格字体], centered
+[title]: "答案解析" in [主题标题色] [风格字体], centered
 [layout]: TWO COLUMNS, equal width
   left: answers 1-5
   right: answers 6-10
@@ -233,8 +233,8 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
 Clean, elegant knowledge page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, orderly, generous whitespace.
 
-Top: 墨蓝 tag straight on left, 柠檬黄 sticky note "Day XX 第X页" straight on right.
-Title "Day XX | [用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with straight 柠檬黄 underline.
+Top: 墨蓝 tag straight on left, 柠檬黄 sticky note "第X页" straight on right.
+Title "[用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with straight 柠檬黄 underline.
 
 Section 1: 墨蓝 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT, straight. White card below with subtle shadow and 双色条 (黛蓝(#3E5C76) main bar + thin 暖金(#E8A33D) accent line). 黛蓝 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms in 柠檬黄 with fluorescent highlighter stroke.
 
@@ -269,8 +269,8 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
 Clean, elegant practice page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat exam-paper layout, precise grid.
 
-Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "Day XX 第X页" straight on right.
-Title "Day XX | 配套练习" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
+Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "第X页" straight on right.
+Title "[主题] 配套练习" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
 
 Small tip box: lightbulb icon + "建议先独立完成，再看答案解析。" in 暖金(#E8A33D), centered, minimal border, SMALL FONT.
 
@@ -320,8 +320,8 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
 Clean, elegant answer page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, refined, precise grid.
 
-Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "Day XX 第X页" straight on right.
-Title "Day XX | 答案解析" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
+Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "第X页" straight on right.
+Title "答案解析" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
 
 TWO COLUMNS, equal width, clean vertical separation:
 
