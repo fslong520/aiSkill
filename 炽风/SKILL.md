@@ -78,6 +78,20 @@ sudo hexdump -C /sys/kernel/debug/ec/ec0/io
 
 能读到数据 → EC 内部空间已暴露。
 
+**必须持久化——否则重启后守护空转**（真实事故：重启后 ec_sys 未加载，dd 打不开 io 文件，守护进程静默空转，风扇由 BIOS 兜底）：
+
+```bash
+# 1. 写支持参数（modprobe.d）
+echo 'options ec_sys write_support=1' | sudo tee /etc/modprobe.d/ec_sys.conf
+
+# 2. 开机自动加载（modules-load.d）
+echo 'ec_sys' | sudo tee /etc/modules-load.d/ec_sys.conf
+
+# 3. 立即加载并验证
+sudo modprobe ec_sys write_support=1
+cat /sys/module/ec_sys/parameters/write_support   # 必须输出 Y
+```
+
 **关键问题来了：哪个字节是温度？哪个是风扇？**
 
 靠**差分法**（纯方法论，不依赖任何品牌知识）：
@@ -310,6 +324,9 @@ BASE=40（最低），START=60（起调），MAX=75（满速）
 | 写完一次就当成功 | EC 会抢回控制权。必须持续轮询覆盖 |
 | `ec_probe write` 对所有 EC 有效 | 仅对 ec_sys 直写型有效。I/O 命令型 EC 不吃这套 |
 | 同时跑多个风扇工具 | 抢 EC 控制权，冲突 |
+| 守护日志刷 `断开的管道` | 不是接口问题——是 dd 打不开 io 文件（ec_sys 未加载或只读）。查 `cat /sys/module/ec_sys/parameters/write_support` 是否 Y，`lsmod \| grep ec_sys` 是否加载 |
+| 服务"在运行"但风扇不听 | 重启后 ec_sys 丢失是隐形故障——服务每 5 秒空转不报致命错。部署后必须重启机器验证，或至少确认 modules-load.d 已配 |
+| dd 写 EC 报"设备上没有空间" | EC io 文件固定 256 字节硬边界。`bs=1 seek=N` 单字节写安全；多字节写越 0xFF 即 ENOSPC |
 
 ---
 
@@ -324,6 +341,7 @@ find /sys/class/hwmon -name 'pwm*' -o -name 'fan*_input' 2>/dev/null
 
 # 挂载并查看 EC 寄存器
 sudo modprobe ec_sys write_support=1 2>/dev/null
+cat /sys/module/ec_sys/parameters/write_support  # Y=可写, 缺失=未加载
 sudo hexdump -C /sys/kernel/debug/ec/ec0/io 2>/dev/null
 
 # 监控 EC 寄存器变化

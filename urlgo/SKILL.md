@@ -26,10 +26,17 @@ metadata:
 
 1. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo status` → CDP 开了没？
 2. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo start` → 启动浏览器（后台运行，脚本退出后浏览器不关）
-3. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo open <url>` → 打开页面
+3. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo open <url>` → 打开页面（仅限首页/入口 URL）
 4. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo screenshot <id> <file>` → 截图
 5. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo snapshot <id>` → 读取页面内容（纯文字）
 6. `python3 /home/fslong/.config/opencode/skills/urlgo/urlgo source <id>` → 获取页面 HTML 源码
+
+> ⚠️ **导航铁律：页面内点击，禁止手工拼接 URL。**
+> 进站后的一切跳转（翻页、点链接、点按钮、选试卷、提交表单）必须：
+> 1. `source <id>` 取源码，从 HTML 里找到目标链接/按钮；
+> 2. `click <id> "<selector>"` 或 `eval <id> "document.querySelector('...').click()"` 在页面内点击；
+> 3. 严禁手工拼接带参 URL 再用 `open` 打开——`&` 会被截断、Referer 校验会失败、会话/登录态丢失，三害俱全。
+> `open` 只用于初始入口（首页、登录页）。
 
 AVOID:
 - AVOID 不检查 CDP 就操作，先 status/start
@@ -37,6 +44,8 @@ AVOID:
 - AVOID 用 WebFetch 读网页，应该用 urlgo snapshot 代替
 - AVOID 用 snapshot 读源码（它只返回纯文本），取源码用 urlgo source
 - AVOID 多次 start（会检测到已启动而跳过）
+- AVOID 手工拼接带参 URL（含 `?` `&`）再用 open 打开——会被截断或 Referer 拦截，必须页面内点击（见上方导航铁律）
+- AVOID 复制源码里的 href 后自己重新拼 URL 访问，直接 click 原链接
 
 ## 命令
 

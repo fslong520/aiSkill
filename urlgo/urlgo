@@ -350,12 +350,14 @@ def cmd_eval(page_id, js):
 
 def cmd_click(page_id, selector):
     """点击元素"""
-    js = f'document.querySelector("{selector}").click(); "已点击"'
+    import json
+    js = f'document.querySelector({json.dumps(selector)}).click(); "已点击"'
     cmd_eval(page_id, js)
 
 def cmd_type(page_id, selector, text):
     """输入文字"""
-    js = f'document.querySelector("{selector}").value = "{text}"; "已输入"'
+    import json
+    js = f'document.querySelector({json.dumps(selector)}).value = {json.dumps(text)}; "已输入"'
     cmd_eval(page_id, js)
 
 if __name__ == "__main__":
