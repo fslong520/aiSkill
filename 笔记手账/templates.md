@@ -131,11 +131,12 @@
 [style]: elegant [风格字体] calligraphy notebook, torn paper edge, hole punches, minimal decoration
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper texture, subtle shadow
-[title]: "[主标题]" in BOLD [主题标题色] [风格字体], centered, thin 柠檬黄 underline
-[subtitle]: "[副标题]" in [主题副标题色] [风格字体], centered
+[frame]: double-line inner frame (暖金 outer + 黛蓝 inner), 暖金 star clusters at 4 corners, thin 暖金 separators top & bottom, sparse 柠檬黄/黛蓝 stars along edges
+[title]: "[主标题]" in BOLD [主题标题色] [风格字体], centered, thin 柠檬黄 underline + 暖金 double line, symmetric 暖金 stars flanking at title level
+[subtitle]: "[副标题]" in [主题副标题色] [风格字体], centered, thin 柠檬黄 underline
 [layout]: centered composition, generous whitespace, clean and refined, perfectly aligned
-[decorations]: 墨蓝 tag top-left, 柠檬黄 sticky note top-right, small 暖金/柠檬黄 stars in corners, 暖金 page-footer icon
-[icons]: minimal hand-drawn preview icons at bottom
+[decorations]: 墨蓝 tag top-left + 暖金 date tag below, 柠檬黄 sticky note top-right + 编号 small label below, 暖金/柠檬黄 star clusters in corners, three topic icon cards (雪白底 暖金细边 + caption) at bottom, 暖金 dual footer icons
+[icons]: minimal hand-drawn preview icons at bottom inside small rounded cards
 [aspect_ratio]: 3:4
 ```
 
@@ -202,17 +203,24 @@
 ```
 Clean, elegant cover page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, orderly, graceful.
 
-Top: 墨蓝 tag "[打卡标签]" straight on left, 柠檬黄 sticky note "[便利贴文字]" straight on right.
-Title "[用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, with straight 柠檬黄 underline and simple 雾蓝(#A9BFD9) highlight block.
-Subtitle "[用户副标题]" in BOLD 黛蓝(#3E5C76) [风格字体], centered.
+DECORATIVE FRAME:
+- Thin double-line inner frame around the page ([主色] outer thin line + [副色] inner thin line), leaving generous margin
+- Four corner accents: small [暖金] star clusters (2-3 stars each) at all four corners, perfectly symmetric
+- Top and bottom: thin [暖金] double-line separators spanning the page width
+- Small [柠檬黄] and [副色] stars scattered sparsely along the frame edges, restrained
 
-Center: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded box with calendar icon, perfectly centered, 暖金(#E8A33D) border.
+Top: 墨蓝 tag "[打卡标签]" straight on left, 柠檬黄 sticky note "[便利贴文字]" straight on right. [副色] small label "[编号如：第X单元]" below the sticky note on right.
 
-Bottom: Three mini preview icons related to the topic, evenly spaced. A few small warm-gold/lemon stars in the corners. Warm-gold small icon (pencil) at bottom-right.
+Title "[用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, with straight 柠檬黄 underline + thin 暖金 double line beneath it, flanked by a small symmetric 暖金 star on each side at title level. Simple 雾蓝(#A9BFD9) highlight block behind title.
+Subtitle "[用户副标题]" in BOLD 黛蓝(#3E5C76) [风格字体], centered, with thin 柠檬黄 underline.
+
+Center: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded box with calendar icon, perfectly centered, 暖金(#E8A33D) border, small 柠檬黄 stars at its two top corners.
+
+Bottom: Three mini preview icons related to the topic, evenly spaced in small rounded 雪白(#FFFFFF) cards with 暖金 thin borders, each with a small caption underneath. A few small warm-gold/lemon stars in the corners. Warm-gold small icon (pencil) at bottom-right, 暖金 book icon at bottom-left.
 
 ELEGANT RULES:
 - Perfectly aligned, straight elements, no tilting
-- Refined decoration (tags, sticky notes, stars, warm-gold page-footer icon), generous whitespace
+- Rich but restrained decoration (frame, corner star clusters, tag, sticky note, separators, icon cards, footer icons), generous whitespace
 - Palette: 墨蓝 #26355D main, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 cool accents, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
 - Typography hierarchy: title > subtitle > info
 - [风格字体]: font style matching the chosen theme (AI selects best available system font)
@@ -352,5 +360,5 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 
 ---
 
-**文档版本**: 3.2
+**文档版本**: 3.3
 **最后更新**: 2026-08-02
