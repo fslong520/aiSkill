@@ -1,6 +1,6 @@
 ---
 name: cosprompt
-version: 2.2.0
+version: 2.3.0
 description: 结构化 AI 绘图提示词生成器。输入角色/主题名称，AI 自动搜索信息、分析特征、决定风格，输出 17 维度结构化提示词（JSON + Markdown 双格式），适用于 Midjourney、Stable Diffusion 等绘图工具。
 allowed-tools: [Read, Write, Edit, browser_use, grep_search, glob_search]
 metadata:
@@ -82,7 +82,7 @@ AI 自主完成：
 
 | 维度 | 思考问题 | 示例方向 |
 |------|---------|---------|
-| **style** | 整体风格？ | 杂志风、电影风、东方玄幻、赛博朋克、极简 |
+| **style** | 整体风格？见"风格参考表" | 杂志风、电影风、东方玄幻、赛博朋克、极简、青蓝暖橙仙侠 |
 | **mood** | 情绪氛围？ | 梦幻、冷酷、温暖、神秘、寂寥 |
 
 ### 四、环境层（3 维度）
@@ -303,6 +303,70 @@ prompt中加入触觉词，AI对材质的渲染精度显著提升：
 | 标准级 | detailed, sharp focus, high detail |
 | **专业级** | **Ultra Realistic, Masterpiece, Best Quality, 8K, cinematic** |
 | 发烧级 | photorealistic, hyper-detailed, octane render, subsurface scattering |
+
+---
+
+## 风格参考表
+
+| 风格 | 关键词 | 适用 |
+|------|-------|------|
+| 杂志时尚摄影 | fashion editorial, magazine photography, high-end fashion | 人像、时尚大片 |
+| 电影风 | cinematic, film grain, anamorphic lens, color grading | 叙事、氛围 |
+| 东方玄幻 | oriental fantasy, ancient Chinese, wuxia, misty mountains | 古风、武侠、仙侠 |
+| 赛博朋克 | cyberpunk, neon lights, rain, high tech low life | 科幻、都市暗面 |
+| 极简 | minimalist, clean lines, negative space | 现代、概念 |
+| 青蓝暖橙仙侠 | teal/cyan palette, warm orange accents, misty, ethereal ancient Chinese | 仙侠夜景、古风史诗 |
+| 厚涂（CG涂抹） | painterly, digital painting, no lineart, soft blending | 史诗、幻想、角色插画 |
+| 油画厚涂 | impasto, oil painting, palette knife, thick brushstrokes | 古典、艺术、肌理表现 |
+| 3D渲染 | 3D render, Octane render, detailed texture | 产品展示、写实 |
+
+---
+
+## 青蓝暖橙仙侠风控制框架（style 维度强化）
+
+青蓝冷调+暖橙点缀之冷暖对比，中式仙侠意境。**核心在色调光影氛围，不在场景**——水乡、山巅、庭院、战场皆可为容器。
+
+### 一、风格四要素（缺一不成仙侠意）
+
+| 要素 | 控制 | 示例 |
+|------|------|------|
+| **色调** | 青蓝冷调为主，暖橙点缀——冷暖对比为魂 | "teal/cyan 主调 + warm orange accents" |
+| **光影** | 冷色主光（月光/冷天光）+ 暖色点光（灯笼/烛火/篝火） | "冷月光铺底，暖灯火点缀" |
+| **氛围** | 烟雾、体积雾、大气透视、仙境感 | "volumetric fog, misty, ethereal" |
+| **笔触** | CG厚涂，细腻丰富 | "painterly, digital painting" |
+
+### 二、构图法则
+
+```
+前景（剪影/细节） → 中景（主体/建筑） → 远景（山/塔/雾）
+```
+
+- 三层纵深：前中远层层退远，大气透视（远物变灰变淡）
+- 引导线：光带、河流、路径、桥面皆可作视线引导
+- 人物处理二选一：氛围优先则剪影化；主体优先则精细刻画
+
+### 三、场景灵活性（容器，非风格本身）
+
+| 场景 | 应用示例 |
+|------|---------|
+| 水乡 | 石拱桥、木质建筑、塔楼、渔船、灯笼 |
+| 山巅 | 悬崖、云海、孤松、远山 |
+| 庭院 | 石阶、木门、回廊、落叶 |
+| 战场 | 废墟、断戟、硝烟、残月 |
+
+### 四、关键词梯度（青蓝暖橙仙侠）
+
+| 梯度 | 关键词 |
+|------|--------|
+| 基础 | teal and cyan palette, warm orange accents, misty, ethereal ancient Chinese |
+| 进阶 | volumetric fog, cold moonlight, warm lantern glow, atmospheric perspective |
+| 发烧 | three-layer depth, atmospheric perspective, painterly brushwork, cinematic |
+
+### 五、正反双向约束（仙侠专用）
+
+- 正向：写色调词（teal/cyan + warm orange）、光影词（cold moonlight + warm glow）、氛围词（misty/volumetric fog）
+- 负向：防 AI 滑回"现代都市夜景"或"纯黑白水墨"——明确"no modern buildings, no neon signs, no pure ink-wash monochrome"
+- 保持：冷暖对比是灵魂——青蓝冷底 + 暖橙点缀，缺暖则冷寂过死，缺冷则仙气尽失
 
 ---
 
@@ -635,9 +699,10 @@ aspect ratio [比例]
 
 ---
 
-**更新日期**: 2026-07-24
+**更新日期**: 2026-08-14
 
 **变更记录**：
+- 2026-08-14: v2.3.0 新增「风格参考表」（9 风格条目）与「青蓝暖橙仙侠风控制框架」：青蓝冷调+暖橙点缀冷暖对比为魂，四要素（色调/光影/氛围/笔触）、构图法则、场景灵活性（水乡/山巅/庭院/战场皆容器）、关键词梯度、正反双向约束；style 维度示例同步补充。
 - 2026-07-24: v2.2.0 全面强化：新增金字塔Prompt架构、微表情精度控制框架、服装深度描述框架、光质描写指南、镜头语言指南、质量标签体系、正反双向约束原则。15维度→17维度（新增lens/quality_tags）。升级专业术语参考表，增强JSON/Markdown/纯文本三格式输出模板。
 - 2026-04-23: v2.1.0 新增年龄维度（age），共 15 维度
 - 2026-04-23: v2.0.1 优化描述，画面比例改为用户指定或 AI 根据用途决定

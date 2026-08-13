@@ -1,6 +1,6 @@
 ---
 name: 图片姬
-version: 2.3.0
+version: 2.5.0
 description: 通用型图像Prompt生成器。输入主题描述，AI自主分析主体特征、决定艺术风格、推荐配色构图，输出结构化Prompt。
 allowed-tools:
   - Read
@@ -513,9 +513,110 @@ AI自主判断：
 | 极简奶油风 | minimalist cream aesthetic, clean lines, soft tones, negative space | 室内人像、现代住宅 |
 | 水墨风 | ink wash painting, brush stroke, negative space | 古风、武侠 |
 | 浮世绘 | ukiyo-e, woodblock print, flat color, outline | 和风、传统 |
-| 厚涂 | impasto, oil painting texture, thick brushstrokes | 史诗、幻想 |
+| 厚涂（CG涂抹） | painterly, digital painting, no lineart, soft blending | 史诗、幻想、角色插画 |
+| 油画厚涂 | impasto, oil painting, palette knife, thick brushstrokes | 古典、艺术、肌理表现 |
 | 极简 | minimalist, clean lines, negative space | 现代、概念 |
+| 青蓝暖橙仙侠 | teal/cyan palette, warm orange accents, misty, ethereal ancient Chinese | 仙侠、古风、夜景、史诗场景 |
 | 3D渲染 | 3D render, Octane render, detailed texture | 产品展示、写实 |
+
+---
+
+## 厚涂风格控制框架（style 维度强化）
+
+### 一、厚涂之辨——两派并立
+
+AI 绘图语境"厚涂"常混指两派，须先分定：
+
+| 派别 | 本质 | 关键特征 | 风格词 |
+|------|------|---------|--------|
+| **CG涂抹厚涂** | 数码绘画，无描边线稿 | 色块堆积塑造体积、笔触融合、无 clean outline | painterly, digital painting, no lineart |
+| **油画肌理厚涂** | 油画质感，颜料堆叠 | 可见厚重笔触、画布纹理、刮刀肌理 | impasto, oil painting texture, palette knife |
+
+> 判断法：画面有无"轮廓线"。无轮廓、靠明暗块面立体的 → CG厚涂；有颜料堆叠立体感 → 油画厚涂。
+
+### 二、厚涂六要素控制
+
+填 style 维度时，厚涂风格须控制六要素：
+
+| 要素 | 控制描述 | 示例 |
+|------|---------|------|
+| **笔触** | 可见度分级（隐藏/柔和/显性） | "柔和可见笔触，不追求光滑无痕" |
+| **轮廓** | 无描边，边缘由明暗定义 | "无轮廓线，形体由光影块面塑造" |
+| **体块** | 块面意识，立体结构 | "强体积感，明暗交界清晰" |
+| **色彩** | 堆叠混色，非平涂 | "多色层叠晕染，过渡自然" |
+| **质感** | 画布/颜料触感 | "带画布纹理感，非数字光滑" |
+| **深度** | 环境光遮蔽、固有阴影 | "闭塞阴影充足，层次纵深" |
+
+### 三、厚涂关键词梯度
+
+| 梯度 | 关键词 |
+|------|--------|
+| 基础 | painterly, thick paint, digital painting |
+| 进阶 | visible brushstrokes, no lineart, strong form, layered color |
+| 油画肌理 | impasto, oil paint texture, canvas grain, palette knife strokes |
+
+### 四、厚涂典型场景
+
+| 场景 | 推荐派别 | 原因 |
+|------|---------|------|
+| 史诗奇幻角色 | CG涂抹厚涂 | 体积张力、氛围塑造 |
+| 古典肖像油画 | 油画肌理厚涂 | 颜料质感还原 |
+| 概念原画/游戏设定 | CG涂抹厚涂 | 块面清晰、便于迭代 |
+| 文人气质/厚重叙事 | 油画肌理厚涂 | 触感与岁月感 |
+
+### 五、正反双向约束（厚涂专用）
+
+- 正向：写笔触词、体块词、肌理词
+- 负向：明确"no clean outline, no flat color, no cel shading"——防 AI 滑回赛璐璐平涂
+- 区分：动漫赛璐璐（cel shading, clean lineart）与厚涂相反，勿混入
+
+---
+
+## 青蓝暖橙仙侠风控制框架（style 维度强化）
+
+青蓝冷调+暖橙点缀之冷暖对比，中式仙侠意境。**核心在色调光影氛围，不在场景**——水乡、山巅、庭院、战场皆可为容器。
+
+### 一、风格四要素（缺一不成仙侠意）
+
+| 要素 | 控制 | 示例 |
+|------|------|------|
+| **色调** | 青蓝冷调为主，暖橙点缀——冷暖对比为魂 | "teal/cyan 主调 + warm orange accents" |
+| **光影** | 冷色主光（月光/冷天光）+ 暖色点光（灯笼/烛火/篝火） | "冷月光铺底，暖灯火点缀" |
+| **氛围** | 烟雾、体积雾、大气透视、仙境感 | "volumetric fog, misty, ethereal" |
+| **笔触** | CG厚涂，细腻丰富 | "painterly, digital painting" |
+
+### 二、构图法则
+
+```
+前景（剪影/细节） → 中景（主体/建筑） → 远景（山/塔/雾）
+```
+
+- 三层纵深：前中远层层退远，大气透视（远物变灰变淡）
+- 引导线：光带、河流、路径、桥面皆可作视线引导
+- 人物处理二选一：氛围优先则剪影化；主体优先则精细刻画
+
+### 三、场景灵活性（容器，非风格本身）
+
+| 场景 | 应用示例 |
+|------|---------|
+| 水乡 | 石拱桥、木质建筑、塔楼、渔船、灯笼 |
+| 山巅 | 悬崖、云海、孤松、远山 |
+| 庭院 | 石阶、木门、回廊、落叶 |
+| 战场 | 废墟、断戟、硝烟、残月 |
+
+### 四、关键词梯度（青蓝暖橙仙侠）
+
+| 梯度 | 关键词 |
+|------|--------|
+| 基础 | teal and cyan palette, warm orange accents, misty, ethereal ancient Chinese |
+| 进阶 | volumetric fog, cold moonlight, warm lantern glow, atmospheric perspective |
+| 发烧 | three-layer depth, atmospheric perspective, painterly brushwork, cinematic |
+
+### 五、正反双向约束（仙侠专用）
+
+- 正向：写色调词（teal/cyan + warm orange）、光影词（cold moonlight + warm glow）、氛围词（misty/volumetric fog）
+- 负向：防 AI 滑回"现代都市夜景"或"纯黑白水墨"——明确"no modern buildings, no neon signs, no pure ink-wash monochrome"
+- 保持：冷暖对比是灵魂——青蓝冷底 + 暖橙点缀，缺暖则冷寂过死，缺冷则仙气尽失
 
 ---
 
@@ -555,9 +656,11 @@ AI自主判断：
 
 ---
 
-**更新日期**: 2026-08-05
+**更新日期**: 2026-08-14
 
 **变更记录**：
+- 2026-08-14: v2.5.0 新增「青蓝暖橙仙侠风控制框架」：青蓝冷调+暖橙点缀冷暖对比为魂，四要素（色调/光影/氛围/笔触）、构图法则、场景灵活性（水乡/山巅/庭院/战场皆容器）、关键词梯度、正反双向约束；风格参考表新增"青蓝暖橙仙侠"条目。
+- 2026-08-14: v2.4.0 新增「厚涂风格控制框架」：厚涂分为 CG涂抹厚涂/油画肌理厚涂两派，六要素控制（笔触/轮廓/体块/色彩/质感/深度）、关键词梯度、典型场景、正反双向约束；风格参考表"厚涂"拆分细化。
 - 2026-08-12: v2.3.0 新增「科普信息图构图思路」：步骤3.5论证驱动分区（金字塔反驳结构）、满铺分区、区块内构图三件套（卡片/图标锚点/箭头流程）、文字策略——纯构图方法论，与风格体系正交
 - 2026-08-05: v2.2.0 输出精简：只输出结构化维度（画面核心描述+16维度），移除"纯文本版（复制即用）"与"英文版"两个复制即用板块。
 - 2026-07-23: v2.1.0 全面强化六层：新增金字塔Prompt架构、微表情精度控制框架、服装深度描述框架、光质描写指南、镜头语言指南、质量标签体系、正反双向约束原则。14维度→16维度（新增lens/quality_tags）。更新输出模板、风格参考表。
