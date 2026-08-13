@@ -13,10 +13,10 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/�
 ```
 - **返回末次梳理时间**：有结果则告知用户"上次梳理于 XXXX-XX-XX"；无结果则言"尚无梳理记录"。
 - 若无结果，或末次梳理距今超过 7 日 → 触发梳理流程。
-- 梳理毕，以 `--type time --emotion medium --keywords "记忆梳理,consolidation"` 存储新时间戳：
+- 梳理毕，以 `--type time --emotion 0.5 --keywords "记忆梳理,consolidation"` 存储新时间戳：
   ```bash
   MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
-    store "上次记忆梳理时间: YYYY-MM-DD" --type time --emotion medium --keywords "记忆梳理,consolidation"
+    store "上次记忆梳理时间: YYYY-MM-DD" --type time --emotion 0.5 --keywords "记忆梳理,consolidation"
   ```
 - 梳理完成，告知用户"梳理完毕，上次梳理时间已更新"。
 
@@ -34,7 +34,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/�
 3. **沉淀为结构化记忆**：每一条主题存为一条记忆，示例：
    ```bash
    MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py \
-     store "主题摘要" --type 类型 --emotion medium --keywords "主题关键词,consolidated"
+     store "主题摘要" --type 类型 --emotion 0.5 --keywords "主题关键词,consolidated"
    ```
    其中 `keywords` 须含 `consolidated` 标签，以示此条乃梳理产物。
 4. **清理临时文件**：`rm /tmp/yishi_export.md`
@@ -44,7 +44,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/�
 - 宁精勿杂：一条梳理结果应覆盖一类模式/主题，而非罗列琐碎。
 - 追加之，非替代之：梳理不删除原始记忆。原始碎片保留，梳理结果作为上层索引。
 - 频率>7日可跳：若用户对话稀疏，7日内无新记忆，则不必空转。
-- 情绪高之记忆优先：梳理时，优先关注 `extreme` / `high` 情绪之条目，此乃用户最在意之事。
+- 情绪高之记忆优先：梳理时，优先关注情绪值 ≥0.7 之条目，此乃用户最在意之事。
 - 对比旧梳理：检索已有 `--keywords "consolidated"` 之记忆，比对新增内容，避免重复沉淀。
 
 完成后回复：`"梳理毕。"`

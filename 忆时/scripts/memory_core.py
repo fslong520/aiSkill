@@ -69,10 +69,38 @@ SKILL_MODEL_BASE = os.path.join(LOCAL_BASE, "models")
 # 可用环境变量 MEMO_BAK 覆盖（多实例/测试隔离）。
 BACKUP_FILE = os.environ.get("MEMO_BAK") or os.environ.get("YISHI_BACKUP_FILE") or os.path.join(LOCAL_BASE, "memories_backup.jsonl")
 
-EMOTION_WEIGHTS = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
+# 情绪强度：统一用 0.0~1.0 数值表示（数值越大越重要/强烈）。
+# 旧版词语（extreme/high/medium/low）自动映射为数值，兼容历史数据。
+EMOTION_WORD_MAP = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
+EMOTION_WEIGHTS = dict(EMOTION_WORD_MAP)
+
+def norm_emotion(val):
+    """把任意情绪输入归一为 0.0~1.0 数值：
+    - 数字字符串（"0.85"）→ 原值
+    - 旧版词语（"high"）→ 映射数值
+    - 无效 → 0.5
+    """
+    if val is None:
+        return 0.5
+    s = str(val).strip().lower()
+    if s in EMOTION_WORD_MAP:
+        return EMOTION_WORD_MAP[s]
+    try:
+        f = float(s)
+        return max(0.0, min(1.0, f))
+    except (ValueError, TypeError):
+        return 0.5
+
+def emotion_emoji(val):
+    """按情绪数值映射 emoji：≥0.9 🔴、≥0.7 🟠、≥0.4 🟡、否则 🟢"""
+    w = norm_emotion(val)
+    if w >= 0.9: return "🔴"
+    if w >= 0.7: return "🟠"
+    if w >= 0.4: return "🟡"
+    return "🟢"
+
 RECALL_DECAY_DAYS = 30.0
 VALID_TYPES = {"emotion", "decision", "task", "time", "preference", "context", "skill"}
-VALID_EMOTIONS = {"extreme", "high", "medium", "low"}
 
 # ── 混合检索（BM25 关键词路 + 向量路 RRF 融合）─
 RRF_K = 60.0                # RRF 融合常数（标准值 60）
@@ -346,13 +374,13 @@ def cmd_store(args):
     client = get_client()
     mem_col = get_collection(client, "memories")
     now = _now()
-    emotion = args.emotion or "medium"
+    emo_val = norm_emotion(args.emotion)
     mem_type = args.type or "context"
 
     metadata = {
         "type": mem_type,
-        "emotion": emotion,
-        "emotion_weight": EMOTION_WEIGHTS.get(emotion, 0.5),
+        "emotion": emo_val,
+        "emotion_weight": emo_val,
         "created_at": now.isoformat(),
         "created_date": now.strftime("%Y-%m-%d"),
         "updated_at": now.isoformat(),
@@ -402,9 +430,9 @@ def cmd_store(args):
                         nm["keywords"] = _merge_keywords(om.get("keywords", ""), args.keywords or "")
                         nm["frequency"] = int(om.get("frequency", 1)) + 1
                         nm["updated_at"] = now.isoformat()
-                        if EMOTION_WEIGHTS.get(emotion, 0.5) > float(om.get("emotion_weight", 0.5)):
-                            nm["emotion"] = emotion
-                            nm["emotion_weight"] = EMOTION_WEIGHTS.get(emotion, 0.5)
+                        if emo_val > float(om.get("emotion_weight", 0.5)):
+                            nm["emotion"] = emo_val
+                            nm["emotion_weight"] = emo_val
                         for f in ("scene", "activity_start", "activity_end"):
                             if getattr(args, f, None) and not om.get(f):
                                 nm[f] = getattr(args, f)
@@ -460,7 +488,7 @@ def cmd_store(args):
 
     print(f"记忆已存储")
     print(f"  ID: {mem_id}")
-    print(f"  类型: {mem_type}  情绪: {emotion}")
+    print(f"  类型: {mem_type}  情绪: {emo_val} {emotion_emoji(emo_val)}")
     if metadata.get("scene"):
         print(f"  场景: {metadata['scene']}")
     if metadata["keywords"]:
@@ -701,7 +729,6 @@ def cmd_recall(args):
         except Exception:
             pass
 
-    emoji_map = {"extreme": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
     type_emoji = {"task": "📋", "decision": "⚖️", "preference": "⭐", "emotion": "💜", "time": "⏰", "context": "📌", "imported": "📥", "skill": "🔧"}
 
     total = len(scored)
@@ -713,7 +740,8 @@ def cmd_recall(args):
     used_chars = 0
 
     for idx, item in enumerate(scored, 1):
-        e_emoji = emoji_map.get(item["emotion"], "⚪")
+        e_emoji = emotion_emoji(item.get("emotion"))
+        emo_val = norm_emotion(item.get("emotion"))
         t_emoji = type_emoji.get(item.get("type", ""), "📄")
         capsule_tag = " 🔒" if item["is_capsule"] else ""
         assoc_tag = " ⟡关联" if item.get("is_expanded") else ""
@@ -745,7 +773,7 @@ def cmd_recall(args):
                 break
         used_chars += line_est
 
-        print(f"  {idx}. {e_emoji} {type_label}{scene_tag}{capsule_tag}{assoc_tag}{trigger_tag}  ──  {item['created_date']}  被检索{item['recall_count']}次  匹配{score_pct}%")
+        print(f"  {idx}. {e_emoji} {type_label}{scene_tag}{capsule_tag}{assoc_tag}{trigger_tag}  ──  {item['created_date']}  情绪{emo_val:.2f}  被检索{item['recall_count']}次  匹配{score_pct}%")
 
         if kw_display:
             print(f"     │ 🏷️ {kw_display}")
@@ -776,8 +804,9 @@ def cmd_update(args):
     content = args.content if args.content is not None else old["documents"][0]
     if args.keywords is not None: meta["keywords"] = args.keywords
     if args.emotion is not None:
-        meta["emotion"] = args.emotion
-        meta["emotion_weight"] = EMOTION_WEIGHTS.get(args.emotion, 0.5)
+        emo = norm_emotion(args.emotion)
+        meta["emotion"] = emo
+        meta["emotion_weight"] = emo
     if args.type is not None: meta["type"] = args.type
     if args.scene is not None: meta["scene"] = args.scene
     if args.activity_start is not None: meta["activity_start"] = args.activity_start
@@ -815,17 +844,20 @@ def cmd_stats(args):
     print(f"  总记忆数: {total}")
     print(f"  关系数量: {rel_col.count()}")
     if total == 0: return
-    type_counts = {}; emotion_counts = {}; capsule_count = 0
+    type_counts = {}; emo_buckets = {"高(≥0.7)": 0, "中(0.4~0.7)": 0, "低(<0.4)": 0}; capsule_count = 0
     result = mem_col.get()
     if result["metadatas"]:
         for m in result["metadatas"]:
             t = m.get("type", "context"); type_counts[t] = type_counts.get(t, 0) + 1
-            e = m.get("emotion", "medium"); emotion_counts[e] = emotion_counts.get(e, 0) + 1
+            w = norm_emotion(m.get("emotion"))
+            if w >= 0.7: emo_buckets["高(≥0.7)"] += 1
+            elif w >= 0.4: emo_buckets["中(0.4~0.7)"] += 1
+            else: emo_buckets["低(<0.4)"] += 1
             if m.get("is_capsule") == "true": capsule_count += 1
     print(f"\n  按类型:")
     for t, c in sorted(type_counts.items()): print(f"    {t}: {c}")
-    print(f"\n  按情绪:")
-    for e, c in sorted(emotion_counts.items()): print(f"    {e}: {c}")
+    print(f"\n  按情绪强度(数值):")
+    for e, c in emo_buckets.items(): print(f"    {e}: {c}")
     print(f"\n  时间胶囊: {capsule_count}")
 
 
@@ -839,7 +871,7 @@ def cmd_capsule(args):
         now = _now()
         unlock_at = args.unlock_at or (now + timedelta(days=30)).strftime("%Y-%m-%d")
         metadata = {
-            "type": "context", "emotion": "medium",
+            "type": "context", "emotion": 0.5,
             "created_at": now.isoformat(), "created_date": now.strftime("%Y-%m-%d"),
             "updated_at": now.isoformat(), "keywords": args.keywords or "",
             "frequency": 1, "recall_count": 0,
@@ -930,20 +962,21 @@ def cmd_capsule(args):
 # ========== import ==========
 def _parse_markdown(text):
     entries = []
-    current = {"content": "", "date": "", "emotion": "medium", "keywords": ""}
+    current = {"content": "", "date": "", "emotion": 0.5, "keywords": ""}
     for line in text.split("\n"):
         line = line.strip()
         if line.startswith("#"):
             if current["content"]: entries.append(dict(current))
-            current = {"content": line.lstrip("#"), "date": "", "emotion": "medium", "keywords": ""}
+            current = {"content": line.lstrip("#"), "date": "", "emotion": 0.5, "keywords": ""}
             try:
                 datetime.strptime(line.lstrip("#").strip()[:10], "%Y-%m-%d")
                 current["date"] = line.lstrip("#").strip()[:10]
             except (ValueError, IndexError): pass
         elif line.startswith(">"):
             ml = line[1:].strip()
-            for tag in ["extreme", "high", "medium", "low"]:
-                if tag in ml.lower(): current["emotion"] = tag; break
+            emo_m = re.search(r"情绪[:：]\s*([0-9.]+|[A-Za-z]+)", ml)
+            if emo_m:
+                current["emotion"] = norm_emotion(emo_m.group(1))
         elif line:
             current["content"] = (current["content"] + "\n" + line).strip() if current["content"] else line
     if current["content"]: entries.append(dict(current))
@@ -960,7 +993,7 @@ def _parse_text(text):
             datetime.strptime(lines[0][:10], "%Y-%m-%d")
             date = lines[0][:10]; content = "\n".join(lines[1:]) if len(lines) > 1 else block
         except (ValueError, IndexError): pass
-        entries.append({"content": content, "date": date, "emotion": "medium", "keywords": ""})
+        entries.append({"content": content, "date": date, "emotion": 0.5, "keywords": ""})
     return entries
 
 
@@ -983,8 +1016,8 @@ def cmd_import(args):
             if not content.strip(): continue
             metadata = {
                 "type": mem.get("type", "imported"),
-                "emotion": mem.get("emotion", "medium"),
-                "emotion_weight": EMOTION_WEIGHTS.get(mem.get("emotion", "medium"), 0.5),
+                "emotion": norm_emotion(mem.get("emotion")),
+                "emotion_weight": norm_emotion(mem.get("emotion")),
                 "created_at": mem.get("created_at", _now().isoformat()),
                 "created_date": mem.get("created_date", ""),
                 "updated_at": _now().isoformat(),
@@ -1005,9 +1038,10 @@ def cmd_import(args):
     entries = _parse_markdown(content) if fmt == "markdown" else _parse_text(content)
     count = 0
     for entry in entries:
+        emo = norm_emotion(entry.get("emotion"))
         metadata = {
-            "type": "imported", "emotion": entry.get("emotion", "medium"),
-            "emotion_weight": EMOTION_WEIGHTS.get(entry.get("emotion", "medium"), 0.5),
+            "type": "imported", "emotion": emo,
+            "emotion_weight": emo,
             "created_at": entry.get("date", _now().isoformat()),
             "created_date": entry.get("date", "")[:10],
             "updated_at": _now().isoformat(),
@@ -1053,17 +1087,16 @@ def cmd_export(args):
     if args.format == "timeline":
         lines = [f"# 忆时 · 记忆时间线", f"导出日期: {_now().strftime('%Y-%m-%d %H:%M:%S')}", f"总记忆数: {len(memories)}", ""]
         current_date = None
-        e_map = {"extreme": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}
         for m in memories:
             ds = m["metadata"].get("created_date", "")[:10]
             meta = m["metadata"]; mt = meta.get("type", "context")
-            ee = e_map.get(meta.get("emotion", ""), "⚪")
+            ee = emotion_emoji(meta.get("emotion"))
             if ds != current_date:
                 current_date = ds; lines.append(f"## {ds}"); lines.append("")
             ct = " 🔒" if meta.get("is_capsule") == "true" else ""
             lines.append(f"### {ee} [{mt.upper()}]{ct}")
             lines.append(f"- 关键字: {meta.get('keywords', '无')}")
-            lines.append(f"- 情绪: {meta.get('emotion', 'medium')}")
+            lines.append(f"- 情绪: {norm_emotion(meta.get('emotion')):.2f}")
             lines.append(f"- {m['content']}")
             lines.append("")
         with open(args.output, "w", encoding="utf-8") as f:
@@ -1075,7 +1108,7 @@ def cmd_export(args):
     for m in memories:
         meta = m["metadata"]; mt = meta.get("type", "context")
         lines.append("---")
-        lines.append(f"**类型**: {mt}  |  **情绪**: {meta.get('emotion', 'medium')}  |  **日期**: {meta.get('created_date', '')}")
+        lines.append(f"**类型**: {mt}  |  **情绪**: {norm_emotion(meta.get('emotion')):.2f}  |  **日期**: {meta.get('created_date', '')}")
         if meta.get("keywords"): lines.append(f"**关键字**: {meta['keywords']}")
         lines.append(""); lines.append(m["content"]); lines.append("")
     with open(args.output, "w", encoding="utf-8") as f:
@@ -1179,7 +1212,7 @@ def main():
     p = sub.add_parser("store", help="存储新记忆")
     p.add_argument("content", help="记忆内容")
     p.add_argument("--type", choices=VALID_TYPES, help="记忆类型")
-    p.add_argument("--emotion", choices=VALID_EMOTIONS, help="情绪强度")
+    p.add_argument("--emotion", help="情绪强度（0.0~1.0 数值，如 0.9；兼容旧词 high/medium/low）")
     p.add_argument("--keywords", help="关键字")
     p.add_argument("--source", help="来源"); p.add_argument("--session", help="会话ID")
     p.add_argument("--scene", help="场景（如: 教学课后反馈）")
@@ -1211,7 +1244,7 @@ def main():
     p = sub.add_parser("update", help="更新记忆")
     p.add_argument("--id", required=True, help="记忆ID")
     p.add_argument("--content", help="新内容"); p.add_argument("--keywords", help="新关键字")
-    p.add_argument("--emotion", choices=VALID_EMOTIONS, help="新情绪"); p.add_argument("--type", choices=VALID_TYPES, help="新类型")
+    p.add_argument("--emotion", help="新情绪（0.0~1.0 数值，或旧词）"); p.add_argument("--type", choices=VALID_TYPES, help="新类型")
     p.add_argument("--scene", help="新场景")
     p.add_argument("--activity-start", help="新活动开始时间")
     p.add_argument("--activity-end", help="新活动结束时间")

@@ -25,7 +25,7 @@
 | `/忆时 我喜欢吃玉米` | **默认 recall** | 首词"我"不识 → 检索"我喜欢吃玉米" |
 | `/忆时 记忆 画一只奶牛猫` | 记忆 | 内容="画一只奶牛猫" |
 | `/忆时 记住 我今天想吃红烧肉` | 记住 | 内容="我今天想吃红烧肉" |
-| `/忆时 记住 用户爱喝美式 --type preference --emotion high` | 记住 | 内容="用户爱喝美式", type=preference, emotion=high |
+| `/忆时 记住 用户爱喝美式 --type preference --emotion 0.8` | 记住 | 内容="用户爱喝美式", type=preference, emotion=0.8 |
 | `/忆时 查找 Python 项目` | 查找 | 关键词="Python 项目" |
 | `/忆时 查找 装饰器 --limit 10` | 查找 | 关键词="装饰器", limit=10 |
 | `/忆时 胶囊 封存 --解锁日 2026-12-31` | 胶囊 | 子命令=封存, 解锁日=2026-12-31 |
@@ -40,7 +40,7 @@
 MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI store "内容" --type <类型> --emotion <情绪> --keywords "自动提取2-3关键词"
 ```
 
-**默认值：** `--type task --emotion medium`
+**默认值：** `--type task --emotion 0.5`（情绪用 0.0~1.0 数值，越大越重要；旧词 high=0.8/medium=0.5/low=0.2 仍兼容）
 
 **关键词提取规则：**
 - 从内容中自动提取 2-3 个核心词作关键词
@@ -100,7 +100,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI stats
 忆时统计：
 记忆总数：42
 类型分布：task 18, decision 7, preference 9, ...
-情绪分布：high 12, medium 25, low 5
+情绪分布：高(≥0.7) 12, 中(0.4~0.7) 25, 低(<0.4) 5
 胶囊：3 枚封存中
 ```
 

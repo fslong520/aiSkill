@@ -17,6 +17,14 @@ from pathlib import Path
 VIZ_DIR = Path(__file__).resolve().parent
 SKILL_DIR = VIZ_DIR.parent.parent          # scripts/viz → scripts → 忆时/
 CORE = SKILL_DIR / "scripts" / "memory_core.py"
+
+def _norm_emo(val):
+    if val is None: return 0.5
+    s = str(val).strip().lower()
+    m = {"extreme": 1.0, "high": 0.8, "medium": 0.5, "low": 0.2}
+    if s in m: return m[s]
+    try: return max(0.0, min(1.0, float(s)))
+    except ValueError: return 0.5
 TPL = VIZ_DIR / "template.html"
 # 与 memory_core.py 一致：默认 LOCAL_BASE/data（~/.local/share/opencode/忆时/data）
 LOCAL_BASE = Path.home() / ".local" / "share" / "opencode" / "忆时"
@@ -67,7 +75,7 @@ def build(data, out):
         records.append({
             "id": m["id"],
             "type": md.get("type", "context"),
-            "emotion": md.get("emotion", "medium"),
+            "emotion": _norm_emo(md.get("emotion")),
             "date": md.get("created_date", "") or (md.get("created_at", "") or "")[:10],
             "keywords": [k for k in kw.split(",") if k][:8],
             "kw_raw": kw,
@@ -82,7 +90,8 @@ def build(data, out):
     type_dist, emo_dist, topic_count, topic_kws = {}, {}, {}, {}
     for r in records:
         type_dist[r["type"]] = type_dist.get(r["type"], 0) + 1
-        emo_dist[r["emotion"]] = emo_dist.get(r["emotion"], 0) + 1
+        bucket = "≥0.7" if r["emotion"] >= 0.7 else ("0.4~0.7" if r["emotion"] >= 0.4 else "<0.4")
+        emo_dist[bucket] = emo_dist.get(bucket, 0) + 1
         topic_count[r["topic"]] = topic_count.get(r["topic"], 0) + 1
         topic_kws.setdefault(r["topic"], set()).update(r["keywords"][:8])
     month_dist = {}
@@ -93,7 +102,7 @@ def build(data, out):
     topic_samples = {}
     for t in topic_count:
         rs = sorted([r for r in records if r["topic"] == t],
-                    key=lambda r: -(r["freq"] + (1 if r["emotion"] in ("high", "extreme") else 0)))
+                    key=lambda r: -(r["freq"] + (1 if r["emotion"] >= 0.7 else 0)))
         topic_samples[t] = [{"c": r["c"], "type": r["type"], "e": r["emotion"], "d": r["date"]} for r in rs[:3]]
 
     payload = {

@@ -118,7 +118,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/�
 ```
 
 **类型**：task / decision / preference / emotion / time / context / skill
-**情绪**：extreme / high / medium / low
+**情绪**：0.0~1.0 数值（默认 0.5），数值越大越重要/强烈；旧词 high=0.8 / medium=0.5 / low=0.2 仍兼容（自动转数值）
 **场景与活动时间**：`--scene` 归组（如"教学课后反馈"），`--activity-start/--activity-end` 记段段时间（如旅行 2025-05-01 ~ 05-10）。事件性记忆（time 类型）建议标注。
 
 **检索命令（新参数）：**

@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "2.2.1"
+  version: "2.3.0"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"
@@ -34,7 +34,7 @@ metadata:
 | **去重合并** | 存储时相似>90% 自动合并（内容并入、频率+1），85%~90% 警告提示，--force 强存 |
 | **渐进式回忆** | 先抛最相关的1-2条，用户追问再深入，非一次性倒出 |
 | **遗忘曲线** | 记忆随时间指数衰减，低频率的记忆会变得"模糊" |
-| **情绪锚定** | 高情绪（🔴高/🟠中高）记忆权重更高，不易遗忘 |
+| **情绪锚定** | 高情绪（情绪值 ≥0.7）记忆权重更高，不易遗忘 |
 | **记忆涌现** | 话题转换时发现隐藏关联，主动说出"说到这个我突然想到…" |
 | **场景分组** | 记忆可标 --scene 归组，事件记忆可标活动时间段（2025-05-01 ~ 05-10） |
 | **时间胶囊** | 封存某段记忆，设定解锁日期，到期后自动/手动解封翻阅 |
@@ -80,7 +80,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data    # 所有命令必设
 # 注意：以下命令使用 $PY 与 $MEMO_DIR 变量，须先执行上方两行定义；或直接写全路径 python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py
 
 初始化:    python3 $PY init
-存储记忆:  python3 $PY store "内容" --type task --emotion high [--scene 场景] [--activity-start 2025-05-01] [--activity-end 2025-05-10] [--force]
+存储记忆:  python3 $PY store "内容" --type task --emotion 0.8 [--scene 场景] [--activity-start 2025-05-01] [--activity-end 2025-05-10] [--force]
 检索记忆:  python3 $PY recall "查询" --limit 5 --expand [--no-embed] [--max-total-chars 600]
 封胶囊:   python3 $PY capsule lock --unlock-at "2026-12-31"
 查看胶囊:  python3 $PY capsule list
@@ -113,7 +113,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data    # 所有命令必设
 | `/忆时 梳理` | 记忆梳理 |
 
 **类型**：task / decision / preference / emotion / time / context / skill
-**情绪**：extreme / high / medium / low（默认 medium）
+**情绪**：0.0~1.0 数值（默认 0.5），数值越大越重要/强烈；旧词 high=0.8 / medium=0.5 / low=0.2 仍兼容
 
 ## 工程实践——关键场景
 
@@ -122,7 +122,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data    # 所有命令必设
 | 完成任务后 | 按审计三问自查：结果问→过程问→改进问，全过方可言"完" |
 | 收到复杂需求 | 先存方案到忆时，再规划步骤，逐条标记完成 |
 | 发现用户偏好 | 以 `--type preference` 即时存储 |
-| 做出关键决策 | 以 `--type decision --emotion high` 存储，附决策理由 |
+| 做出关键决策 | 以 `--type decision --emotion 0.9` 存储，附决策理由 |
 | 用户交付长文 | 提取metadata，按索引思维存储（见 modules/14） |
 | 对话转折话题 | 先 `recall` 新话题的关键词，再谈是否有关联 |
 | 疑似走偏 | 暂停，`recall` 原始目标比对进度 |

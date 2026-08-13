@@ -29,7 +29,7 @@ python3 scripts/memory_core.py import-file memories.json --format json
 
 ```markdown
 ## 2025-03-15
-> 情绪: high
+> 情绪: 0.9
 
 今天和AI讨论了一个关于未来的想法，感觉很兴奋。
 我们决定尝试一个新的架构方案。
@@ -37,7 +37,7 @@ python3 scripts/memory_core.py import-file memories.json --format json
 
 导入后自动解析:
 - 日期: 2025-03-15
-- 情绪: high
+- 情绪: 0.9（数值；旧词 high/medium/low 亦兼容）
 - 内容: "## 2025-03-15\n今天和AI讨论……"
 
 ### JSON 格式示例
@@ -49,7 +49,7 @@ python3 scripts/memory_core.py import-file memories.json --format json
       "id": "optional-uuid",
       "content": "记忆内容",
       "type": "emotion",
-      "emotion": "high",
+      "emotion": 0.9,
       "keywords": "关键词",
       "created_at": "2025-03-15T10:00:00",
       "created_date": "2025-03-15"
@@ -94,14 +94,14 @@ python3 scripts/memory_core.py export --format json --output memories.json
 
 ### 🟠 [EMOTION]
 - 关键字: 未来, 想法, 兴奋
-- 情绪: high
+- 情绪: 0.90
 - 今天和AI讨论了一个关于未来的想法，感觉很兴奋
 
 ## 2025-03-20
 
 ### 🟡 [DECISION]
 - 关键字: 架构, Python
-- 情绪: medium
+- 情绪: 0.50
 - 决定采用新的架构方案
 ```
 

@@ -44,7 +44,7 @@
 ```bash
 MEMO_DIR=~/.local/share/opencode/忆时/data python3 $YISHI store "Strategy/Language/Example" \
   --type skill \
-  --emotion high \
+  --emotion 0.8 \
   --keywords "skill,格语,trigger:漫画,trigger:画漫画" \
   --skill-name "格语" \
   --skill-summary "故事主题→宫格手绘故事图" \

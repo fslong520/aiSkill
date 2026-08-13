@@ -128,7 +128,8 @@
 <script>
 /*__DATA__*/
 const TYPELABEL = {task:"任务",decision:"决策",preference:"偏好",context:"上下文",emotion:"情绪",skill:"技能",time:"时间"};
-const EMOMOJI = {extreme:"🔴",high:"🟠",medium:"🟡",low:"🟢"};
+const EMOMOJI = {">=0.9":"🔴",">=0.7":"🟠",">=0.4":"🟡","<0.4":"🟢"};
+function eMoji(v){ return v>=0.9?"🔴":v>=0.7?"🟠":v>=0.4?"🟡":"🟢"; }
 
 /* ---------- 内容分页 ---------- */
 function pagesOf(){
@@ -161,10 +162,10 @@ function pagesOf(){
     bars += `<div class="bar-row"><span class="k">${TYPELABEL[k]||k}</span><div class="bar"><i style="width:${(v/tMax*100).toFixed(0)}%"></i></div><span class="n">${v}</span></div>`;
   });
   const eMax = Math.max(...Object.values(MEMORIES.emo_dist));
-  const eCol = {extreme:"#dc2626",high:"#ea580c",medium:"#ca8a04",low:"#16a34a"};
+  const eCol = {">=0.7":"#dc2626","0.4~0.7":"#ea580c","<0.4":"#16a34a"};
   let ebars = "";
   Object.entries(MEMORIES.emo_dist).forEach(([k,v])=>{
-    ebars += `<div class="bar-row"><span class="k">${EMOMOJI[k]} ${k}</span><div class="bar"><i style="width:${(v/eMax*100).toFixed(0)}%;background:${eCol[k]||"#ec5b13"}"></i></div><span class="n">${v}</span></div>`;
+    ebars += `<div class="bar-row"><span class="k">${EMOMOJI[k]||"🟡"} ${k}</span><div class="bar"><i style="width:${(v/eMax*100).toFixed(0)}%;background:${eCol[k]||"#ec5b13"}"></i></div><span class="n">${v}</span></div>`;
   });
   P.push(`<div class="face"><div class="phead"><h2>藏卷统计</h2><span class="pbadge">类型</span></div>
     <div class="pbody">${bars}<div class="sec">情绪分布</div>${ebars}</div></div>`);
@@ -206,7 +207,7 @@ function pagesOf(){
       const chunk = recs.slice(i,i+PER);
       const cards = chunk.map(r=>{
         const full = (r.full||r.c).replace(/"/g,'&quot;');
-        return `<div class="mcard" data-full="${full}"><div class="mm"><span class="ttype c-${r.type}">${TYPELABEL[r.type]||r.type}</span><span class="d">${EMOMOJI[r.emotion]||"🟡"} ${r.date}</span></div><div class="mc">${r.c}</div></div>`;
+        return `<div class="mcard" data-full="${full}"><div class="mm"><span class="ttype c-${r.type}">${TYPELABEL[r.type]||r.type}</span><span class="d">${eMoji(r.emotion)} ${r.date}</span></div><div class="mc">${r.c}</div></div>`;
       }).join("");
       P.push(`<div class="face"><div class="phead"><h2>${name}</h2><span class="pbadge">${n} 条</span></div>
         <div class="pbody"><div class="chips-row">${kwHtml}</div><div class="cards">${cards}</div></div></div>`);

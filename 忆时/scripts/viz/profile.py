@@ -39,7 +39,7 @@ def make_records(data):
         kw = md.get("keywords", "") or ""
         records.append({
             "id": m["id"], "type": md.get("type", "context"),
-            "emotion": md.get("emotion", "medium"),
+            "emotion": viz._norm_emo(md.get("emotion")),
             "date": md.get("created_date", "") or (md.get("created_at", "") or "")[:10],
             "keywords": [k for k in kw.split(",") if k][:8],
             "kw_raw": kw,
@@ -58,7 +58,7 @@ def report(records):
     lines.append("=" * 48)
     lines.append(f"总记忆: {len(records)} 条 | 跨度: {min(r['date'] for r in records if r['date'])} → {max(r['date'] for r in records if r['date'])}")
     td = Counter(r["type"] for r in records)
-    ed = Counter(r["emotion"] for r in records)
+    ed = Counter("≥0.7" if r["emotion"] >= 0.7 else ("0.4~0.7" if r["emotion"] >= 0.4 else "<0.4") for r in records)
     tp = Counter(r["topic"] for r in records)
     lines.append(f"\n【类型分布】 " + " · ".join(f"{k} {v}" for k, v in td.most_common()))
     lines.append(f"【情绪分布】 " + " · ".join(f"{k} {v}" for k, v in ed.most_common()))
@@ -66,8 +66,8 @@ def report(records):
     lines.append("\n【高频检索 Top10】")
     for r in sorted(records, key=lambda r: -r["recall"])[:10]:
         lines.append(f"  [{r['recall']}次] {r['date']} {r['type']}: {r['c']}")
-    ext = [r for r in records if r["emotion"] == "extreme"]
-    lines.append(f"\n【extreme 情绪 {len(ext)} 条——最在意之事】")
+    ext = [r for r in records if r["emotion"] >= 0.9]
+    lines.append(f"\n【高情绪(≥0.9) {len(ext)} 条——最在意之事】")
     for r in ext:
         lines.append(f"  · {r['date']}: {r['c']}")
     days = Counter(r["date"] for r in records if r["date"])
@@ -80,17 +80,18 @@ def report(records):
         if r["date"]:
             by_day.setdefault(r["date"], []).append(r)
     for d in sorted(by_day)[::1]:
-        rs = sorted(by_day[d], key=lambda r: -(r["recall"] + (1 if r["emotion"] in ("high", "extreme") else 0)))[:1]
+        rs = sorted(by_day[d], key=lambda r: -(r["recall"] + (1 if r["emotion"] >= 0.7 else 0)))[:1]
         for r in rs:
             lines.append(f"  {d} [{r['topic']}] {r['c']}")
     return "\n".join(lines)
 
 def chart_html(records):
     from collections import Counter
-    td, ed = Counter(r["type"] for r in records), Counter(r["emotion"] for r in records)
+    td = Counter(r["type"] for r in records)
+    ed = Counter("≥0.7" if r["emotion"] >= 0.7 else ("0.4~0.7" if r["emotion"] >= 0.4 else "<0.4") for r in records)
     tmax = max(td.values()) if td else 1
     emax = max(ed.values()) if ed else 1
-    cols = {"extreme": "#dc2626", "high": "#ea580c", "medium": "#ca8a04", "low": "#16a34a"}
+    cols = {"≥0.7": "#dc2626", "0.4~0.7": "#ea580c", "<0.4": "#16a34a"}
     h = ['<div class="panel"><h3>记忆类型分布</h3><div>']
     for k, v in td.most_common():
         h.append(f'<div class="bar-row"><span class="k">{k}</span><div class="bar"><i style="width:{v/tmax*100:.0f}%"></i></div><span class="n">{v}</span></div>')
