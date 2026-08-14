@@ -49,7 +49,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 # {WORK_DIR} = work_{PID}_{标题简写}
 ```
 
-写入 `{WORK_DIR}/problem_zh.md`。
+写入 `{WORK_DIR}/problem_zh.md`（题面标题下加出处行 `> 出处：[原题链接](URL)`，自比赛 URL 拼出，如 `https://atcoder.jp/contests/abc453/tasks/abc453_a`）。
 
 ### Step 3-4 写配
 
@@ -57,6 +57,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 pid: "abc453a"
 title: "中(英)"
 score:  # AI 按 03-gesp.md「第六步：定分」规则估算，已知比赛分数直接采用
+source: "https://atcoder.jp/contests/abc453/tasks/abc453_a"
 tag:
   - "知识点标签1"
   - "知识点标签2"

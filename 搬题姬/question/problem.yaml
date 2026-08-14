@@ -1,6 +1,7 @@
 pid: "null"
 title: "题目名称"
 score:  # AI 按 03-gesp.md「第六步：定分」规则估算，800~3500
+source:  # 出处：原题 URL；URL 搬运必填；文件/文本来源填来源说明；原创题填 null
 tag:
   - "知识点1"
   - "知识点2"
