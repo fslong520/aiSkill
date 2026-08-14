@@ -1,5 +1,5 @@
 ---
-name: 智国学堂
+name: teachzero
 description: 帮助开发和维护智国学堂（TeachZero）Django教学平台项目
 
 metadata:

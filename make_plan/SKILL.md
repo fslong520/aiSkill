@@ -1,5 +1,5 @@
 ---
-name: make_plan
+name: make-plan
 description: For external plan request scenarios, guides the Agent to request a clear, actionable, step-by-step plan from a stronger Agent via list_agents and chat_with_agent, emphasizing that the plan is executed by the requester, not by the consulted Agent.
 metadata:
   builtin_skill_version: "1.3"

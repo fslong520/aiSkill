@@ -1,6 +1,5 @@
 ---
-name: 备课
-
+name: prepkit
 description: |
   为信息学奥赛培训（NOI/CSP/GESP）准备教学材料的备课引导框架。
   基于 ADDIE 教学设计模型（Analysis-Design-Development-Implementation-Evaluation），

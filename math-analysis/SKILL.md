@@ -1,5 +1,5 @@
 ---
-name: 数学分析
+name: math-analysis
 description: Create Chinese middle-school or high-school math wrong-question explanations as interactive Cornell-note HTML pages. Use when the user asks to analyze a math problem, explain a wrong solution, make a web version of a math note, or mentions 数学分析, 错题, 康奈尔笔记, 二元一次方程组, 集合, 函数, 几何, 初中数学, 高中数学, 沪教版, 人教版, 北师大版, 苏教版, 湘教版, or 浙教版.
 ---
 

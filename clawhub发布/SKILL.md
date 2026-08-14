@@ -1,5 +1,5 @@
 ---
-name: clawhub发布
+name: clawhubpub
 description: |
   将本地技能发布到 ClawHub 技能市场。自动检查技能目录结构、生成版本号、
   构建 changelog，执行发布命令并验证结果。

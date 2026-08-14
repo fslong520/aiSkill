@@ -1,5 +1,5 @@
 ---
-name: 课后反馈
+name: class-feedback
 description: 使用urlgo操作OJ网页，查看学生提交代码，分析提交轨迹，生成课后反馈报告
 allowed-tools:
   - bash

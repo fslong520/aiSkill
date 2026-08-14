@@ -1,5 +1,5 @@
 ---
-name: 公众号写手
+name: mpwriter
 description: 公众号文章真人写作引擎。核心：挖真实材料，立明确判断，说人话，去AI腔。不套公式，不产套路。
 
 allowed-tools:

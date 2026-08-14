@@ -1,5 +1,5 @@
 ---
-name: 盯盘助手
+name: stocktourch
 description: A股智能分析系统，支持实时行情、技术分析、财务分析、行业分类和大盘分析
 allowed-tools:
   - Read

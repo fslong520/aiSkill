@@ -1,5 +1,5 @@
 ---
-name: AI读书
+name: ai-reader
 description: 把整本书提炼成结构化精华内容——按阅读目的决定保留什么，AI 逐章提取关键知识点，构建知识图谱串联概念，多角色答辩式校验摘要。
 metadata:
   slug: ai-reader

@@ -1,6 +1,6 @@
 ---
-name: Agnes画影
-version: 1.1.0
+name: agnespaint
+version: 1.2.0
 description: 调用 Agnes AI 免费 API 生成图片/视频。从 AGNES_API_KEY 环境变量读取密钥。
 allowed-tools:
   - Read
@@ -59,6 +59,10 @@ metadata:
 ---
 
 ## 工作流
+
+### 0. 东方美学基调（默认）
+
+凡中国风、古风、东方题材之图，默认叠加东方美学基调——五律：**留白**（计白当黑，画面须有呼吸）、**意境**（景外之景，含蓄叙事）、**含蓄**（含而不露，忌直白）、**水墨**（浓淡相生）、**气韵**（笔意流畅）。配色取中国传统色：黛墨、青灰、朱砂（点睛）、藤黄、石青石绿、金（镶饰）。构图可用散点透视、三段式（远山-中景-近景）、折枝对角式。Prompt 负向补：no excessive detail, no full-frame fill, no cluttered composition, no gaudy colors。用户明确要求西式/现代风格时，不强制叠加。
 
 ### 1. 识别意图
 

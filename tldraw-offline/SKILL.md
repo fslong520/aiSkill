@@ -1,5 +1,5 @@
 ---
-name: tldraw 板书工坊
+name: tldraw-offline
 description: "📝 用 tldraw 画板制作学神风格板书——外框围栏、分区清晰、笔记感。适合高校/竞赛风格。"
 metadata:
   trigger: 板书、笔记、学神笔记、讲课、知识整理、tldraw画板

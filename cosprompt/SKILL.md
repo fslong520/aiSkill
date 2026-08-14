@@ -1,6 +1,6 @@
 ---
 name: cosprompt
-version: 2.3.0
+version: 2.4.0
 description: 结构化 AI 绘图提示词生成器。输入角色/主题名称，AI 自动搜索信息、分析特征、决定风格，输出 17 维度结构化提示词（JSON + Markdown 双格式），适用于 Midjourney、Stable Diffusion 等绘图工具。
 allowed-tools: [Read, Write, Edit, browser_use, grep_search, glob_search]
 metadata:
@@ -316,6 +316,7 @@ prompt中加入触觉词，AI对材质的渲染精度显著提升：
 | 赛博朋克 | cyberpunk, neon lights, rain, high tech low life | 科幻、都市暗面 |
 | 极简 | minimalist, clean lines, negative space | 现代、概念 |
 | 青蓝暖橙仙侠 | teal/cyan palette, warm orange accents, misty, ethereal ancient Chinese | 仙侠夜景、古风史诗 |
+| 东方美学 | oriental aesthetics, negative space, ink wash, minimal, poetic composition | 古风、禅意、水墨、留白意境 |
 | 厚涂（CG涂抹） | painterly, digital painting, no lineart, soft blending | 史诗、幻想、角色插画 |
 | 油画厚涂 | impasto, oil painting, palette knife, thick brushstrokes | 古典、艺术、肌理表现 |
 | 3D渲染 | 3D render, Octane render, detailed texture | 产品展示、写实 |
@@ -367,6 +368,49 @@ prompt中加入触觉词，AI对材质的渲染精度显著提升：
 - 正向：写色调词（teal/cyan + warm orange）、光影词（cold moonlight + warm glow）、氛围词（misty/volumetric fog）
 - 负向：防 AI 滑回"现代都市夜景"或"纯黑白水墨"——明确"no modern buildings, no neon signs, no pure ink-wash monochrome"
 - 保持：冷暖对比是灵魂——青蓝冷底 + 暖橙点缀，缺暖则冷寂过死，缺冷则仙气尽失
+
+---
+
+## 东方美学基调（主线·style 维度总纲）
+
+**主线基调**：凡中国风、古风、东方题材之角色，东方美学为默认基调——其他风格皆可与之交融，唯不可背离其核心精神。
+
+### 一、东方美学五律
+
+| 律 | 要义 | 写入prompt之法 |
+|----|------|---------------|
+| **留白律** | 计白当黑，虚处藏实，画面须有呼吸 | "充足留白，负空间空灵" |
+| **意境律** | 景外之景、象外之象，写景为传情 | "诗意氛围，含蓄叙事" |
+| **含蓄律** | 含而不露，引而不发，忌直白外放 | "含蓄内敛，不直白铺陈" |
+| **水墨律** | 墨分五色（焦浓重淡清），浓淡干湿相生 | "水墨晕染，浓淡相宜" |
+| **气韵律** | 气脉贯通，骨法用笔，线条有书法笔意 | "笔意流畅，气韵生动" |
+
+### 二、东方配色（中国传统色）
+
+| 色 | 倾向 | 用途 |
+|----|------|------|
+| 黛墨 | 近黑藏青 | 轮廓、远山、发、墨色 |
+| 青灰 | 灰蓝青 | 基调、烟雨、瓦、雾 |
+| 朱砂 | 正红 | 点睛、印章、灯笼、唇 |
+| 藤黄 | 明黄 | 日光、衣饰、秋意 |
+| 石青石绿 | 青绿矿彩 | 山水、青绿重彩 |
+| 金 | 金属光泽 | 镶边、饰纹、贵族气 |
+
+### 三、东方构图三法
+
+```
+散点透视（非焦点透视）    三段式（远山-中景-近景）    折枝/对角式
+```
+
+- 散点透视：多视点游观，非西方单点聚焦
+- 三段式：远山淡影、中景物象、近景细节，层层推远
+- 大量留白：主体偏置，虚空为景
+
+### 四、正反双向约束（东方美学专用）
+
+- 正向：留白、意境、含蓄、水墨、气韵、东方配色词
+- 负向：防 AI 滑回西方写实堆砌——"no excessive detail, no full-frame fill, no cluttered composition, no gaudy colors, no realistic photo look"
+- 融合：东方美学为基调，可与厚涂/CG/仙侠等风格交融——厚涂东方（painterly东方）、仙侠东方（青蓝暖橙+留白），唯精神不变
 
 ---
 
@@ -702,6 +746,7 @@ aspect ratio [比例]
 **更新日期**: 2026-08-14
 
 **变更记录**：
+- 2026-08-14: v2.4.0 新增「东方美学基调」总纲：五律（留白/意境/含蓄/水墨/气韵）、中国传统色（黛墨/青灰/朱砂/藤黄/石青石绿/金）、构图三法（散点透视/三段式/折枝对角）、正反约束；定为东方题材主线基调，可与厚涂/仙侠等风格交融；风格参考表新增"东方美学"条目。
 - 2026-08-14: v2.3.0 新增「风格参考表」（9 风格条目）与「青蓝暖橙仙侠风控制框架」：青蓝冷调+暖橙点缀冷暖对比为魂，四要素（色调/光影/氛围/笔触）、构图法则、场景灵活性（水乡/山巅/庭院/战场皆容器）、关键词梯度、正反双向约束；style 维度示例同步补充。
 - 2026-07-24: v2.2.0 全面强化：新增金字塔Prompt架构、微表情精度控制框架、服装深度描述框架、光质描写指南、镜头语言指南、质量标签体系、正反双向约束原则。15维度→17维度（新增lens/quality_tags）。升级专业术语参考表，增强JSON/Markdown/纯文本三格式输出模板。
 - 2026-04-23: v2.1.0 新增年龄维度（age），共 15 维度

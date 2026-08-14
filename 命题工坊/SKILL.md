@@ -1,5 +1,5 @@
 ---
-name: 命题工坊
+name: questlab
 description: 为信息学奥赛(NOI/CSP)生成高质量编程题，注重思维深度和巧妙解法
 
 version: 2.0.0

@@ -1,10 +1,10 @@
 ---
-name: 风语绘
+name: musecard
 description: 自媒体情绪金句插画卡片创作助手
 allowed-tools: [Read, Write, imageGenerate]
 metadata:
   slug: musecard
-  version: 2.0.0
+  version: 2.2.0
   trigger: 风语绘、情绪插画、金句卡片、小红书图文、竖版插画、Musecard
 ---
 
@@ -128,6 +128,14 @@ Genshin Impact style anime illustration, detailed character artwork, vibrant sat
 
 ### 5. 🖌️ 自定义语境
 - 如果用户指定赛博朋克、油画、像素、胶片等风格，直接采用用户风格，不要强行套用默认风格库
+
+### 6. 🏮 东方写意 (Oriental Ink)
+- **关键词**: `ink wash painting, oriental aesthetics, negative space, rice paper texture, minimal brush strokes, seal stamp accent`
+- **适用**: 古风诗词、传统文化主题、禅意金句、武侠江湖、文人雅致
+- **配色**: 黛墨（近黑藏青）勾线、青灰（灰蓝青）铺调、朱砂点睛（印章/唇/灯笼）、宣纸白打底、藤黄点缀
+- **构图**: 留白≥40%、远山淡影、三段式（远山-中景-近景）、散点透视
+- **负向**: 禁高饱和、禁卡通贴纸感、禁满铺、禁写实堆砌
+- **⚠️**: 用户说"古风""水墨""中国风""禅意"时，必须调用此风格
 
 ---
 
@@ -277,6 +285,7 @@ OI竞赛相关主题，自动识别并适配：
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 2.2.0 | 2026-08-14 | 新增「东方写意」风格（水墨晕染、留白≥40%、中国传统色、印章点睛）——古风诗词/禅意/武侠主题专用 |
 | 2.1.0 | 2026-04-19 | 新增原神风模板（游戏立绘风格），区分原神风与普通星穹漫影的差异 |
 | 2.0.0 | 2026-04-16 | 新增萌点元素库、香度等级、用户反馈递增流程、OI主题适配 |
 | 1.0.0 | - | 初始版本 |

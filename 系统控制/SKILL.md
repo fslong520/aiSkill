@@ -1,5 +1,5 @@
 ---
-name: 系统控制
+name: system-ctl
 description: |
   openKylin 3.0 UKUI 桌面系统控制统一入口。封装 KylinBot 12 个技能（audio/bluetooth/keyboard/mouse/navigations/network-manager/osdserver/panel/power/shortcut-navigations/srceen/touchpad）为单脚本 sysctl，经 gdbus(nmcli/ukui-bluetooth-cli) 控制音量、亮度、屏幕模式、电源电量、触摸板、任务栏、键盘、鼠标、OSD 提示、打开控制中心/系统应用、快捷键、WiFi/有线网络、蓝牙。
   触发词：调音量、音量多少、静音、麦克风、调亮度、屏幕亮度、护眼、夜间模式、缩放、电量、还有多少电、充电、电源模式、触摸板、触控板、任务栏、面板、键盘、按键重复、鼠标速度、光标、系统提示 OSD、打开控制中心、打开设置、打开终端、WiFi、无线网络、蓝牙、连接蓝牙、截图、快捷键。

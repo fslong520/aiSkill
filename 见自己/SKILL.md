@@ -1,5 +1,5 @@
 ---
-name: 见自己
+name: seeself
 description: 生动有趣的自我探索梳理技能，通过对话式问答引导用户深度探索自我，生成"AI眼中的你"分析和第一人称文章
 allowed-tools:
   - Read

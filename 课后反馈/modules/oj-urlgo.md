@@ -78,18 +78,24 @@ JSON.stringify(out);
 
 ## 5. 进提交详情（关键）
 
-**踩坑：点行、点 Run ID、双击都无效**。唯一入口 = 点该行**语言列**的 span：
+**踩坑：点行、点 Run ID、双击都无效**。唯一入口 = 点该行**语言列**的 span。
+
+**⚠️ 选择器注意（2026-08-14 实测，页面改版）**：`td.col_9` 已失效——现列 class 为动态 `col_55/col_56/...`，须按**列索引**定位：语言列 = `tds[7]`，取其内 `.el-tooltip` span（或 a）点击：
 
 ```js
 var rows=document.querySelectorAll('.vxe-body--row');
-var target=null;
+var res='not-found';
 for(var i=0;i<rows.length;i++){
   var tds=rows[i].querySelectorAll('td');
-  if(tds[0].textContent.trim()==='{目标RunID}'){target=rows[i];break;}
+  if(tds[0].textContent.trim()==='{目标RunID}'){
+    var el=tds[7].querySelector('span')||tds[7].querySelector('a')||tds[7];
+    el.click(); res='clicked-{目标RunID}'; break;
+  }
 }
-if(target){ var td=target.querySelector('td.col_9 span'); td.click(); 'clicked-{目标RunID}'; }
-else { 'not-found'; }
+res;
 ```
+
+**筛选注意**：页面输入框逐字符输入**偶发不生效**（值被 Vue 回填）。此时直接 `urlgo open` 带 `username={用户名}` 参数的新 URL 即可生效（2026-08-14 实测有效），open 后取新 ID。
 
 跳转后页面 URL 变为 `{OJ}/submission-detail/{id}`（同一 ID 页内导航，无需重新 open）。
 

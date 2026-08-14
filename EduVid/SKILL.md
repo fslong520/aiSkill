@@ -1,5 +1,5 @@
 ---
-name: 教学视频
+name: eduvid
 description: EduVid - AI驱动的教学视频生成器，基于Manim实现自然语言到教学动画的一键转换
 
 metadata:

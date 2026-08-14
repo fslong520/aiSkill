@@ -1,5 +1,5 @@
 ---
-name: 技能诊所
+name: skillclinic
 description: "🏥 技能诊所 | 诊断优化 + 创建技能 + 先例研究 + 评估门禁 + 运维反馈。触发：技能体检、技能诊断、创建技能、查重、门禁、反馈"
 allowed-tools:
   - Read

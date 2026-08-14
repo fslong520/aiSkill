@@ -1,5 +1,5 @@
 ---
-name: 雀影
+name: queshadow
 description: AI 视频创意伙伴，生成分镜脚本和 Seedance 提示词
 allowed-tools:
   - Read

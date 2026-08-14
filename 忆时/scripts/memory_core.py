@@ -25,6 +25,7 @@ import math
 import os
 import re
 import sys
+import time
 import uuid
 import warnings
 import contextlib
@@ -196,7 +197,21 @@ def get_client():
     global _embedding_client
     if _embedding_client is None:
         os.makedirs(DATA_DIR, exist_ok=True)
-        _embedding_client = chromadb.PersistentClient(path=DATA_DIR)
+        last_err = None
+        # 2026-08-14 修复：多会话并发时 chroma 偶发抛
+        #   InternalError: (code: 8) attempt to write a readonly database
+        # （sqlite delete journal 模式写互斥 + 并发窗口）。库已转 WAL，此处再加重试兜底。
+        for _ in range(6):
+            try:
+                _embedding_client = chromadb.PersistentClient(path=DATA_DIR)
+                break
+            except chromadb.errors.InternalError as e:
+                if "readonly" not in str(e).lower() and "locked" not in str(e).lower():
+                    raise
+                last_err = e
+                time.sleep(0.5)
+        else:
+            raise last_err
     return _embedding_client
 
 
@@ -1292,7 +1307,40 @@ def main():
     args = parser.parse_args()
     if not args.command:
         parser.print_help(); sys.exit(0)
-    args.func(args)
+
+    # 2026-08-14 修复：忆时为单写者 sqlite 库，多 opencode 会话并发操作会互相踩
+    # （曾现 "attempt to write a readonly database"）。此处对整条命令加进程排他锁，
+    # 并发时最多等待约 8 秒，超时报友好错误而非让 chroma 抛底层异常。
+    lock_fd = None
+    try:
+        import fcntl
+        os.makedirs(DATA_DIR, exist_ok=True)
+        lock_path = os.path.join(DATA_DIR, ".memory.lock")
+        lock_fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o644)
+        waited = 0
+        while True:
+            try:
+                fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except OSError:
+                if waited >= 8:
+                    print("⚠️ 另一忆时进程正在操作（并发写锁），请稍后再试", file=sys.stderr)
+                    os.close(lock_fd); sys.exit(1)
+                time.sleep(0.2)
+                waited += 0.2
+    except ImportError:
+        pass  # 非 POSIX 平台退化：无进程锁，仅靠 WAL + 重试兜底
+
+    try:
+        args.func(args)
+    finally:
+        if lock_fd is not None:
+            try:
+                import fcntl
+                fcntl.flock(lock_fd, fcntl.LOCK_UN)
+            except Exception:
+                pass
+            os.close(lock_fd)
 
 
 if __name__ == "__main__":

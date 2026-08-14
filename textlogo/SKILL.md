@@ -1,6 +1,7 @@
 ---
 name: textlogo
-description: Use when users ask to design a logo, create a wordmark, generate typographic logo, make text-based brand identity, or request AI image prompts for logo design where the text itself forms the graphic. Triggers: "logo", "wordmark", "字标", "文字logo", "创意logo", "LOGO设计", "AI生图生成logo", "文字图形logo".
+description: |
+  Use when users ask to design a logo, create a wordmark, generate typographic logo, make text-based brand identity, or request AI image prompts for logo design where the text itself forms the graphic. Triggers: "logo", "wordmark", "字标", "文字logo", "创意logo", "LOGO设计", "AI生图生成logo", "文字图形logo".
 ---
 
 # 文字主体创意 Logo 生成器
@@ -172,6 +173,12 @@ description: Use when users ask to design a logo, create a wordmark, generate ty
 ### 国潮文创风
 东方、书法感、印章感、匾额感、传统结构、现代重构
 配色：朱红+墨黑 / 金+赭石 / 藏蓝+金
+
+### 东方水墨风（东方美学基调）
+水墨晕染、笔意飞白、留白空灵、印章点睛、气韵生动
+配色：黛墨+宣纸白（主）/ 朱砂点睛 / 青灰辅
+要点：字形取行楷/草书笔意，墨色浓淡相生（焦浓重淡清），大留白（≥40%负空间），朱砂小印章缀于字角；禁高饱和、禁卡通、禁满铺
+适用：传统品牌、文化IP、书画文创、禅意品牌（区别于国潮——水墨为骨、留白为魂，非热闹国潮）
 
 ### 科技未来风
 几何、模块化、数据感、智能、电路负形、未来感

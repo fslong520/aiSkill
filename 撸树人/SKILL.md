@@ -1,5 +1,5 @@
 ---
-name: 撸树人
+name: lupen
 description: 分析用户素材并通过问答引导确定文章框架，以鲁迅式文风创作具有批判性和思辨性的公众号推文
 
 metadata:

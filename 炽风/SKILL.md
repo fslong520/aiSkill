@@ -1,5 +1,5 @@
 ---
-name: 炽风
+name: blazefan
 description: "🔥💛 通用 EC 风扇调速方法论。不认品牌，只认接口。探 EC→定方案→控风扇。"
 metadata:
   slug: blazefan

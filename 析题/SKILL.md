@@ -1,5 +1,5 @@
 ---
-name: 析题
+name: xiti
 description: "🔍 启发式题解生成 | 教人思考而非给答案 | 触发：题解、题目分析、代码精讲"
 allowed-tools:
   - Read
