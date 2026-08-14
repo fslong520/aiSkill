@@ -18,3 +18,6 @@ memories_backup.jsonl
 
 # 数据备份
 data_minilm_backup/
+
+# Runtime ONNX embedding models
+models/

@@ -112,7 +112,7 @@ MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/�
 
 **自查**：若 content 只答"做了什么"而答不出"为何做"与"做完何如"，判不合格，补之再存。宁多三行因果，不省一字。
 
-**存储命令：**
+**存储命令：**（内容为位置参数放最后，勿用 `--content`/`--tags`；关键字用 `--keywords`）
 ```bash
 MEMO_DIR=~/.local/share/opencode/忆时/data python3 ~/.config/opencode/skills/忆时/scripts/memory_core.py store "内容" --type 类型 --emotion 情绪 --keywords "关键字" [--scene 场景] [--activity-start 开始] [--activity-end 结束] [--force]
 ```

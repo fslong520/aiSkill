@@ -92,6 +92,22 @@ recall 返回后，逐条审视，确认无漏。问己：
 
 store 执行后，立即 `recall "忆关键词" --limit 1` 核实已存。不核者存未确，视为未存。
 
+### 命令速查（直接复制，勿查 help）
+
+```bash
+# 首行设变量（shell 持久，设一次即可）
+SKILL_DIR=~/.config/opencode/skills/忆时; LOCAL_BASE=~/.local/share/opencode/忆时; YISHI=$SKILL_DIR/scripts/memory_core.py; MEMO_DIR=$LOCAL_BASE/data
+
+# store：内容为【位置参数放最后】（勿用 --content/--tags，此二参数不存在），关键字用 --keywords
+python3 $YISHI store --type decision --keywords "k1,k2" --emotion 0.5 "记忆内容"
+
+# recall：检索/核实
+python3 $YISHI recall "关键词 关键词" --limit 5
+
+# 常用扩展：--scene 场景  --force 强制新增  --type-filter emotion --min-weight 0.5  --no-embed 快速检索
+# 其他子命令：forget 删除  stats 统计  export 导出  recover 恢复
+```
+
 ### 决策后检
 
 决策或提问前已 recall 查过记忆，完成决策后尚须回查一次：recall 结果中可有未及受用之记忆？有无因遗漏记忆而致决策偏差？
