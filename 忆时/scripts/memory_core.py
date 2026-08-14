@@ -201,9 +201,16 @@ def get_client():
 
 def get_collection(client, name):
     ef = get_embedding_fn()
-    if ef:
-        return client.get_or_create_collection(name=name, metadata={"hnsw:space": "cosine"}, embedding_function=ef)
-    return client.get_or_create_collection(name=name, metadata={"hnsw:space": "cosine"})
+    try:
+        if ef:
+            return client.get_or_create_collection(name=name, metadata={"hnsw:space": "cosine"}, embedding_function=ef)
+        return client.get_or_create_collection(name=name, metadata={"hnsw:space": "cosine"})
+    except ValueError as e:
+        if "embedding function" in str(e) and "conflict" in str(e).lower():
+            # 存量 collection 由旧 embedding（onnx_mini_lm_l6_v2）创建，与 bge 维度不兼容：
+            # 不传 ef，沿用持久化配置读写，保证新旧数据 embedding 一致（不回退即全部不可用）。
+            return client.get_or_create_collection(name=name, metadata={"hnsw:space": "cosine"})
+        raise
 
 
 def _update_meta_total(client, field, delta):
