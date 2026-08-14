@@ -2,6 +2,27 @@
 
 > 本文件为 SKILL.md 之附属，记录技能全部版本变更。SKILL.md 正文不再内嵌更新日志，改由此文件维护。
 
+## v3.5 - 2026-08-13
+
+**Prompt 去 BOLD/加粗/黑体字样，默认配色更新鲜**：图片生成模型易把 BOLD/加粗解读为印刷加重、把禁黑字体名当渲染目标，导致手写笔触失效。
+
+- **去除 prompts 中 BOLD/加粗/黑体字样**：全部提示词中的「加粗渲染（BOLD）/EXTRA BOLD/in bold」统一改为「厚重笔触/粗笔/extra-thick/in thick」表述，笔画分量信息以笔锋、重量词传达，不落 BOLD 字样
+- **禁用字体措辞重写**：手写类风格禁用项由「系统默认黑体（sans-serif 印刷体：Arial、Helvetica、思源黑体、微软雅黑等）」改为「无手写笔触之印刷字体（sans-serif 印刷体）+ 禁字表述」，模板英文负面声明收敛为 "STRICTLY FORBIDDEN: sans-serif print fonts (Arial, Helvetica, default system typeface)"
+- 仅「科幻风格」保留黑体（设计使然），其余风格一律禁印刷体；CHANGELOG v3.4 及更早的历史记录保留原文
+- **默认墨蓝手账配色更新**：更鲜艳明亮、对比度更高——墨蓝 #26355D→#1D4FD8、黛蓝 #3E5C76→#2E6BE6、雾蓝 #A9BFD9→#7FB3FF、青碧 #00CEC9→#00D4D0、暖金 #E8A33D→#FF9D00、柠檬黄 #FFC312→#FFD400、奶油白 #FFF9E6→#FFFCE8；活力手账共用柠檬黄/奶油白同步更新
+- 同步更新：styles.md（视觉DNA/风格体系/手写体规范/风格速查表/版本号 3.5）、templates.md（四模板）、reference.md（字体/配色含 RGB/检查表）、examples.md（五示例）、SKILL.md
+
+## v3.4 - 2026-08-13
+
+**立「字体红线」，禁黑体印刷体**：用户反馈 Gemini 生成时字体约束弱，渲染成系统黑体。
+
+- 新增**字体红线（铁律）**：手写类风格（瘦金体/行楷/圆体/像素字）文字**必须呈手写/书法笔触，禁用系统默认黑体（sans-serif 印刷体：Arial、Helvetica、思源黑体、微软雅黑等）**，黑体即废稿，必须重出
+- 删除原「字体匹配」节之"无则用手写感黑体替代"退路及全部替代/回退表述——凡"不可用则……"之语，AI 见之必偷懒，一律清除，改为死命令
+- templates.md：四模板 "ALL TEXT" 行与输出框架 [style] 行增加 HANDWRITTEN 强约束 + 负面声明（STRICTLY FORBIDDEN: sans-serif print fonts, NO EXCEPTIONS），直击图片生成模型（Gemini 等）惯用默认黑体之弊；模板末尾字体说明改为命令式
+- examples.md：五示例字体描述强化为 "handwritten 瘦金体 Chinese calligraphy strokes (NOT print/sans-serif font)"
+- SKILL.md：Principles 增「字体红线」行，AVOID 增禁黑体条目
+- 仅「科幻风格」保留黑体（设计使然），其余风格一律禁黑
+
 ## v3.3 - 2026-08-12
 
 **封面增双线内框，装饰再升级**：用户反馈封面"太朴素"。

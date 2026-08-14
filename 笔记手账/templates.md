@@ -128,11 +128,11 @@
 ### 封面页
 
 ```
-[style]: elegant [风格字体] calligraphy notebook, torn paper edge, hole punches, minimal decoration
+[style]: elegant [风格字体] calligraphy notebook, torn paper edge, hole punches, minimal decoration — ALL TEXT handwritten [风格字体], NO sans-serif print font
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper texture, subtle shadow
 [frame]: double-line inner frame (暖金 outer + 黛蓝 inner), 暖金 star clusters at 4 corners, thin 暖金 separators top & bottom, sparse 柠檬黄/黛蓝 stars along edges
-[title]: "[主标题]" in BOLD [主题标题色] [风格字体], centered, thin 柠檬黄 underline + 暖金 double line, symmetric 暖金 stars flanking at title level
+[title]: "[主标题]" in [主题标题色] [风格字体], centered, thin 柠檬黄 underline + 暖金 double line, symmetric 暖金 stars flanking at title level
 [subtitle]: "[副标题]" in [主题副标题色] [风格字体], centered, thin 柠檬黄 underline
 [layout]: centered composition, generous whitespace, clean and refined, perfectly aligned
 [decorations]: 墨蓝 tag top-left + 暖金 date tag below, 柠檬黄 sticky note top-right + 编号 small label below, 暖金/柠檬黄 star clusters in corners, three topic icon cards (雪白底 暖金细边 + caption) at bottom, 暖金 dual footer icons
@@ -143,11 +143,11 @@
 ### 知识页
 
 ```
-[style]: elegant [风格字体] calligraphy notebook, consistent with cover, minimal decoration
+[style]: elegant [风格字体] calligraphy notebook, consistent with cover, minimal decoration — ALL TEXT handwritten [风格字体], NO sans-serif print font
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
-[title]: "[主题]" in BOLD [主题标题色] [风格字体], centered
+[title]: "[主题]" in [主题标题色] [风格字体], centered
 [sections]:
   - 墨蓝 header "一、[小节名]" in [风格字体] + white card with subtle shadow, 双色条 (黛蓝 main + 暖金 thin) + 黛蓝 icon + [风格字体] bullet points
   - repeat structure
@@ -159,7 +159,7 @@
 ### 练习题页
 
 ```
-[style]: elegant [风格字体] calligraphy notebook, clean layout like exam paper
+[style]: elegant [风格字体] calligraphy notebook, clean layout like exam paper — ALL TEXT handwritten [风格字体], NO sans-serif print font
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
@@ -178,7 +178,7 @@
 ### 答案解析页
 
 ```
-[style]: elegant [风格字体] calligraphy notebook, clean and refined
+[style]: elegant [风格字体] calligraphy notebook, clean and refined — ALL TEXT handwritten [风格字体], NO sans-serif print font
 [style_theme]: [选择风格]
 [background]: [主题背景色] paper, torn left edge, hole punches
 [header]: 墨蓝 tag left, 柠檬黄 sticky note right
@@ -201,7 +201,7 @@
 ### 封面页模板
 
 ```
-Clean, elegant cover page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, orderly, graceful.
+Clean, elegant cover page in notebook scrapbook style. Bright warm cream paper (#FFFCE8) with torn left edge and hole punches. Spiral binding at bottom. ALL TEXT in HANDWRITTEN [风格字体] calligraphy strokes — every character MUST show pen/brush movement and visible stroke details. STRICTLY FORBIDDEN: sans-serif print fonts (Arial, Helvetica, default system typeface). NO EXCEPTIONS. Neat, orderly, graceful.
 
 DECORATIVE FRAME:
 - Thin double-line inner frame around the page ([主色] outer thin line + [副色] inner thin line), leaving generous margin
@@ -211,19 +211,19 @@ DECORATIVE FRAME:
 
 Top: 墨蓝 tag "[打卡标签]" straight on left, 柠檬黄 sticky note "[便利贴文字]" straight on right. [副色] small label "[编号如：第X单元]" below the sticky note on right.
 
-Title "[用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, with straight 柠檬黄 underline + thin 暖金 double line beneath it, flanked by a small symmetric 暖金 star on each side at title level. Simple 雾蓝(#A9BFD9) highlight block behind title.
-Subtitle "[用户副标题]" in BOLD 黛蓝(#3E5C76) [风格字体], centered, with thin 柠檬黄 underline.
+Title "[用户标题]" in extra-thick 墨蓝 [风格字体], centered, with straight 柠檬黄 underline + thin 暖金 double line beneath it, flanked by a small symmetric 暖金 star on each side at title level. Simple 雾蓝(#7FB3FF) highlight block behind title.
+Subtitle "[用户副标题]" in thick 黛蓝(#2E6BE6) [风格字体], centered, with thin 柠檬黄 underline.
 
-Center: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded box with calendar icon, perfectly centered, 暖金(#E8A33D) border, small 柠檬黄 stars at its two top corners.
+Center: "每日知识卡 + 配套练习" in 青碧(#00D4D0) rounded box with calendar icon, perfectly centered, 暖金(#FF9D00) border, small 柠檬黄 stars at its two top corners.
 
 Bottom: Three mini preview icons related to the topic, evenly spaced in small rounded 雪白(#FFFFFF) cards with 暖金 thin borders, each with a small caption underneath. A few small warm-gold/lemon stars in the corners. Warm-gold small icon (pencil) at bottom-right, 暖金 book icon at bottom-left.
 
 ELEGANT RULES:
 - Perfectly aligned, straight elements, no tilting
 - Rich but restrained decoration (frame, corner star clusters, tag, sticky note, separators, icon cards, footer icons), generous whitespace
-- Palette: 墨蓝 #26355D main, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 cool accents, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
+- Palette: 墨蓝 #1D4FD8 main, 黛蓝 #2E6BE6 and 雾蓝 #7FB3FF cool accents, 青碧 #00D4D0 detail, 柠檬黄 #FFD400 and 暖金 #FF9D00 warm accents, warm cream background
 - Typography hierarchy: title > subtitle > info
-- [风格字体]: font style matching the chosen theme (AI selects best available system font)
+- [风格字体]: HANDWRITTEN calligraphy strokes per the chosen theme — 瘦金/行楷/圆体/像素等手写笔触，每个字须见笔画起落与锋棱。FORBIDDEN: 无手写笔触之印刷体（Arial、Helvetica、系统默认字体）。
 
 Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
@@ -231,20 +231,20 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ### 知识页模板
 
 ```
-Clean, elegant knowledge page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, orderly, generous whitespace.
+Clean, elegant knowledge page in notebook scrapbook style. Bright warm cream paper (#FFFCE8) with torn left edge and hole punches. ALL TEXT in HANDWRITTEN [风格字体] calligraphy strokes — every character MUST show pen/brush movement and visible stroke details. STRICTLY FORBIDDEN: sans-serif print fonts (Arial, Helvetica, default system typeface). NO EXCEPTIONS. Neat, orderly, generous whitespace.
 
 Top: 墨蓝 tag straight on left, 柠檬黄 sticky note "第X页" straight on right.
-Title "[用户标题]" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with straight 柠檬黄 underline.
+Title "[用户标题]" in extra-thick 墨蓝 [风格字体], centered, LARGE FONT, with straight 柠檬黄 underline.
 
-Section 1: 墨蓝 header "一、[小节名]" in BOLD [风格字体], MEDIUM FONT, straight. White card below with subtle shadow and 双色条 (黛蓝(#3E5C76) main bar + thin 暖金(#E8A33D) accent line). 黛蓝 hand-drawn icon. Bullet points in BOLD [风格字体] with SMALL FONT, key terms in 柠檬黄 with fluorescent highlighter stroke.
+Section 1: 墨蓝 header "一、[小节名]" in thick [风格字体], MEDIUM FONT, straight. White card below with subtle shadow and 双色条 (黛蓝(#2E6BE6) main bar + thin 暖金(#FF9D00) accent line). 黛蓝 hand-drawn icon. Bullet points in thick [风格字体] with SMALL FONT, key terms in 柠檬黄 with fluorescent highlighter stroke.
 
-Section 2: Same structure, 雾蓝(#A9BFD9) main bar + thin 暖金 accent line.
+Section 2: Same structure, 雾蓝(#7FB3FF) main bar + thin 暖金 accent line.
 
 [Repeat for more sections, thin 暖金 separator lines between sections]
 
 Bottom: Two boxes side by side, same height, aligned:
-  Left: "高频易错点" with lightbulb icon, 暖金(#E8A33D) border, SMALL FONT, 柠檬黄 highlighter on key words
-  Right: "一句话记忆" with target icon, 青碧(#00CEC9) border, SMALL FONT, 柠檬黄 highlight background
+  Left: "高频易错点" with lightbulb icon, 暖金(#FF9D00) border, SMALL FONT, 柠檬黄 highlighter on key words
+  Right: "一句话记忆" with target icon, 青碧(#00D4D0) border, SMALL FONT, 柠檬黄 highlight background
 
 Page footer: small 暖金 book icon at bottom-right corner.
 
@@ -257,9 +257,9 @@ FONT SIZE HIERARCHY:
 ELEGANT RULES:
 - Perfectly aligned, straight headers and cards, no tilting
 - Refined decoration (tags, sticky notes, stars, 暖金 separators, page-footer icon), generous whitespace
-- Palette: 墨蓝 #26355D headers, 黛蓝 #3E5C76 and 雾蓝 #A9BFD9 card bars, 青碧 #00CEC9 detail, 柠檬黄 #FFC312 and 暖金 #E8A33D warm accents, warm cream background
+- Palette: 墨蓝 #1D4FD8 headers, 黛蓝 #2E6BE6 and 雾蓝 #7FB3FF card bars, 青碧 #00D4D0 detail, 柠檬黄 #FFD400 and 暖金 #FF9D00 warm accents, warm cream background
 - Cards have subtle shadows and 双色条 top bars (main color + thin 暖金 line), not heavy borders
-- [风格字体]: font matching the chosen style's character
+- [风格字体]: HANDWRITTEN calligraphy strokes per the chosen theme — 瘦金/行楷/圆体/像素等手写笔触，每个字须见笔画起落与锋棱。FORBIDDEN: 无手写笔触之印刷体（Arial、Helvetica、系统默认字体）。
 
 Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
@@ -267,12 +267,12 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ### 练习题页模板
 
 ```
-Clean, elegant practice page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat exam-paper layout, precise grid.
+Clean, elegant practice page in notebook scrapbook style. Bright warm cream paper (#FFFCE8) with torn left edge and hole punches. ALL TEXT in HANDWRITTEN [风格字体] calligraphy strokes — every character MUST show pen/brush movement and visible stroke details. STRICTLY FORBIDDEN: sans-serif print fonts (Arial, Helvetica, default system typeface). NO EXCEPTIONS. Neat exam-paper layout, precise grid.
 
 Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "第X页" straight on right.
-Title "[主题] 配套练习" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
+Title "[主题] 配套练习" in extra-thick 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
 
-Small tip box: lightbulb icon + "建议先独立完成，再看答案解析。" in 暖金(#E8A33D), centered, minimal border, SMALL FONT.
+Small tip box: lightbulb icon + "建议先独立完成，再看答案解析。" in 暖金(#FF9D00), centered, minimal border, SMALL FONT.
 
 Topic "[用户标题] (N题)" in 墨蓝, centered, MEDIUM FONT.
 
@@ -299,7 +299,7 @@ Right column:
 
   [Continue for 5 questions]
 
-Bottom: "做完后再看下一张解析图。" with small 青碧(#00CEC9) arrow, centered, SMALL FONT. Warm-gold small icon (pencil) at bottom-right.
+Bottom: "做完后再看下一张解析图。" with small 青碧(#00D4D0) arrow, centered, SMALL FONT. Warm-gold small icon (pencil) at bottom-right.
 
 FONT SIZE HIERARCHY:
 - Title: LARGE
@@ -309,8 +309,8 @@ FONT SIZE HIERARCHY:
 ELEGANT RULES:
 - Precise alignment, clean grid, equal spacing
 - Refined decoration: corner stars, warm-gold page-footer icon, thin 暖金 separator between topic and questions; generous whitespace
-- Palette: 墨蓝 #26355D question circles, 青碧 #00CEC9 arrow, 暖金 #E8A33D tip, warm cream background
-- [风格字体]: font matching the chosen style's character
+- Palette: 墨蓝 #1D4FD8 question circles, 青碧 #00D4D0 arrow, 暖金 #FF9D00 tip, warm cream background
+- [风格字体]: HANDWRITTEN calligraphy strokes per the chosen theme — 瘦金/行楷/圆体/像素等手写笔触，每个字须见笔画起落与锋棱。FORBIDDEN: 无手写笔触之印刷体（Arial、Helvetica、系统默认字体）。
 
 Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
@@ -318,16 +318,16 @@ Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ### 答案解析页模板
 
 ```
-Clean, elegant answer page in notebook scrapbook style. Warm cream paper (#FFF9E6) with torn left edge and hole punches. ALL TEXT IN BOLD THICK [风格字体] STYLE. Neat, refined, precise grid.
+Clean, elegant answer page in notebook scrapbook style. Bright warm cream paper (#FFFCE8) with torn left edge and hole punches. ALL TEXT in HANDWRITTEN [风格字体] calligraphy strokes — every character MUST show pen/brush movement and visible stroke details. STRICTLY FORBIDDEN: sans-serif print fonts (Arial, Helvetica, default system typeface). NO EXCEPTIONS. Neat, refined, precise grid.
 
 Top: 墨蓝 tag "[用户标题]" straight on left, 柠檬黄 sticky note "第X页" straight on right.
-Title "答案解析" in EXTRA BOLD 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
+Title "答案解析" in extra-thick 墨蓝 [风格字体], centered, LARGE FONT, with thin 柠檬黄 underline.
 
 TWO COLUMNS, equal width, clean vertical separation:
 
 Left column (Questions 1-5):
   Each answer block:
-  - 青碧(#00CEC9) checkmark ✓ + "① 答案字母" in MEDIUM FONT (letter in 墨蓝 bold)
+  - 青碧(#00D4D0) checkmark ✓ + "① 答案字母" in MEDIUM FONT (letter in 墨蓝)
   - "解析：[简要解释]" in SMALL FONT, [风格字体]
   - Thin horizontal line separator
 
@@ -339,7 +339,7 @@ Left column (Questions 1-5):
 Right column (Questions 6-10):
   Same structure, numbers continue
 
-Bottom: "易错题回顾" section in 暖金(#E8A33D) box with lightbulb icon, listing commonly mistaken questions and key points. Warm-gold small icon (book) at bottom-right.
+Bottom: "易错题回顾" section in 暖金(#FF9D00) box with lightbulb icon, listing commonly mistaken questions and key points. Warm-gold small icon (book) at bottom-right.
 
 FONT SIZE HIERARCHY:
 - Title: LARGE
@@ -352,13 +352,13 @@ ELEGANT RULES:
 - Explanations concise but complete
 - Thin 暖金 separators between answers
 - Refined decoration: corner stars, warm-gold page-footer icon; generous whitespace
-- Palette: 墨蓝 #26355D answer letters, 青碧 #00CEC9 checkmarks, 暖金 #E8A33D box, warm cream background
-- [风格字体]: font matching the chosen style's character
+- Palette: 墨蓝 #1D4FD8 answer letters, 青碧 #00D4D0 checkmarks, 暖金 #FF9D00 box, warm cream background
+- [风格字体]: HANDWRITTEN calligraphy strokes per the chosen theme — 瘦金/行楷/圆体/像素等手写笔触，每个字须见笔画起落与锋棱。FORBIDDEN: 无手写笔触之印刷体（Arial、Helvetica、系统默认字体）。
 
 Style: elegant [风格字体] notebook, ink-blue and graceful. Aspect ratio 3:4.
 ```
 
 ---
 
-**文档版本**: 3.3
-**最后更新**: 2026-08-02
+**文档版本**: 3.4
+**最后更新**: 2026-08-13

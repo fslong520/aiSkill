@@ -3,19 +3,19 @@
 ## 示例1：栈和队列知识卡片
 
 ```
-A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn paper edges on the left side and hole punches. Spiral binding visible at bottom.
+A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFFCE8) background with torn paper edges on the left side and hole punches. Spiral binding visible at bottom.
 
-Title "栈和队列：数据结构的两大基础" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J必备知识点" in 黛蓝(#3E5C76).
+Title "栈和队列：数据结构的两大基础" in thick 墨蓝(#1D4FD8) thick handwritten 瘦金体 Chinese calligraphy strokes (NOT print/sans-serif font), with straight 柠檬黄 underline. Subtitle "CSP-J必备知识点" in 黛蓝(#2E6BE6).
 
 墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
-Section 1: 墨蓝 header "一、栈（Stack）". White rounded card below with light shadow, 黛蓝 top color bar. Stack icon in 黛蓝. Bullet points: "后进先出（LIFO）" in bold 墨蓝, "像叠盘子：最后放的最先拿" , "push压入、pop弹出、top取顶".
+Section 1: 墨蓝 header "一、栈（Stack）". White rounded card below with light shadow, 黛蓝 top color bar. Stack icon in 黛蓝. Bullet points: "后进先出（LIFO）" in thick 墨蓝, "像叠盘子：最后放的最先拿" , "push压入、pop弹出、top取顶".
 
-Section 2: 墨蓝 header "二、队列（Queue）". White rounded card below with light shadow, 雾蓝(#A9BFD9) top color bar. Queue icon in 黛蓝. Bullet points: "先进先出（FIFO）" in bold 墨蓝, "像排队：先来的先走" , "push入队、pop出队、front队首".
+Section 2: 墨蓝 header "二、队列（Queue）". White rounded card below with light shadow, 雾蓝(#7FB3FF) top color bar. Queue icon in 黛蓝. Bullet points: "先进先出（FIFO）" in thick 墨蓝, "像排队：先来的先走" , "push入队、pop出队、front队首".
 
-高频易错点 box: Lightbulb icon, 暖金(#E8A33D) border, "栈的pop不是返回弹出元素，而是void；队列的front才是返回队首元素", key words with 柠檬黄 highlighter.
+高频易错点 box: Lightbulb icon, 暖金(#FF9D00) border, "栈的pop不是返回弹出元素，而是void；队列的front才是返回队首元素", key words with 柠檬黄 highlighter.
 
-一句话记忆 box: Target icon, 青碧(#00CEC9) border, "栈=叠盘子，队列=排队伍", 柠檬黄 highlight background.
+一句话记忆 box: Target icon, 青碧(#00D4D0) border, "栈=叠盘子，队列=排队伍", 柠檬黄 highlight background.
 
 Small educational icons at bottom: notebook, pencil, lightbulb. Clean, orderly, age-appropriate for 12-year-old students.
 
@@ -25,10 +25,10 @@ Style: notebook scrapbook, elegant, ink-blue, neat and graceful. Aspect ratio 3:
 ## 示例2：二叉树遍历打卡海报
 
 ```
-A educational daily check-in poster in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn left edge and hole punches.
+A educational daily check-in poster in notebook scrapbook style. Warm cream paper (#FFFCE8) background with torn left edge and hole punches.
 
-Top-left: 墨蓝(#26355D) tag with "CSP-J初赛60天打卡", straight. Top-right: 柠檬黄 sticky note "第2页", straight.
-Title "二叉树遍历" in bold 墨蓝, with straight 柠檬黄 underline.
+Top-left: 墨蓝(#1D4FD8) tag with "CSP-J初赛60天打卡", straight. Top-right: 柠檬黄 sticky note "第2页", straight.
+Title "二叉树遍历" in thick 墨蓝 handwritten calligraphy strokes (NOT print/sans-serif font), with straight 柠檬黄 underline.
 
 Section 1: 墨蓝 header "一、前序遍历（根-左-右）". White rounded card below with light shadow, 黛蓝 top color bar. Tree icon in 黛蓝. "先访问根节点，再递归左子树，最后递归右子树" with example: A→B→D→E→C→F.
 
@@ -38,9 +38,9 @@ Section 3: 墨蓝 header "三、后序遍历（左-右-根）". White rounded ca
 
 Section 4: 墨蓝 header "四、层序遍历". White rounded card below with light shadow, 雾蓝 top color bar. "按层从上到下，从左到右访问" with example: A→B→C→D→E→F.
 
-高频易错点 box: Lightbulb icon, 暖金(#E8A33D) border, "中序遍历BST得到有序序列；前序遍历用于恢复二叉树", key words with 柠檬黄 highlighter.
+高频易错点 box: Lightbulb icon, 暖金(#FF9D00) border, "中序遍历BST得到有序序列；前序遍历用于恢复二叉树", key words with 柠檬黄 highlighter.
 
-一句话记忆 box: Target icon, 青碧(#00CEC9) border, "前根左右，中左根右，后左右根，层序用队列", 柠檬黄 highlight background.
+一句话记忆 box: Target icon, 青碧(#00D4D0) border, "前根左右，中左根右，后左右根，层序用队列", 柠檬黄 highlight background.
 
 Decorative elements: corner stars ☆, open book at bottom, warm-gold pencil accent at bottom-right.
 
@@ -50,19 +50,19 @@ Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect rat
 ## 示例3：排序算法对比知识卡
 
 ```
-A educational comparison card in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn paper edges on the left side and hole punches.
+A educational comparison card in notebook scrapbook style. Warm cream paper (#FFFCE8) background with torn paper edges on the left side and hole punches.
 
-Title "排序算法大比拼：谁最快？" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J高频考点" in 黛蓝(#3E5C76).
+Title "排序算法大比拼：谁最快？" in thick 墨蓝(#1D4FD8) thick handwritten 瘦金体 Chinese calligraphy strokes (NOT print/sans-serif font), with straight 柠檬黄 underline. Subtitle "CSP-J高频考点" in 黛蓝(#2E6BE6).
 
 墨蓝 header tag in top-left corner reading "算法专题", straight. 柠檬黄 sticky note in top-right with handwritten text "排序是必考题！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
-Section 1: 墨蓝 header "一、冒泡排序". White rounded card below with light shadow, 黛蓝 top color bar. Bubble icon in 黛蓝. "相邻比较交换，每轮冒出最大值" with complexity O(n²) in 暖金(#E8A33D).
+Section 1: 墨蓝 header "一、冒泡排序". White rounded card below with light shadow, 黛蓝 top color bar. Bubble icon in 黛蓝. "相邻比较交换，每轮冒出最大值" with complexity O(n²) in 暖金(#FF9D00).
 
 Section 2: 墨蓝 header "二、选择排序". White rounded card below with light shadow, 雾蓝 top color bar. Pointer icon in 黛蓝. "每轮选最小值放到前面" with complexity O(n²) in 暖金.
 
 Section 3: 墨蓝 header "三、插入排序". White rounded card below with light shadow, 黛蓝 top color bar. Insert icon in 黛蓝. "像打扑克牌，每张插到正确位置" with complexity O(n²) in 暖金.
 
-Section 4: 墨蓝 header "四、快速排序". White rounded card below with light shadow, 雾蓝 top color bar. Lightning icon in 黛蓝. "分治思想，选基准分区递归" with complexity O(n log n) in 青碧(#00CEC9).
+Section 4: 墨蓝 header "四、快速排序". White rounded card below with light shadow, 雾蓝 top color bar. Lightning icon in 黛蓝. "分治思想，选基准分区递归" with complexity O(n log n) in 青碧(#00D4D0).
 
 高频易错点 box: Lightbulb icon, 暖金 border, "快排最坏O(n²)，平均O(n log n)；冒泡和选择都是O(n²)但冒泡稳定", key words with 柠檬黄 highlighter.
 
@@ -76,13 +76,13 @@ Style: notebook scrapbook, educational, elegant, ink-blue, neat grid. Aspect rat
 ## 示例4：CSP-J初赛打卡封面
 
 ```
-A educational daily check-in cover page in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn paper edges on the left side and hole punches. Spiral binding visible at bottom.
+A educational daily check-in cover page in notebook scrapbook style. Warm cream paper (#FFFCE8) background with torn paper edges on the left side and hole punches. Spiral binding visible at bottom.
 
-Title "CSP-J初赛 60天打卡" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "计算机系统基础" in 黛蓝(#3E5C76).
+Title "CSP-J初赛 60天打卡" in thick 墨蓝(#1D4FD8) thick handwritten 瘦金体 Chinese calligraphy strokes (NOT print/sans-serif font), with straight 柠檬黄 underline. Subtitle "计算机系统基础" in 黛蓝(#2E6BE6).
 
 墨蓝 header tag in top-left corner reading "60天一起打卡！", straight. 柠檬黄 sticky note in top-right with handwritten text "每天进步一点点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
-Middle area: "每日知识卡 + 配套练习" in 青碧(#00CEC9) rounded rectangle with calendar icon, 暖金(#E8A33D) border.
+Middle area: "每日知识卡 + 配套练习" in 青碧(#00D4D0) rounded rectangle with calendar icon, 暖金(#FF9D00) border.
 
 Bottom area: Three mini cards:
 1. "学习计划" with checkbox list on spiral notebook
@@ -97,9 +97,9 @@ Style: notebook scrapbook, educational, elegant, ink-blue, neat and graceful. As
 ## 示例5：STL容器知识卡
 
 ```
-A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFF9E6) background with torn paper edges on the left side and hole punches.
+A educational knowledge card in notebook scrapbook style. Warm cream paper (#FFFCE8) background with torn paper edges on the left side and hole punches.
 
-Title "STL容器：C++的工具箱" in bold 墨蓝(#26355D) thick 瘦金体 Chinese font, with straight 柠檬黄 underline. Subtitle "CSP-J必会容器" in 黛蓝(#3E5C76).
+Title "STL容器：C++的工具箱" in thick 墨蓝(#1D4FD8) thick handwritten 瘦金体 Chinese calligraphy strokes (NOT print/sans-serif font), with straight 柠檬黄 underline. Subtitle "CSP-J必会容器" in 黛蓝(#2E6BE6).
 
 墨蓝 header tag in top-left corner reading "CSP-J初赛60天打卡", straight. 柠檬黄 sticky note in top-right with handwritten text "容器是重点！", straight. A few 暖金 and 柠檬黄 star symbols ☆ in corners, warm-gold small icon at bottom-right.
 
@@ -111,9 +111,9 @@ Section 3: 墨蓝 header "三、queue 队列". White rounded card below with lig
 
 Section 4: 墨蓝 header "四、set 集合". White rounded card below with light shadow, 雾蓝 top color bar. Set icon in 黛蓝. "自动去重+排序，底层红黑树" with常用操作: insert, find, erase.
 
-高频易错点 box: Lightbulb icon, 暖金(#E8A33D) border, "vector的push_back可能触发扩容；set的insert返回pair<iterator,bool>", key words with 柠檬黄 highlighter.
+高频易错点 box: Lightbulb icon, 暖金(#FF9D00) border, "vector的push_back可能触发扩容；set的insert返回pair<iterator,bool>", key words with 柠檬黄 highlighter.
 
-一句话记忆 box: Target icon, 青碧(#00CEC9) border, "vector数组，stack栈，queue队列，set集合", 柠檬黄 highlight background.
+一句话记忆 box: Target icon, 青碧(#00D4D0) border, "vector数组，stack栈，queue队列，set集合", 柠檬黄 highlight background.
 
 Decorative elements: corner stars ☆, open book at bottom, warm-gold pencil accent at bottom-right.
 
