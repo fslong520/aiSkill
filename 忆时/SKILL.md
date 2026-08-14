@@ -4,7 +4,7 @@ description: "🎋 记忆胶囊系统 - 模拟人类记忆检索 | 自动加载�
 priority: 900
 metadata:
   slug: memocap
-  version: "2.3.1"
+  version: "2.3.2"
   trigger: "忆时、记忆检索、时间胶囊、记忆胶囊、回想、回忆、recall、remember、/忆时"
   copaw:
     emoji: "🎋"

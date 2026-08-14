@@ -99,13 +99,14 @@ def emotion_emoji(val):
     if w >= 0.4: return "🟡"
     return "🟢"
 
-RECALL_DECAY_DAYS = 30.0
+RECALL_DECAY_DAYS = 90.0
 VALID_TYPES = {"emotion", "decision", "task", "time", "preference", "context", "skill"}
 
 # ── 混合检索（BM25 关键词路 + 向量路 RRF 融合）─
 RRF_K = 60.0                # RRF 融合常数（标准值 60）
 BM25_K1 = 1.5               # BM25 词频饱和参数
 BM25_B = 0.75               # BM25 文档长度归一参数
+BM25_SEM_CAP = 0.7          # BM25 归一化分封顶：关键词命中 ≠ 语义相关，防虚高顶榜
 MERGE_SIM_HIGH = 0.90       # 去重：相似度高于此值 → 自动合并（实测子串包含≈0.91）
 MERGE_SIM_WARN = 0.85       # 去重：高于此值 → 警告仍存
 BM25_KEYWORD_WEIGHT = 2     # keywords 分词重复次数（权重×2）
@@ -566,16 +567,17 @@ def cmd_recall(args):
             continue
         seen.add(mid)
         doc, meta = pool[mid]
-        semantic = max(vec_semantic.get(mid, 0.0), bm25_semantic.get(mid, 0.0))
+        semantic = max(vec_semantic.get(mid, 0.0), bm25_semantic.get(mid, 0.0) * BM25_SEM_CAP)
         em_w = float(meta.get("emotion_weight", 0.5))
         recall_count = int(meta.get("recall_count", 0))
         freq = int(meta.get("frequency", 1))
-        freq_boost = min(math.log2(freq + 1) * 0.1, 0.2) + min(math.log2(recall_count + 1) * 0.05, 0.15)
+        freq_boost = min(math.log2(freq + 1) * 0.1, 0.2) + min(math.log2(recall_count + 1) * 0.02, 0.06)
         created = datetime.fromisoformat(meta.get("created_at", now.isoformat()))
         days_ago = (now - created).total_seconds() / 86400.0
         recency = math.exp(-math.log(2) * days_ago / RECALL_DECAY_DAYS)
 
-        score = 0.40 * semantic + 0.15 * em_w + 0.20 * recency + 0.25 * (0.6 + freq_boost)
+        # 语义主导 0.60；情绪/近因/频率仅作微调（合计 0.40）
+        score = 0.60 * semantic + 0.08 * em_w + 0.12 * recency + 0.20 * (0.3 + freq_boost)
         if score < min_weight:
             continue
         if type_filter and meta.get("type") != type_filter:
@@ -630,10 +632,11 @@ def cmd_recall(args):
 
     # === 联想扩散（两阶段），统一用真实语义值计分 ===
     def _compute_score(semantic, em_w, freq, recall_count, created):
-        freq_boost = min(math.log2(freq + 1) * 0.1, 0.2) + min(math.log2(recall_count + 1) * 0.05, 0.15)
+        freq_boost = min(math.log2(freq + 1) * 0.1, 0.2) + min(math.log2(recall_count + 1) * 0.02, 0.06)
         days_ago = (now - created).total_seconds() / 86400.0
         recency = math.exp(-math.log(2) * days_ago / RECALL_DECAY_DAYS)
-        return 0.40 * semantic + 0.15 * em_w + 0.20 * recency + 0.25 * (0.6 + freq_boost)
+        # 语义主导 0.60；情绪/近因/频率仅作微调（合计 0.40）
+        return 0.60 * semantic + 0.08 * em_w + 0.12 * recency + 0.20 * (0.3 + freq_boost)
 
     if args.expand and scored:
         expanded = set(s["id"] for s in scored)
