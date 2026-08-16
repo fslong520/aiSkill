@@ -49,7 +49,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 # {WORK_DIR} = work_{PID}_{标题简写}
 ```
 
-写入 `{WORK_DIR}/problem_zh.md`（题面标题下加出处行 `> 出处：[原题链接](URL)`，自比赛 URL 拼出，如 `https://atcoder.jp/contests/abc453/tasks/abc453_a`）。
+写入 `{WORK_DIR}/problem_zh.md`（**题面末尾（`</div>` 前）加出处行** `> 出处：[原题链接](URL)`，自比赛 URL 拼出，如 `https://atcoder.jp/contests/abc453/tasks/abc453_a`）。
 
 ### Step 3-4 写配
 

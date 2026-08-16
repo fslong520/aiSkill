@@ -37,8 +37,6 @@
 
 </center>
 
-> 出处：[原题链接](https://atcoder.jp/contests/abc453/tasks/abc453_a)
-
 ### 题目描述
 ...（留诸图片链 `![](url)` 与示意，不删）
 
@@ -58,6 +56,8 @@
 ...
 
 **知识点**：GESP X级 | 难度（CF）：XXXX
+
+> 出处：[原题链接](https://atcoder.jp/contests/abc453/tasks/abc453_a)  <!-- ⚠️ 出处行放本题末尾（--- 之前） -->
 
 ---
 
