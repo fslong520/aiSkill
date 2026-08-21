@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC457 A-E 题解</title>
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11/styles/github-dark.min.css">
+<style>
+/* ============ 析题 HTML 产物样式 ============
+   规则：iframe 渲染 → 全内联、xt- 前缀、无相对路径资源
+   风格：Morandi 低饱和课堂风
+   ========================================== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  background: #f7f5f0; color: #2f2a26; line-height: 1.75;
+  padding: 24px 16px 48px;
+}
+.xt-wrap { max-width: 860px; margin: 0 auto; }
+
+/* 题头 */
+.xt-head { margin-bottom: 28px; }
+.xt-title { font-size: 1.5em; font-weight: 700; color: #26312c; margin-bottom: 6px; }
+.xt-one-liner {
+  background: #fffdf7; border-left: 4px solid #7f9a83;
+  padding: 10px 16px; border-radius: 0 8px 8px 0; color: #3f4a44; font-size: 0.98em;
+}
+.xt-tags { margin-top: 10px; }
+.xt-tag {
+  display: inline-block; background: #e8eee5; color: #3f5a4a;
+  border-radius: 999px; padding: 2px 12px; font-size: 0.8em; margin-right: 8px;
+}
+
+/* 题面原文 */
+.xt-statement { background: #fffdf7; border: 1px solid #e3ddd0; border-radius: 10px; padding: 16px 18px; margin: 12px 0; }
+.xt-statement h3 { font-size: 1em; color: #7f9a83; margin: 10px 0 4px; }
+.xt-statement h3:first-child { margin-top: 0; }
+.xt-statement .xt-sample { margin: 8px 0; font-family: "JetBrains Mono", monospace; font-size: 0.88em; white-space: pre; background: #f0ede6; border-radius: 6px; padding: 8px 12px; }
+
+/* 小节 */
+.xt-sec { margin: 28px 0; }
+.xt-h2 {
+  font-size: 1.15em; font-weight: 700; color: #26312c;
+  padding-bottom: 6px; margin-bottom: 14px; border-bottom: 2px solid #d8d2c6;
+}
+.xt-h2 .xt-num {
+  display: inline-block; background: #7f9a83; color: #fff;
+  border-radius: 6px; padding: 0 8px; margin-right: 8px; font-size: 0.85em;
+}
+.xt-h3 { font-size: 1em; font-weight: 700; color: #3f4a44; margin: 18px 0 8px; }
+
+/* 关键点 */
+.xt-insight {
+  background: #eef3ee; border: 1px solid #cfe0d2; border-radius: 10px;
+  padding: 14px 18px; margin: 12px 0;
+}
+.xt-insight b { color: #3f6b4f; }
+
+/* 警示 */
+.xt-warn {
+  background: #fbf3ec; border: 1px solid #e8cdb8; border-left: 4px solid #c47b4f;
+  border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 10px 0;
+}
+.xt-warn b { color: #a04f2a; }
+
+/* 复杂度卡片 */
+.xt-complex { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0; }
+.xt-card {
+  flex: 1 1 200px; background: #fffdf7; border: 1px solid #e3ddd0;
+  border-radius: 10px; padding: 12px 16px; text-align: center;
+}
+.xt-card .xt-card-k { font-size: 0.8em; color: #8a8375; }
+.xt-card .xt-card-v { font-size: 1.1em; font-weight: 700; color: #26312c; }
+
+/* 表格 */
+.xt-table { width: 100%; border-collapse: collapse; margin: 12px 0; background: #fffdf7; }
+.xt-table th, .xt-table td {
+  border: 1px solid #e3ddd0; padding: 8px 12px; text-align: left; font-size: 0.93em;
+}
+.xt-table th { background: #eef1e8; color: #3f4a44; }
+
+/* 代码块 */
+pre.xt-code {
+  background: #1e1e1e; border-radius: 10px; padding: 12px 0;
+  overflow-x: auto; margin: 12px 0;
+}
+pre.xt-code code {
+  display: block;
+  font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.88em; line-height: 1.6; color: #d4d4d4;
+  counter-reset: xtln;
+}
+/* 行号：CSS counter，::before 编号（复制时不带走行号） */
+.xt-ln { display: block; counter-increment: xtln; padding: 0 16px 0 4px; white-space: pre; }
+.xt-ln::before {
+  content: counter(xtln);
+  display: inline-block; width: 2.2em; margin-right: 1.1em;
+  color: #707070; text-align: right; user-select: none;
+}
+/* 点评 */
+.xt-review {
+  background: #f0f3f8; border: 1px solid #d5deea; border-radius: 10px;
+  padding: 12px 16px; margin: 10px 0; font-size: 0.93em;
+}
+.xt-review b { color: #2f5b8a; }
+
+/* Mermaid */
+.mermaid { text-align: center; margin: 16px 0; }
+.mermaid svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+
+/* 正文 */
+.xt-body p { margin: 10px 0; }
+.xt-body li { margin: 4px 0; }
+.xt-body ul, .xt-body ol { padding-left: 1.6em; margin: 8px 0; }
+.xt-body strong { color: #26312c; }
+
+/* 串讲 */
+.xt-summary {
+  background: #f4efe4; border: 1px solid #e0d5bd; border-radius: 10px;
+  padding: 16px 20px; margin-top: 28px;
+}
+
+/* ============= 动态可视化 ============= */
+.xt-viz {
+  background: #fcfcfa; border: 1px solid #e3ddd0; border-radius: 10px;
+  padding: 16px 18px; margin: 12px 0; text-align: center;
+}
+.xt-viz-array { display: flex; justify-content: center; gap: 6px; margin: 12px 0; flex-wrap: wrap; }
+.xt-cell {
+  width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+  font-family: "JetBrains Mono", monospace; font-size: 1.05em; font-weight: 700;
+  background: #edeae2; border-radius: 8px; border: 2px solid #d8d2c6; color: #2f2a26;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.xt-cell.ptr-l { background: #c8e6c9; border-color: #4caf50; box-shadow: 0 0 0 3px rgba(76,175,80,0.3); }
+.xt-cell.ptr-r { background: #bbdefb; border-color: #2196f3; box-shadow: 0 0 0 3px rgba(33,150,243,0.3); }
+.xt-cell.ptr-hit { background: #fff9c4; border-color: #ff9800; box-shadow: 0 0 0 3px rgba(255,152,0,0.4); }
+.xt-cell.ptr-done { background: #c8e6c9; border-color: #4caf50; opacity: 0.6; }
+
+.xt-viz-ctrl { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+.xt-viz-ctrl button {
+  background: #e8eee5; border: 1px solid #cfe0d2; border-radius: 6px;
+  padding: 6px 14px; font-size: 0.88em; cursor: pointer; color: #2f2a26; transition: background 0.15s;
+}
+.xt-viz-ctrl button:hover { background: #d0dfc8; }
+.xt-viz-ctrl button:active { background: #b8cfae; }
+.xt-viz-msg {
+  margin: 8px 0 0; font-size: 0.93em; color: #3f4a44; min-height: 1.5em;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* 打印 */
+@media print {
+  body { background: #fff; padding: 0; }
+  .xt-card, .xt-insight, .xt-warn, .xt-review { box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="xt-wrap">
+
+<!-- ===== 题头 ===== -->
+<header class="xt-head">
+  <h1 class="xt-title">ABC457 A–E 题解</h1>
+  <div class="xt-one-liner">五题由简入繁，核心是「把复杂状态拆成可枚举的小步」。</div>
+  <div class="xt-tags">
+    <span class="xt-tag">AtCoder</span>
+    <span class="xt-tag">ABC457</span>
+    <span class="xt-tag">启发式</span>
+  </div>
+</header>
+
+<!-- ============================================================
+     A 题 —— 简单题（≤ 250 分）
+     示范：题面原文、样例演示、单解法、易错点
+     ============================================================ -->
+<section class="xt-sec" id="a">
+<h2 class="xt-h2"><span class="xt-num">A</span>最大值</h2>
+<div class="xt-body">
+
+  <h3 class="xt-h3">题面</h3>
+  <div class="xt-statement">
+    <h3>题目描述</h3>
+    <p>给定 $n$ 个整数 $a_1, a_2, \dots, a_n$，输出其中最大值。</p>
+    <h3>输入格式</h3>
+    <p>第一行一个整数 $n$。第二行 $n$ 个整数 $a_i$。</p>
+    <h3>输出格式</h3>
+    <p>一行一个整数，表示最大值。</p>
+    <h3>数据范围</h3>
+    <p>$1 \le n \le 10^5$，$|a_i| \le 10^9$</p>
+    <h3>样例</h3>
+    <div class="xt-sample">
+标准输入：
+5
+3 9 1 7 2
+
+标准输出：
+9</div>
+  </div>
+
+  <h3 class="xt-h3">题目一句话</h3>
+  <p>遍历所有数，记住当前最大。</p>
+
+  <h3 class="xt-h3">怎么想</h3>
+  <p>第一反应：暴力两两比，非要分出个高低。可一瞧数据范围 $n \le 10^5$——两两比较那是 $O(n^2)$，$10^{10}$ 次操作，够你数到地老天荒。</p>
+  <p>冷静。找最大值，谁说要排序了？<b>扫一遍</b>：手里攥一个"当前最大"，来一个数就比一下，遇大的就换人。一趟走完，答案在手。任何"找最值"题都是这个套路——别把简单事办复杂了。</p>
+
+  <h3 class="xt-h3">关键点</h3>
+  <div class="xt-insight"><b>一句点透：</b>最大值不需要排序，扫一遍记一个变量就够了。</div>
+
+  <h3 class="xt-h3">逻辑链</h3>
+  <pre class="mermaid">
+flowchart TD
+Start([开始]) --> Init["mx = -inf"]
+Init --> Loop{"还有数吗?"}
+Loop -->|是| Read["读下一个数 x"]
+Read --> Cmp{"x &gt; mx?"}
+Cmp -->|是| Upd["mx = x"]
+Upd --> Loop
+Cmp -->|否| Loop
+Loop -->|否| Out["输出 mx"]
+Out --> End([结束])
+style Start fill:#7f9a83,color:#fff
+style End fill:#7f9a83,color:#fff
+</pre>
+
+  <h3 class="xt-h3">样例演示</h3>
+  <p>输入 <code>3 9 1 7 2</code>，跟踪 mx 的变化：</p>
+  <table class="xt-table">
+    <thead><tr><th>步骤</th><th>当前数</th><th>mx 更新</th><th>mx 值</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>3</td><td>3 &gt; -inf ✓</td><td>3</td></tr>
+      <tr><td>2</td><td>9</td><td>9 &gt; 3 ✓</td><td>9</td></tr>
+      <tr><td>3</td><td>1</td><td>1 &gt; 9 ✗</td><td>9</td></tr>
+      <tr><td>4</td><td>7</td><td>7 &gt; 9 ✗</td><td>9</td></tr>
+      <tr><td>5</td><td>2</td><td>2 &gt; 9 ✗</td><td>9</td></tr>
+    </tbody>
+  </table>
+  <p>最终输出 9 ✓</p>
+
+  <h3 class="xt-h3">复杂度</h3>
+  <div class="xt-complex">
+    <div class="xt-card"><div class="xt-card-k">时间</div><div class="xt-card-v">O(n)</div></div>
+    <div class="xt-card"><div class="xt-card-k">空间</div><div class="xt-card-v">O(1)</div></div>
+  </div>
+
+  <h3 class="xt-h3">参考代码</h3>
+  <pre class="xt-code"><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;climits&gt;
+using namespace std;
+
+int main()
+{
+    int n; cin &gt;&gt; n;
+    int mx = INT_MIN;   // 初始化为最小可能值
+    for (int i = 0; i &lt; n; i++)
+    {
+        int x; cin &gt;&gt; x;
+        if (x &gt; mx) mx = x; // 遇更大则更新
+    }
+    cout &lt;&lt; mx &lt;&lt; endl;
+    return 0;
+}</code></pre>
+  <div class="xt-review"><b>点评：</b>INT_MIN 是 <code>&lt;climits&gt;</code> 提供的，比随意初始化为 0 更安全（输入可能全负）。</div>
+
+  <h3 class="xt-h3">易错点</h3>
+  <div class="xt-warn"><b>曾踩坑：</b>mx 初始化为 0？小心输入全负——-5, -3, -8 一路比下来，最后输出 0，可 0 压根没在输入里出现过！当年半个班栽这儿。老老实实初始化为 INT_MIN，或者拿第一个输入当起点。</div>
+
+</div>
+</section>
+
+<!-- ============================================================
+     B 题 —— 中难题（≥ 250 分）
+     示范：题面原文、多解法递进、动态可视化、样例演示、易错点
+     ============================================================ -->
+<section class="xt-sec" id="b">
+<h2 class="xt-h2"><span class="xt-num">B</span>有序数组的两数之和</h2>
+<div class="xt-body">
+
+  <h3 class="xt-h3">题面</h3>
+  <div class="xt-statement">
+    <h3>题目描述</h3>
+    <p>给定一个<strong>升序</strong>排列的整数数组 $a$ 和一个目标值 $t$，找出数组中两数之和等于 $t$ 的下标（假设恰好存在唯一解，下标从 1 开始）。</p>
+    <h3>输入格式</h3>
+    <p>第一行两个整数 $n$ 和 $t$。第二行 $n$ 个升序整数 $a_i$。</p>
+    <h3>输出格式</h3>
+    <p>一行两个整数，两数的下标（1-based）。</p>
+    <h3>数据范围</h3>
+    <p>$2 \le n \le 10^5$，$-10^9 \le a_i, t \le 10^9$</p>
+    <h3>样例</h3>
+    <div class="xt-sample">
+标准输入：
+5 11
+2 7 9 11 15
+
+标准输出：
+1 3</div>
+  </div>
+
+  <h3 class="xt-h3">题目一句话</h3>
+  <p>升序数组里找两个数，和为 $t$。</p>
+
+  <h3 class="xt-h3">怎么想（含歧路）</h3>
+
+  <p><b>第一反应：</b>暴力枚举，两层循环挨个试——$O(n^2)$，$n=10^5$ 时 $10^{10}$ 次操作，这速度够你从北京一路排到巴黎。</p>
+
+  <p><b>卡住：</b>能不能少算点？等等……题目开头写着"<b>升序</b>"两个字，一直没派上用场。</p>
+
+  <p><b>转折观察：</b>题目都给你排好队了，还傻傻地两两配对所有组合？看两端——如果 $a_l + a_r &lt; t$，说明左边的兄弟太矮，左指针往右挪；如果 $a_l + a_r &gt; t$，说明右边的兄弟太高，右指针往左撤。这就是<b>双指针</b>：两个侦探从两端包抄，谁不合要求谁先动，$O(n)$ 一趟拿下。</p>
+
+  <h3 class="xt-h3">多解法递进</h3>
+
+  <p><b>解法一：暴力枚举 $O(n^2)$</b></p>
+  <pre class="xt-code"><code class="language-cpp">for (int i = 0; i &lt; n; i++)
+    for (int j = i + 1; j &lt; n; j++)
+        if (a[i] + a[j] == t) { cout &lt;&lt; i+1 &lt;&lt; ' ' &lt;&lt; j+1; return 0; }</code></pre>
+  <p>简单但太慢——$n=10^5$ 时跑不动。</p>
+
+  <p><b>解法二（最优）：双指针 $O(n)$</b></p>
+  <pre class="xt-code"><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+int a[100005];   // 全局数组（OI 风格：少用 vector）
+
+int main()
+{
+    int n, t; cin &gt;&gt; n &gt;&gt; t;
+    for (int i = 0; i &lt; n; i++) cin &gt;&gt; a[i];
+
+    int l = 0, r = n - 1;   // 左指针、右指针
+    while (l &lt; r)
+    {
+        int s = a[l] + a[r];
+        if (s == t) { cout &lt;&lt; l+1 &lt;&lt; ' ' &lt;&lt; r+1; return 0; }
+        else if (s &lt; t) l++; // 和太小，左指针右移
+        else r--;            // 和太大，右指针左移
+    }
+    return 0;
+}</code></pre>
+  <div class="xt-review"><b>点评：</b>双指针精髓在于"升序"让每次移动都有确定方向——和小于 t 时左指针右移一定增大和，而非盲目试探。</div>
+
+  <h3 class="xt-h3">关键点</h3>
+  <div class="xt-insight"><b>一句点透：</b>升序 + 双指针 = 每次移动都是确定性的，$O(n)$ 扫一遍。</div>
+
+  <h3 class="xt-h3">逻辑链</h3>
+  <pre class="mermaid">
+flowchart TD
+Start([开始]) --> Init["l = 0, r = n-1"]
+Init --> Loop{"l &lt; r?"}
+Loop -->|是| Sum["s = a[l] + a[r]"]
+Sum --> Eq{"s == t?"}
+Eq -->|是| Found["输出 l+1, r+1"]
+Eq -->|否| Lt{"s &lt; t?"}
+Lt -->|是| LUp["l++"]
+LUp --> Loop
+Lt -->|否| RDown["r--"]
+RDown --> Loop
+Loop -->|否| NotFound["无解"]
+style Start fill:#7f9a83,color:#fff
+style Found fill:#c8e6c9
+style NotFound fill:#ffcdd2
+</pre>
+
+  <!-- === 动态可视化（双指针步进动画） === -->
+  <h3 class="xt-h3">动态可视化</h3>
+  <p>拖动下方控制条，逐步观察双指针如何逼近目标：</p>
+  <div class="xt-viz" id="twoSumViz">
+    <div class="xt-viz-array" id="vizArray"></div>
+    <div class="xt-viz-ctrl">
+      <button onclick="animPlay()">▶ 播放</button>
+      <button onclick="animPause()">⏸ 暂停</button>
+      <button onclick="animStep()">⏭ 单步</button>
+      <button onclick="animReset()">⟲ 重置</button>
+    </div>
+    <div class="xt-viz-msg" id="vizMsg">按「播放」或「单步」开始</div>
+  </div>
+
+  <h3 class="xt-h3">样例演示</h3>
+  <p>输入 <code>n=5, t=11, a=[2,7,9,11,15]</code>，双指针过程：</p>
+  <table class="xt-table">
+    <thead><tr><th>l</th><th>r</th><th>a[l]+a[r]</th><th>与 t 比较</th><th>动作</th></tr></thead>
+    <tbody>
+      <tr><td>0 (2)</td><td>4 (15)</td><td>17</td><td>&gt; 11</td><td>r--</td></tr>
+      <tr><td>0 (2)</td><td>3 (11)</td><td>13</td><td>&gt; 11</td><td>r--</td></tr>
+      <tr><td>0 (2)</td><td>2 (9)</td><td>11</td><td>= 11 ✓</td><td>命中，输出 1 3</td></tr>
+    </tbody>
+  </table>
+  <p>三步命中 ✓ 与上方动态可视化一致。</p>
+
+  <h3 class="xt-h3">复杂度</h3>
+  <div class="xt-complex">
+    <div class="xt-card"><div class="xt-card-k">时间</div><div class="xt-card-v">O(n)</div></div>
+    <div class="xt-card"><div class="xt-card-k">空间</div><div class="xt-card-v">O(1)</div></div>
+  </div>
+
+  <h3 class="xt-h3">参考代码</h3>
+  <p>（见上方解法二「双指针 $O(n)$」）</p>
+
+  <h3 class="xt-h3">易错点</h3>
+  <div class="xt-warn"><b>曾踩坑：</b>题目说"下标从 1 开始"，一激动输出成 0-based，白丢一题。双指针终止条件是 <code>l &lt; r</code> 而非 <code>l &lt;= r</code>——两数不能是同一个元素，不然左手打右手算怎么回事。</div>
+  <div class="xt-warn"><b>曾踩坑：</b>把"升序"这个前提丢了——乱序数组不能直接双指针，得先排序（$O(n \log n)$），那又是另一道经典题了。审题不细，悔之晚矣。</div>
+
+</div>
+</section>
+
+<!-- ===== 串讲 ===== -->
+<section class="xt-summary">
+  <b>串讲：</b>A 题是线性扫描的入门——扫一遍记最值；B 题是双指针的经典——利用排序性质把 $O(n^2)$ 降为 $O(n)$。两题骨子里都是"利用数据性质减少多余比较"，区别在于 A 题只用一个变量，B 题用两个指针。后续 C、D、E 题（略）在此基础上增加了状态压缩和 DP 递推，但核心思维一脉相承。
+</section>
+
+</div>
+
+<!-- ===== 脚本 ===== -->
+<script>
+(function() {
+  // ============ B 题双指针动画数据 ============
+  var arr = [2, 7, 9, 11, 15];
+  var target = 11;
+  // 按双指针正确逻辑生成步骤
+  var steps = [];
+  var l = 0, r = arr.length - 1;
+  while (l < r) {
+    var s = arr[l] + arr[r];
+    var msg = "a[" + l + "]=" + arr[l] + " + a[" + r + "]=" + arr[r] + " = " + s;
+    if (s === target) { steps.push({l:l,r:r,hit:true,msg:msg + " = " + target + " → 命中！"}); break; }
+    else if (s < target) { steps.push({l:l,r:r,hit:false,msg:msg + " &lt; " + target + " → l++"}); l++; }
+    else { steps.push({l:l,r:r,hit:false,msg:msg + " &gt; " + target + " → r--"}); r--; }
+  }
+  if (l >= r) steps.push({l:-1,r:-1,hit:false,msg:"❌ l ≥ r，循环结束，无解"});
+
+  var cur = -1, timer = null;
+
+  function renderStep(i) {
+    cur = i;
+    var s = steps[i];
+    var cells = document.querySelectorAll('#vizArray .xt-cell');
+    cells.forEach(function(c, idx) {
+      c.className = 'xt-cell';
+      if (s && s.l >= 0 && s.r >= 0) {
+        if (s.hit && (idx === s.l || idx === s.r)) c.classList.add('ptr-hit');
+        else if (idx === s.l) c.classList.add('ptr-l');
+        else if (idx === s.r) c.classList.add('ptr-r');
+      }
+    });
+    document.getElementById('vizMsg').innerHTML = s ? s.msg : '准备就绪';
+  }
+
+  function buildArr() {
+    var c = document.getElementById('vizArray');
+    c.innerHTML = '';
+    arr.forEach(function(v, i) {
+      var d = document.createElement('div');
+      d.className = 'xt-cell';
+      d.textContent = v;
+      c.appendChild(d);
+    });
+    cur = -1; renderStep(0);
+  }
+
+  window.animPlay = function() {
+    if (timer) return;
+    if (cur >= steps.length - 1) { cur = -1; }
+    timer = setInterval(function() {
+      cur++;
+      if (cur >= steps.length) { clearInterval(timer); timer = null; return; }
+      renderStep(cur);
+    }, 1000);
+  };
+  window.animPause = function() {
+    if (timer) { clearInterval(timer); timer = null; }
+  };
+  window.animStep = function() {
+    animPause();
+    if (cur >= steps.length - 1) return;
+    renderStep(cur + 1);
+  };
+  window.animReset = function() {
+    animPause();
+    buildArr();
+  };
+
+  buildArr();
+})();
+</script>
+
+<!-- CDN 脚本（defer，在 DOMContentLoaded 前加载完） -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/highlight.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  if (window.renderMathInElement) {
+    renderMathInElement(document.body, {
+      delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      ignoredTags: ['code', 'pre', 'script', 'style', 'textarea'],
+      throwOnError: false
+    });
+  }
+  if (window.hljs) {
+    document.querySelectorAll('pre.xt-code code').forEach(function (b) { hljs.highlightElement(b); });
+    // 行号：高亮后再按行拆分，每行包 .xt-ln（CSS counter 编号，复制不带行号）
+    document.querySelectorAll('pre.xt-code code').forEach(function (code) {
+      if (code.dataset.lined) return;
+      code.dataset.lined = '1';
+      code.innerHTML = code.innerHTML.split('\n').map(function (l) {
+        return '<span class="xt-ln">' + (l || ' ') + '</span>';
+      }).join('\n');
+    });
+  }
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral', flowchart: { useMaxWidth: true } });
+    mermaid.run({ querySelector: 'pre.mermaid' }).catch(function () {});
+  }
+  // anime.js 加载后可用——示例：页面加载完做标题淡入（可选）
+  if (window.anime) {
+    anime({ targets: '.xt-title', opacity: [0, 1], translateY: [-12, 0], duration: 600, easing: 'easeOutQuad' });
+  }
+});
+</script>
+</body>
+</html>
