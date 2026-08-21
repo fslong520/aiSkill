@@ -9,7 +9,7 @@ allowed-tools:
   - Grep
 metadata:
   slug: memocap
-  version: "2.5.3"
+  version: "2.5.4"
   trigger: 忆时, 记忆检索, 时间胶囊, 记忆胶囊, 回想, 回忆, recall, remember, /忆时, 记住, 可视化, 记忆脑图, 人物画像
 ---
 
@@ -33,8 +33,8 @@ LOCAL_BASE=~/.local/share/忆时
 YISHI=$LOCAL_BASE/scripts/memory_core.py
 MEMO_DIR=$LOCAL_BASE/data
 # store：内容为【位置参数放最后】（无 --content/--tags），关键字用 --keywords；title ≤10 字自动生成，可 --title 覆盖
-#   存时语义查簇：检索相似≥70%候选（最多3条）完整打印，AI 决策——
-#   能综合合并 → store "综合合并版" --merge-ids "旧ID1,旧ID2"（删旧存新）；不能 → 机械存储兜底或 --force 静默
+#   两段式：先 recall 判断（读相似旧忆，判同主题否）→ 再 store 决策。脚本不决策，候选仅打印提示（最多3条完整原文）：
+#   判可合并 → store "综合合并版" --merge-ids "旧ID1,旧ID2"（删旧存新）；判不可合并 → --force 机械存储
 python3 $YISHI store --type <decision|task|preference|emotion|context|time|skill> --keywords "k1,k2" --emotion <0-1> "[完整内容]"
 # recall：检索/核实（默认最相关3条，勿多；相似>0.5 即看，取最相关3条）
 python3 $YISHI recall "关键词"
@@ -47,7 +47,7 @@ python3 $YISHI merge --id <锚ID> --threshold 0.68
 
 ## 三条红线（铁律）
 1. **言必检**——每言先 recall 检索再作答，检而再检，换词查透。
-2. **值必存**——有价值信息（决策/偏好/任务/情绪/时间/上下文）主动留存，存后立刻 recall 核实。**存时必判有机合并**：store 打印相似≥70%候选（含原文全文），能综合合并→`--merge-ids "id1,id2"` 删旧存新综合版；不能→机械存储兜底或 `--force`。禁止见候选仍无脑存同主题碎片。
+2. **值必存**——有价值信息（决策/偏好/任务/情绪/时间/上下文）主动留存，**必两段式**：先 recall 判断（读相似旧忆判同主题否）→ 再 store 决策（可合并→`--merge-ids` 删旧存新综合版；不可→`--force` 机械存储）。**脚本不决策**——候选仅打印提示，决策在 AI。禁止见候选仍放任同主题碎片并存。存后 recall 核实。
 3. **存必告**——存则告"已录"（指明类型），不存亦告，不沉默。
 
 ## 存储质量
