@@ -9,7 +9,7 @@ allowed-tools:
   - Grep
 metadata:
   slug: memocap
-  version: "2.5.2"
+  version: "2.5.3"
   trigger: 忆时, 记忆检索, 时间胶囊, 记忆胶囊, 回想, 回忆, recall, remember, /忆时, 记住, 可视化, 记忆脑图, 人物画像
 ---
 
@@ -36,7 +36,7 @@ MEMO_DIR=$LOCAL_BASE/data
 #   存时语义查簇：检索相似≥70%候选（最多3条）完整打印，AI 决策——
 #   能综合合并 → store "综合合并版" --merge-ids "旧ID1,旧ID2"（删旧存新）；不能 → 机械存储兜底或 --force 静默
 python3 $YISHI store --type <decision|task|preference|emotion|context|time|skill> --keywords "k1,k2" --emotion <0-1> "[完整内容]"
-# recall：检索/核实（默认最相关3条，勿多；向量语义相似<0.70 者自动过滤不展示）
+# recall：检索/核实（默认最相关3条，勿多；相似>0.5 即看，取最相关3条）
 python3 $YISHI recall "关键词"
 # merge：梳理时语义合并高相关簇（锚记忆→预览簇→--content+--apply 删旧存新）
 python3 $YISHI merge --id <锚ID> --threshold 0.68
