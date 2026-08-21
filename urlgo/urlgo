@@ -68,20 +68,20 @@ def run_cmd(cmd, capture=True):
     else:
         return subprocess.run(cmd, shell=isinstance(cmd, str))
 
-def check_cdp():
+def check_cdp(port=CDP_PORT):
     """检查 CDP 是否可用"""
     try:
-        r = run_cmd(["curl", "-s", f"{CDP_URL}/json/version"])
+        r = run_cmd(["curl", "-s", f"http://localhost:{port}/json/version"])
         if r.returncode == 0 and "Browser" in r.stdout:
             return True
     except:
         pass
     return False
 
-def get_browser_info():
+def get_browser_info(port=CDP_PORT):
     """获取当前浏览器信息"""
     try:
-        r = run_cmd(["curl", "-s", f"{CDP_URL}/json/version"])
+        r = run_cmd(["curl", "-s", f"http://localhost:{port}/json/version"])
         if r.returncode == 0:
             data = json.loads(r.stdout)
             return data.get("Browser", "Unknown")
@@ -141,6 +141,13 @@ def check_browser_already_running():
 
     return False, None
 
+def find_available_port(start_port=CDP_PORT, max_attempts=10):
+    """查找可用的CDP端口"""
+    for port in range(start_port, start_port + max_attempts):
+        if not check_cdp(port):
+            return port
+    return None
+
 def cmd_status():
     """检查 CDP 状态"""
     print(f"🔍 检查 CDP 端口 {CDP_PORT}...")
@@ -165,6 +172,7 @@ def cmd_status():
 
 def cmd_start():
     """查找并启动浏览器"""
+    global CDP_PORT, CDP_URL
     print("🔍 查找可用浏览器...")
 
     # 先检查是否已经开启（CDP 端口已通）
@@ -174,22 +182,12 @@ def cmd_start():
         print("   如需重启，请先关闭浏览器")
         return
 
-    # CDP 未开，但浏览器可能已在运行（无 --remote-debugging-port 参数启动的）
+    # 检查是否有浏览器进程在运行
     running, bn = check_browser_already_running()
     if running:
-        print(f"⚠️  检测到 {bn} 已在运行，但未开启 CDP 端口 {CDP_PORT}。")
-        print()
-        print(f"   请先关闭现有的 {bn} 浏览器，再运行 urlgo start。")
-        print(f"   urlgo 需要以 --remote-debugging-port={CDP_PORT} 参数启动浏览器。")
-        print()
-        print(f"   关闭方法：")
-        if platform.system() == "Windows":
-            print(f"     1. 任务管理器结束 {bn}.exe")
-            print(f"     2. 或运行: taskkill /F /IM {bn}.exe")
-        else:
-            print(f"     1. 右键浏览器图标退出")
-            print(f"     2. 或运行: pkill {bn}")
-        sys.exit(1)
+        print(f"⚠️  检测到 {bn} 已在运行。")
+        print("   将启动新的浏览器进程（使用urlgo专用账户目录）。")
+        # 不退出，继续启动新进程
 
     # 查找浏览器
     browser_type, browser_path = find_browser()
@@ -202,7 +200,13 @@ def cmd_start():
     print(f"✅ 找到浏览器: {browser_type}")
     print(f"   路径: {browser_path}")
 
-    print(f"🚀 启动中...")
+    # 查找可用端口
+    available_port = find_available_port()
+    if not available_port:
+        print(f"❌ 无法找到可用的CDP端口（尝试了 {CDP_PORT}-{CDP_PORT+9}）")
+        sys.exit(1)
+    
+    print(f"🚀 启动中... (使用端口 {available_port})")
 
     # 使用 Popen + start_new_session 彻底脱离父进程，
     # 确保 urlgo 脚本退出后浏览器仍然存活
@@ -212,7 +216,7 @@ def cmd_start():
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         proc = subprocess.Popen(
-            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run",
+            [browser_path, f"--remote-debugging-port={available_port}", "--no-first-run",
              f"--user-data-dir={URLGO_DATA_DIR}"],
             startupinfo=startupinfo,
             creationflags=subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS,
@@ -222,7 +226,7 @@ def cmd_start():
     else:
         # Unix 上使用 start_new_session 脱离进程组
         proc = subprocess.Popen(
-            [browser_path, f"--remote-debugging-port={CDP_PORT}", "--no-first-run",
+            [browser_path, f"--remote-debugging-port={available_port}", "--no-first-run",
              f"--user-data-dir={URLGO_DATA_DIR}"],
             start_new_session=True,
             stdout=subprocess.DEVNULL,
@@ -235,8 +239,11 @@ def cmd_start():
     import time
     for i in range(30):
         time.sleep(0.5)
-        if check_cdp():
-            print(f"✅ 浏览器已启动 (CDP 端口 {CDP_PORT})")
+        if check_cdp(available_port):
+            print(f"✅ 浏览器已启动 (CDP 端口 {available_port})")
+            # 更新全局变量，以便后续命令使用正确的端口
+            CDP_PORT = available_port
+            CDP_URL = f"http://localhost:{available_port}"
             return
 
     print("❌ 启动超时，请检查浏览器是否正常")

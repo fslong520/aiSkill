@@ -47,6 +47,8 @@
 - 算法**正确**（能通过所有 25 组测试数据）
 - 文件名为 `std.cpp`，置于 `{WORK_DIR}/` 目录
 - OI 风格：简短变量名、全局变量、`ios::sync_with_stdio(false)`
+- **禁止使用 C 语言的输入输出**（`scanf`/`printf`），必须用 `cin`/`cout`
+- **除数组外，尽量用 C++ 写法**——结构体、算法、字符串处理等优先用 C++ 标准库（`std::sort`、`std::string`、`std::vector` 等），避免 C 风格（`qsort`、`char[]`、`strcpy` 等）
 - 时间复杂度对标题目限制（勿写出比正解更慢的版本）
 - Hack 数据是为**选手代码**挖坑，标程必须能正确跑过所有 Hack
 

@@ -56,7 +56,11 @@ signed main()
    - ❌ `char s[105]; scanf("%s", s);`
    - ✅ `string s; cin >> s;`
 8. ⚠️ **不引入 `<cstring>` / `<string.h>`**——禁 `char[]`、`memcpy`、`memset`。初始化用 `fill`，拷贝用赋值
-9. 时复杂度满足时限
+9. ⚠️ **禁止使用 C 语言的输入输出**——`scanf`/`printf` 均不可，必须用 `cin`/`cout`（或 `getline`）。头文件用 `<iostream>` 而非 `<stdio.h>`。
+   - ❌ `scanf("%d", &n); printf("%d\n", ans);`
+   - ✅ `cin >> n; cout << ans << endl;`
+10. **除数组外，尽量用 C++ 写法**——结构体、算法、字符串处理等优先用 C++ 标准库（`std::sort`、`std::string`、`std::vector` 等），避免 C 风格（`qsort`、`char[]`、`strcpy` 等）。
+11. 时复杂度满足时限
 
 ## ⚠️ 铁律：写后即验（生数据前）
 

@@ -36,6 +36,8 @@
 - 算法**正**（能过诸 25 组测试数据）
 - 用 `std.cpp` 为文件名，置 `{WORK_DIR}/` 目录
 - OI 风格：简变量名、全局变量、`ios::sync_with_stdio(false)`
+- **禁止使用 C 语言的输入输出**（`scanf`/`printf`），必须用 `cin`/`cout`
+- **除数组外，尽量用 C++ 写法**——结构体、算法、字符串处理等优先用 C++ 标准库（`std::sort`、`std::string`、`std::vector` 等），避免 C 风格（`qsort`、`char[]`、`strcpy` 等）
 - 时复杂度对标题限（勿写出比正解更慢版）
 - 注：Hack 数据乃为**选手码**掘坑，标程必能正跑过诸 Hack
 

@@ -98,6 +98,8 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 - ⚠️ **生成测试点时 AVOID 跳过 std.cpp：无标程则 .out 不出**
 - ⚠️ **生成测试点时 AVOID 只写样例数据：25 组全覆盖（含 Hack）**
 - ⚠️ **生成测试点时 AVOID 交付前不验证：必查 .in 格式、.out 与样例一致、文件成对存在**
+- ⚠️ **AVOID 在 std.cpp 中使用 C 语言的输入输出（scanf/printf）——必须用 cin/cout**
+- ⚠️ **AVOID 在 std.cpp 中使用 C 风格写法（qsort、char[]、strcpy 等）——除数组外，尽量用 C++ 标准库（std::sort、std::string、std::vector 等）**
 
 ---
 
