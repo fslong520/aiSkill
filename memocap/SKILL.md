@@ -9,7 +9,7 @@ allowed-tools:
   - Grep
 metadata:
   slug: memocap
-  version: "2.6.2"
+  version: "2.7.0"
   trigger: 忆时, 记忆检索, 时间胶囊, 记忆胶囊, 回想, 回忆, recall, remember, /忆时, 记住, 可视化, 记忆脑图, 人物画像
 ---
 
@@ -62,3 +62,9 @@ python3 $YISHI merge --id <锚ID> --threshold 0.68
 
 ## 模块详情
 细册在 `~/.local/share/yishi/docs/modules/`（13-retrieval-store.md 检索存储、12-viz-profile.md 可视化画像、11-quick-commands.md 快捷命令等）。渐进式披露——遇场景才读对应模块，勿一次全读。
+
+# 链式前向星（树状记忆）：入口节点 + 子链
+# store "<内容>" --parent <父ID>   → 挂到父的子树链（first_child→next_sibling）
+# promote --id <ID>                → heap 上浮：升到祖父层/根
+# demote --id <ID> --parent <父ID> → heap 下沉：摘链重挂为叶子
+# recall 命中入口自动输出子树链（🌳 前缀）
