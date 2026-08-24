@@ -9,7 +9,7 @@ allowed-tools:
   - Grep
 metadata:
   slug: memocap
-  version: "2.6.1"
+  version: "2.6.2"
   trigger: 忆时, 记忆检索, 时间胶囊, 记忆胶囊, 回想, 回忆, recall, remember, /忆时, 记住, 可视化, 记忆脑图, 人物画像
 ---
 
@@ -36,7 +36,7 @@ MEMO_DIR=$LOCAL_BASE/data
 #   两段式：先 recall 判断（读相似旧忆，判同主题否）→ 再 store 决策。脚本不代决：
 #   store 遇相似≥70%候选（最多3条完整原文）即【不落库】挂起等 AI。统一一条路 --merge-ids（N 可0）：
 #   ①选（候选里选出值得合并者，可0条）②删（选N条→--merge-ids "ID1,ID2,..."；选0条→--merge-ids ""空串=删0条）③并（综合版=所选旧内容+新内容 AI 手写存入；选0条=新内容原样存）
-#   技能记忆：store --type skill --skill-name "..." --skill-summary "..." --skill-strategy "步骤" --skill-triggers "触发词1,触发词2" --skill-input/--skill-output "..." "说明"
+#   技能记忆：store --type skill --skill-name "..." --skill-summary "..." --skill-path "可执行路径" --skill-strategy "步骤" --skill-triggers "触发词1,触发词2" --skill-input/--skill-output "..." "说明"
 python3 $YISHI store --type <decision|task|preference|emotion|context|time|skill> --keywords "k1,k2" --emotion <0-1> "[完整内容]"
 # recall：检索/核实（默认最相关3条，勿多；相似>0.5 即看；--judge 判定模式输出全文+相似度/类型/创建日，值必存第一段用；遇任务先 recall 技能）
 python3 $YISHI recall "关键词" --judge
