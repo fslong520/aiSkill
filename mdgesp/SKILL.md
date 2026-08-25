@@ -55,3 +55,4 @@ GESP{级别}级真题/
 - AVOID 跳过答案表验证
 - AVOID 未读步骤文件就执行
 - AVOID 用 playwright 代替 urlgo（本项目用 urlgo）
+- AVOID 将答案/解析/参考程序写入 json 的 content 字段——content 只放题面，答案入 correct_answer、解析入 explanation（见 04-create.md 字段职责铁律）

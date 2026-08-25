@@ -38,6 +38,7 @@ description: "GESP {year}{month} C++{level}级 真题"
 - 代码用 ````cpp` 围栏
 - 判断题：`## 第 N 题` + 题目文字 + 括号加粗问号
 - 编程题：按试题名称、时间限制、内存限制、题面描述、输入格式、输出格式、样例、数据范围分段
+- ⚠️ 试卷 .md 题面**不得**出现 `**答案：**`、`**解析：**`、参考程序——答案归 `-答案.md`，解析归 json 的 `explanation`
 
 ### 真题-答案.md 格式
 
@@ -59,6 +60,13 @@ description: "GESP {year}{month} C++{level}级 真题"
 ### 真题.json 格式
 
 参照同级别现有 .json 文件。结构：
+
+> ⚠️ **字段职责铁律（最高优先）**：
+> - `content` 只许放**题面本身**：题干、选项、题目代码、样例输入输出、数据范围。
+> - `correct_answer` 只放答案（A/B/C/D/T/F）。
+> - `explanation` 只放解析文字。
+> - **严禁**把 `**答案：**`、`**解析：**`、`**参考程序**`、参考代码写进 `content`——解析与参考代码一律归 `explanation` 字段。
+> - 编程题题面内不得含参考程序，参考程序只入 `explanation`。
 
 ```json
 {
@@ -120,5 +128,6 @@ https://fslong.iok.la/problem/GESP{year}{month}-{level}-T{序号}
 - [ ] .md 中选择题答案与 PDF 答案表一致
 - [ ] .json 是合法 JSON（可用 `python3 -c "import json; json.load(open(...))"` 验证）
 - [ ] .json 每题的 `explanation` 非空（不可留 `""`）
+- [ ] .json 每题的 `content` 纯净：不含 `**答案`、`**解析`、`参考程序`、`参考代码` 字样（可用 grep 校验）
 - [ ] -答案.md 格式为 `序号. 答案` 每行
 - [ ] 三级流程图图片已正确嵌入 .md（`![流程图](xxxx.jpg)`）
