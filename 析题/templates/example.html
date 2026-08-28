@@ -502,14 +502,22 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   }
   if (window.hljs) {
-    document.querySelectorAll('pre.xt-code code').forEach(function (b) { hljs.highlightElement(b); });
-    // 行号：高亮后再按行拆分，每行包 .xt-ln（CSS counter 编号，复制不带行号）
+    // 行号：逐行高亮再包 .xt-ln（CSS counter 编号，复制不带行号）
+    // 勿用「整块高亮后 innerHTML.split('\n')」——hljs 的跨行 span（如 signed main()\n{）
+    // 会被切坏，导致行号与内容错位、多余 </span>（历史炸因，2026-08-22 修复）
     document.querySelectorAll('pre.xt-code code').forEach(function (code) {
       if (code.dataset.lined) return;
       code.dataset.lined = '1';
-      code.innerHTML = code.innerHTML.split('\n').map(function (l) {
-        return '<span class="xt-ln">' + (l || ' ') + '</span>';
-      }).join('\n');
+      var m = (code.className || '').match(/language-([\w+]+)/);
+      var lang = m ? m[1] : 'cpp';
+      var lines = code.textContent.split('\n');
+      if (lines.length && lines[lines.length - 1] === '') lines.pop();
+      // 逐行高亮（勿整块高亮）：彻底避免跨行 span
+      var html = lines.map(function (l) {
+        var hl = hljs.highlight(l, { language: lang, ignoreIllegals: true }).value;
+        return '<span class="xt-ln">' + (hl || '&nbsp;') + '</span>';
+      }).join(''); // 块级 .xt-ln 自动换行，勿 join('\n')（会产生匿名空白行撑高行距）
+      code.innerHTML = html;
     });
   }
   if (window.mermaid) {
