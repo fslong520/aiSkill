@@ -56,7 +56,7 @@ mv {WORK_DIR} {WORK_DIR}_{标题简写}
 ```yaml
 pid: "abc453a"
 title: "中(英)"
-score:  # AI 按 03-gesp.md「第六步：定分」规则估算，已知比赛分数直接采用
+score:  # AI 按 03-gesp.md「第六步：定分」独立分析估算，已知比赛分数直接采用
 source: "https://atcoder.jp/contests/abc453/tasks/abc453_a"
 tag:
   - "知识点标签1"
@@ -65,7 +65,7 @@ tag:
 ```
 
 ⚠️ **tag 含 1~3 个知识点标签 + 1 个等级标签，禁只写 GESP 等级**
-⚠️ **score 按 03-gesp.md「第六步：定分」规则估算，已知比赛分数直接采用，禁写死默认值**
+⚠️ **score 按 03-gesp.md「第六步：定分」独立分析（AI 自行判断此题在 CF 上约值多少分），已知比赛分数直接采用，禁写死默认值；水题给分克制（零思维量 ≤900）**
 
 写入 `{WORK_DIR}/problem.yaml`。
 
@@ -115,7 +115,7 @@ g++ -o mkdata mkdata.cpp -std=c++17
 - 配置模板一致性
 - GESP 等级复核
 - 分值复核
-- AtCoder→CF 换算复核（若适用）
+- AtCoder 题 CF 分复核（若适用）
 
 **审计不通过不得打包！** 发现问题则修正后重审。
 

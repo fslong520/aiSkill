@@ -1,6 +1,6 @@
 ---
 name: ojimport
-version: 2.7.0
+version: 2.8.0
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
@@ -82,6 +82,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 - ⚠️ **AVOID 不按模板格式**
 - AVOID 测试数据只写样例
 - AVOID GESP等级乱判
+- ⚠️ **AVOID 按速查表/公式机械估 CF 分（含星级映射、AtCoder 换算表）：每次必自析此题在 CF 上值多少分（03-gesp.md 第六步），水题克制（零思维量 ≤900）**
 - AVOID 忘清理工作目录（`work_*`）
 - AVOID PID 格式错误（用小写 abc451a）
 - ⚠️ **AVOID tag 只写 GESP 等级：必含 1~3 个知识点标签 + 1 个等级标签，禁单标签敷衍**
