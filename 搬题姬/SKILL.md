@@ -1,6 +1,6 @@
 ---
 name: ojimport
-version: 2.8.0
+version: 2.9.0
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
@@ -43,7 +43,7 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
    - URL：urlgo 访问 → snapshot → 解析（urlgo不可用时用 BrowserUse/WebFetch）
    - 文件：读 steps/09-from-file.md → 自本地文件取题面
    - 文本：读 steps/10-from-text.md → 自用户文本取题面
-4. 读 steps/03-gesp.md → 定等级
+4. 读 steps/03-gesp.md → 定等级（第二步）+ 定分数（第四步）
 5. 读 steps/04-problem.md → 生题面
 6. 读 steps/05-config.md → 写配置
 7. 实现标程 std.cpp
@@ -82,7 +82,8 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 - ⚠️ **AVOID 不按模板格式**
 - AVOID 测试数据只写样例
 - AVOID GESP等级乱判
-- ⚠️ **AVOID 按速查表/公式机械估 CF 分（含星级映射、AtCoder 换算表）：每次必自析此题在 CF 上值多少分（03-gesp.md 第六步），水题克制（零思维量 ≤900）**
+- ⚠️ **AVOID 按速查表/公式机械估 CF 分（含星级映射、AtCoder 换算表、GESP 等级映射）：每次必走 03-gesp.md 第四步「CF 档位判定」，逐项判四维（思维拐点/算法门槛/数据规模/实现细节）锁定档位，水题克制（零思维量 ≤900），拿不准取低档（宁低勿高）**
+- ⚠️ **AVOID GESP 等级乱判：凡涉及线段树/树状数组/平衡树/最短路/MST/并查集/堆等进阶结构，必查 03-gesp.md 2.4 表锚定，禁低估（线段树 ≠ 5级）**
 - AVOID 忘清理工作目录（`work_*`）
 - AVOID PID 格式错误（用小写 abc451a）
 - ⚠️ **AVOID tag 只写 GESP 等级：必含 1~3 个知识点标签 + 1 个等级标签，禁单标签敷衍**
