@@ -83,7 +83,6 @@ clawhub install <slug>
 |------|------|------|------|
 | urlgo | `urlgo` | — | 连 CDP 浏览器，开网页/截图/执行 JS |
 | 系统控制 | `system-ctl` | — | openKylin 3.0 UKUI 桌面系统控制统一入口 |
-| 忆时 | `memocap` | 2.3.3 | 记忆胶囊系统——模拟人类记忆检索与联想 |
 | 技能诊所 | `skillclinic` | 3.0.0 | 技能诊断优化 + 创建技能 + 评估门禁 |
 | clawhub 发布 | `clawhubpub` | — | 一键发布技能到 ClawHub 技能市场 |
 | 定时任务 | `cron` | 1.2 | 定时/周期性任务管理 |
