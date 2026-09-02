@@ -1,6 +1,6 @@
 ---
 name: ojimport
-version: 2.9.0
+version: 3.0.0
 description: 从 OJ 平台搬运题目（含AtCoder/Codeforces等），生成标准化题目文件包；也可根据用户提供的题目仅生成测试数据。用户说"搬运""搬题""搬道题""导入题目"均适用
 allowed-tools:
   - Read
@@ -83,10 +83,10 @@ OJ题目、搬题、搬运、搬运题目、算法题搬运、搬道题、搬一
 - AVOID 测试数据只写样例
 - AVOID GESP等级乱判
 - ⚠️ **AVOID 按速查表/公式机械估 CF 分（含星级映射、AtCoder 换算表、GESP 等级映射）：每次必走 03-gesp.md 第四步「CF 档位判定」，逐项判四维（思维拐点/算法门槛/数据规模/实现细节）锁定档位，水题克制（零思维量 ≤900），拿不准取低档（宁低勿高）**
-- ⚠️ **AVOID GESP 等级乱判：凡涉及线段树/树状数组/平衡树/最短路/MST/并查集/堆等进阶结构，必查 03-gesp.md 2.4 表锚定，禁低估（线段树 ≠ 5级）**
+- ⚠️ **AVOID 等级乱判：凡涉及线段树/树状数组/平衡树/最短路/MST/并查集/堆/AC自动机/网络流/计算几何等进阶结构，必查 03-gesp.md 2.4 跨体系锚定表，禁低估（线段树 ≠ 5级）；GESP 大纲无此知识点必循 2.5 兜底规则升到 CSP-J/CSP-S/NOI，禁定格在 GESP 级**
 - AVOID 忘清理工作目录（`work_*`）
 - AVOID PID 格式错误（用小写 abc451a）
-- ⚠️ **AVOID tag 只写 GESP 等级：必含 1~3 个知识点标签 + 1 个等级标签，禁单标签敷衍**
+- ⚠️ **AVOID tag 只写等级：必含 1~3 个知识点标签 + 1 个等级标签（`GESP X级`/`CSP-J`/`CSP-S`/`NOI`），禁单标签敷衍**
 - ⚠️ **AVOID 自对话上下文记忆题面，必自文件读取**
 - ⚠️ **AVOID 忘填出处 source：URL 搬运必填原题 URL（problem.yaml 的 source 字段 + 题面出处行）**
 - ⚠️ **AVOID 生成数据时修改 mkdata.cpp，只许修改 mkin.h**

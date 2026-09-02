@@ -55,7 +55,7 @@
 ### 数据范围
 ...
 
-**知识点**：GESP X级 | 难度（CF）：XXXX
+**知识点**：{GESP X级｜CSP-J｜CSP-S｜NOI} | 难度（CF）：XXXX
 
 > 出处：[原题链接](https://atcoder.jp/contests/abc453/tasks/abc453_a)  <!-- ⚠️ 出处行放本题末尾（--- 之前） -->
 
