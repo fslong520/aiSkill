@@ -1,3 +1,5 @@
+---
+name: 1memory
 description: 跨设备跨软件统一 AI 云端记忆（端到端加密，local-first）。每轮先 recall 再作答；决策/偏好/任务/约定经相似判断后 remember（先判后存：合并/下挂/直存三择一）。触发词：记忆、记住、回想、recall、remember、跨设备记忆。
 ---
 
