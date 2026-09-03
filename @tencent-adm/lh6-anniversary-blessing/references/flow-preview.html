@@ -1,0 +1,30 @@
+<style>
+  #lh6-flow { font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif); color: var(--color-text-primary, #0f172a); background: var(--color-background-primary, #fff); border: 0.5px solid var(--color-border-tertiary, #d4e2f4); border-radius: var(--border-radius-lg, 12px); padding: 24px; max-width: 720px; margin: 0 auto; }
+  #lh6-flow * { box-sizing: border-box; }
+  #lh6-flow .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  #lh6-flow .lh6-head { display: flex; align-items: center; margin-bottom: 22px; }
+  #lh6-flow .lh6-title { margin: 0; font-size: 15px; font-weight: 500; letter-spacing: -0.2px; }
+  #lh6-flow .lh6-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  #lh6-flow .lh6-step { position: relative; min-height: 146px; background: var(--color-background-secondary, #f8fafc); border: 0.5px solid var(--color-border-tertiary, #dbe6f2); border-radius: var(--border-radius-md, 8px); padding: 16px 14px; }
+  #lh6-flow .lh6-step:not(:last-child)::after { content: "→"; position: absolute; right: -17px; top: 56px; z-index: 2; width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-primary, #fff); color: var(--color-text-tertiary, #94a3b8); display: flex; align-items: center; justify-content: center; font-weight: 500; }
+  #lh6-flow .lh6-num { width: 28px; height: 28px; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; font-weight: 500; margin-bottom: 12px; }
+  #lh6-flow .n1 { background: #2563eb; } #lh6-flow .n2 { background: #7c3aed; } #lh6-flow .n3 { background: #059669; } #lh6-flow .n4 { background: #d97706; }
+  #lh6-flow h3 { margin: 0 0 7px; font-size: 13px; line-height: 1.35; font-weight: 500; }
+  #lh6-flow p { margin: 0; color: var(--color-text-secondary, #5a6b85); font-size: 13px; line-height: 1.6; }
+  #lh6-flow .lh6-note { margin-top: 16px; padding: 13px 15px; border-radius: var(--border-radius-md, 8px); background: var(--color-background-secondary, #f8fafc); border: 0.5px solid var(--color-border-tertiary, #dbe6f2); color: var(--color-text-secondary, #475569); font-size: 13px; line-height: 1.6; }
+  #lh6-flow .lh6-note strong { color: var(--color-text-primary, #0f172a); font-weight: 500; }
+  @media (max-width: 620px) { #lh6-flow { padding: 18px; } #lh6-flow .lh6-steps { grid-template-columns: 1fr 1fr; gap: 12px; } #lh6-flow .lh6-step { min-height: 126px; } #lh6-flow .lh6-step:nth-child(2)::after { display: none; } #lh6-flow .lh6-step:not(:last-child)::after { top: auto; right: 18px; bottom: -18px; transform: rotate(90deg); } }
+</style>
+<div id="lh6-flow">
+  <h2 class="sr-only">Lighthouse 6 周年活动从选择故事与祝福方式，到活动页登录抽奖和邀请好友的四步流程。</h2>
+  <div class="lh6-head">
+    <h2 class="lh6-title">Lighthouse 6 周年怎么玩</h2>
+  </div>
+  <div class="lh6-steps">
+    <section class="lh6-step"><div class="lh6-num n1">1</div><h3>说说你的故事</h3><p>选一个使用场景，或直接分享你的经历。</p></section>
+    <section class="lh6-step"><div class="lh6-num n2">2</div><h3>挑一种祝福方式</h3><p>从祝福方式中选择喜欢的风格。</p></section>
+    <section class="lh6-step"><div class="lh6-num n3">3</div><h3>进入活动页登录</h3><p>祝福送达后，登录腾讯云账号参与抽奖。</p></section>
+    <section class="lh6-step"><div class="lh6-num n4">4</div><h3>分享邀请好友</h3><p>在活动页复制带邀请码的参与口令，邀请好友一起送祝福。</p></section>
+  </div>
+  <div class="lh6-note"><strong>活动规则：</strong>送祝福可获得 1 次抽奖机会，需登录腾讯云账号参与，在活动页实时开奖；邀请好友有效参与即可获得分享抽奖资格，每邀请 1 位增加 1 份抽奖份额，最多 10 份；分享抽奖将于 2026 年 9 月 16 日晚 20:00 统一开奖。</div>
+</div>

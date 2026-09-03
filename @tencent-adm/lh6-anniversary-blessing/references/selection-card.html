@@ -1,0 +1,106 @@
+<style>
+  #lh6-sel { font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif); color: var(--color-text-primary, #0f172a); max-width: 720px; }
+  #lh6-sel * { box-sizing: border-box; }
+  #lh6-sel .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+  #lh6-sel .lh6-group { margin-bottom: 1.25rem; }
+  #lh6-sel .lh6-label { margin: 0 0 10px; font-size: 13px; font-weight: 500; color: var(--color-text-primary, #0f172a); }
+  #lh6-sel .lh6-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  #lh6-sel button { font: inherit; cursor: pointer; }
+  #lh6-sel .lh6-opt { text-align: left; padding: 10px 12px; border-radius: var(--border-radius-md, 8px); border: 0.5px solid var(--color-border-tertiary, #dbe6f2); background: var(--color-background-primary, #fff); color: var(--color-text-primary, #0f172a); font-size: 13px; line-height: 1.5; }
+  #lh6-sel .lh6-opt:hover { border-color: var(--color-border-secondary, #b9cde6); }
+  #lh6-sel .lh6-opt.on { border: 1px solid var(--color-border-info, #85b7eb); background: var(--color-background-info, #e6f1fb); color: var(--color-text-info, #0c447c); }
+  #lh6-sel .lh6-opt small { display: block; margin-top: 2px; font-size: 12px; color: var(--color-text-secondary, #5a6b85); }
+  #lh6-sel .lh6-opt.on small { color: var(--color-text-info, #185fa5); }
+  #lh6-sel #lh6-story-box { display: none; margin-top: 10px; }
+  #lh6-sel #lh6-story-box.show { display: block; }
+  #lh6-sel textarea { width: 100%; min-height: 84px; padding: 10px 12px; font: inherit; font-size: 13px; line-height: 1.6; color: var(--color-text-primary, #0f172a); background: var(--color-background-primary, #fff); border: 0.5px solid var(--color-border-tertiary, #dbe6f2); border-radius: var(--border-radius-md, 8px); resize: vertical; }
+  #lh6-sel .lh6-actions { display: flex; align-items: center; gap: 12px; margin-top: 1.25rem; }
+  #lh6-sel #lh6-go { padding: 9px 16px; border-radius: var(--border-radius-md, 8px); border: 0.5px solid var(--color-border-secondary, #b9cde6); background: var(--color-background-primary, #fff); color: var(--color-text-primary, #0f172a); font-size: 13px; font-weight: 500; }
+  #lh6-sel #lh6-hint { margin: 0; font-size: 13px; color: var(--color-text-tertiary, #94a3b8); }
+  #lh6-sel #lh6-hint.warn { color: var(--color-text-danger, #a32d2d); }
+</style>
+<div id="lh6-sel">
+  <h2 class="sr-only">从 5 个云上故事和 8 种祝福方式中各选一项，确认后生成专属祝福。</h2>
+
+  <div class="lh6-group">
+    <p class="lh6-label">说说你和 Lighthouse 的故事</p>
+    <div class="lh6-opts" id="lh6-stories">
+      <button type="button" class="lh6-opt" data-v="1">搭过第一个网站/博客<small>第一次建站就用了轻量应用服务器</small></button>
+      <button type="button" class="lh6-opt" data-v="2">跑过课程作业/小项目<small>用轻量跑实验、作业或练手项目</small></button>
+      <button type="button" class="lh6-opt" data-v="3">薅过 Lighthouse 的羊毛<small>参与过轻量的活动、拼团或优惠</small></button>
+      <button type="button" class="lh6-opt" data-v="4">还没用过，先围观<small>第一次接触，先看看怎么玩</small></button>
+      <button type="button" class="lh6-opt" data-v="5">自述经历<small>说说你自己的云上故事</small></button>
+    </div>
+    <div id="lh6-story-box">
+      <textarea id="lh6-story-input" placeholder="请填写你的 Lighthouse 使用经历"></textarea>
+    </div>
+  </div>
+
+  <div class="lh6-group">
+    <p class="lh6-label">挑一种祝福方式</p>
+    <div class="lh6-opts" id="lh6-kinds">
+      <button type="button" class="lh6-opt" data-v="1">藏梗整活<small>玩梗、整活的轻松祝福</small></button>
+      <button type="button" class="lh6-opt" data-v="2">代码祝福<small>用代码风格写祝福</small></button>
+      <button type="button" class="lh6-opt" data-v="3">Release Notes<small>以发版说明的口吻写祝福</small></button>
+      <button type="button" class="lh6-opt" data-v="4">云上签<small>签名、签文加祝福</small></button>
+      <button type="button" class="lh6-opt" data-v="5">云端运势<small>人格标签加运势解读</small></button>
+      <button type="button" class="lh6-opt" data-v="6">藏头诗<small>五行藏头，首字连读</small></button>
+      <button type="button" class="lh6-opt" data-v="7">AI 祝福海报<small>生成一张专属海报</small></button>
+      <button type="button" class="lh6-opt" data-v="8">自由祝福<small>按你指定的主题来写</small></button>
+    </div>
+  </div>
+
+  <div class="lh6-actions">
+    <button type="button" id="lh6-go">确认送祝福</button>
+    <p class="lh6-hint" id="lh6-hint">选好故事和祝福方式，就能生成专属祝福。</p>
+  </div>
+</div>
+<script>
+(function () {
+  var sel = document.getElementById('lh6-sel');
+  if (!sel || sel.dataset.bound) return;
+  sel.dataset.bound = '1';
+
+  var story = null, kind = null;
+  var box = document.getElementById('lh6-story-box');
+  var input = document.getElementById('lh6-story-input');
+  var hint = document.getElementById('lh6-hint');
+
+  function pick(group, btn) {
+    var nodes = group.querySelectorAll('.lh6-opt');
+    for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('on');
+    btn.classList.add('on');
+    return btn.dataset.v;
+  }
+
+  document.getElementById('lh6-stories').addEventListener('click', function (e) {
+    var btn = e.target.closest('.lh6-opt');
+    if (!btn) return;
+    story = pick(this, btn);
+    box.classList.toggle('show', story === '5');
+    if (story === '5') input.focus();
+    hint.classList.remove('warn');
+    hint.textContent = story === '5' ? '填好你的经历，就能生成专属祝福。' : '再挑一种祝福方式。';
+  });
+
+  document.getElementById('lh6-kinds').addEventListener('click', function (e) {
+    var btn = e.target.closest('.lh6-opt');
+    if (!btn) return;
+    kind = pick(this, btn);
+    hint.classList.remove('warn');
+    hint.textContent = story ? '点确认，马上生成你的专属祝福。' : '再选一个故事，就能生成专属祝福。';
+  });
+
+  document.getElementById('lh6-go').addEventListener('click', function () {
+    if (!story) { hint.className = 'lh6-hint warn'; hint.textContent = '先选一个故事。'; return; }
+    if (!kind) { hint.className = 'lh6-hint warn'; hint.textContent = '再挑一种祝福方式。'; return; }
+    if (story === '5') {
+      var text = input.value.trim();
+      if (!text) { hint.className = 'lh6-hint warn'; hint.textContent = '请填写你的 Lighthouse 使用经历。'; input.focus(); return; }
+      sendPrompt('故事：5；内容：' + text + '；方式：' + kind);
+      return;
+    }
+    sendPrompt('故事：' + story + '；方式：' + kind);
+  });
+})();
+</script>

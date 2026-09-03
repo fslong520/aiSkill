@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "@tencent-adm/lh6-anniversary-blessing": {
+      "name": "轻量云六周年送祝福",
+      "zip_url": "https://api.skillhub.cn/api/v1/download?slug=lh6-anniversary-blessing&namespace=tencent-adm",
+      "source": "enterprise",
+      "version": "1.0.2",
+      "namespace": {
+        "canonicalName": "@tencent-adm/lh6-anniversary-blessing",
+        "displayName": "tencent-adm",
+        "handle": "tencent-adm",
+        "publicSlug": "lh6-anniversary-blessing"
+      },
+      "internalSlug": "lh6-anniversary-blessing",
+      "publicSlug": "lh6-anniversary-blessing",
+      "installDir": "/home/fslong/.config/opencode/skills/@tencent-adm/lh6-anniversary-blessing"
+    }
+  }
+}
