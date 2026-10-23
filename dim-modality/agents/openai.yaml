@@ -1,4 +1,0 @@
-interface:
-  display_name: "Dim Modality"
-  short_description: "Use DimAgent multimodal CLI"
-  default_prompt: "Use $dim-modality to create or process media with the DimAgent multimodal CLI."

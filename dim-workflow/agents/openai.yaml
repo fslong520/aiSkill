@@ -1,6 +1,0 @@
-interface:
-  display_name: "Dim Workflow"
-  short_description: "Create or edit reusable Dim workflows"
-  default_prompt: "Use $dim-workflow when creating, modifying, or saving reusable Dim workflow scripts. Do not use it for normal workflow execution."
-policy:
-  allow_implicit_invocation: true
