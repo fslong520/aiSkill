@@ -17,6 +17,7 @@ metadata:
 - **markitdown[pptx]**: text extraction from presentations
 - **Pillow**: thumbnail grid generation
 - **pptxgenjs** (`npm install -g pptxgenjs`): creating presentations from scratch
+- **python-pptx**: image-to-editable rebuilds and XML-level manipulation (see imagetopptx.md)
 - **LibreOffice** (`soffice`): presentation-to-PDF conversion
 - **pdftoppm** (poppler-utils): PDF-to-image conversion for thumbnail/visual workflows
 - If `pdftoppm` is unavailable, a Python fallback path may use `pdf2image`.
@@ -29,6 +30,7 @@ metadata:
 | Read/analyze content | `python -m markitdown presentation.pptx` |
 | Edit or create from template | Read [editing.md](editing.md) |
 | Create from scratch | Read [pptxgenjs.md](pptxgenjs.md) |
+| Rebuild a slide image / image-only PPTX / PDF page into an editable PPTX | Read [imagetopptx.md](imagetopptx.md) |
 
 ---
 

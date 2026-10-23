@@ -1,0 +1,4 @@
+interface:
+  display_name: "多任务交付"
+  short_description: "协调大型需求的实验、设计与定案，派发并行开发并持续推进独立验收"
+  default_prompt: "使用 $docs-sprint 组织这个需求的多 agent 协作，提供各任务上下文，持续推进开发、修复、独立验收和集成交付。"
